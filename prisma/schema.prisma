@@ -58,6 +58,10 @@ model Player {
   @@index([status])
   @@index([isFeatured])
   @@index([pseudo])
+  @@index([role, league, status])
+  @@index([isProspect, prospectScore])
+  @@index([league, tier])
+  @@index([pseudo, realName])
 }
 
 model SoloqStats {
@@ -270,6 +274,7 @@ model Favorite {
   @@unique([userId, playerId])
   @@index([userId])
   @@index([playerId])
+  @@index([playerId, userId])
 }
 
 model PlayerList {
@@ -348,6 +353,8 @@ model Notification {
   @@index([userId])
   @@index([read])
   @@index([createdAt])
+  @@index([userId, type, createdAt])
+  @@index([userId, read, createdAt])
 }
 
 model User {
