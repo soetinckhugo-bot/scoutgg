@@ -10,8 +10,6 @@ export async function GET(request: Request) {
       return NextResponse.json({ suggestions: [] });
     }
 
-    const lowerQ = q.toLowerCase();
-
     const players = await db.player.findMany({
       where: {
         OR: [
@@ -30,14 +28,7 @@ export async function GET(request: Request) {
       take: 5,
     });
 
-    // Case-insensitive filtering for SQLite
-    const filtered = players.filter(
-      (p) =>
-        p.pseudo.toLowerCase().includes(lowerQ) ||
-        (p.realName && p.realName.toLowerCase().includes(lowerQ))
-    );
-
-    return NextResponse.json({ suggestions: filtered });
+    return NextResponse.json({ suggestions: players });
   } catch (error) {
     console.error("Error fetching search suggestions:", error);
     return NextResponse.json(
