@@ -1,0 +1,271 @@
+"use client";
+
+import { useState, useCallback } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { toast } from "sonner";
+import { Upload, FileSpreadsheet, CheckCircle, AlertCircle, UserPlus, UserCheck } from "lucide-react";
+import Link from "next/link";
+
+const LEAGUES = ["LEC", "LFL", "LFL_D2", "LVP", "Prime League", "ROL", "ERL Major", "ERL Minor", "ERL2", "Amateur"];
+const SEASONS = ["2024", "2025", "2026", "2027"];
+const SPLITS = ["Spring", "Summer", "Winter", "Playoffs"];
+
+export default function ImportCsvPage() {
+  const [file, setFile] = useState<File | null>(null);
+  const [league, setLeague] = useState("ROL");
+  const [season, setSeason] = useState("2026");
+  const [split, setSplit] = useState("Winter");
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<{
+    created: number;
+    updated: number;
+    players: string[];
+    errors: string[];
+  } | null>(null);
+
+  const onDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    const dropped = e.dataTransfer.files[0];
+    if (dropped?.name.endsWith(".csv")) {
+      setFile(dropped);
+      setResult(null);
+    } else {
+      toast.error("Please drop a .csv file");
+    }
+  }, []);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!file) {
+      toast.error("Please select a CSV file");
+      return;
+    }
+
+    setLoading(true);
+    setResult(null);
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("league", league);
+    formData.append("season", season);
+    formData.append("split", split);
+
+    try {
+      const res = await fetch("/api/admin/import-csv", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        toast.error(data.error || "Import failed");
+      } else {
+        setResult(data);
+        toast.success(`Import complete! ${data.created} created, ${data.updated} updated`);
+      }
+    } catch {
+      toast.error("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-[#0f1117]">
+      <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mb-8">
+          <Link href="/admin" className="text-sm text-[#6C757D] hover:text-[#E9ECEF] transition-colors">
+            ← Back to Admin
+          </Link>
+          <h1 className="text-2xl font-bold text-[#E9ECEF] mt-4 mb-1">Import Players from CSV</h1>
+          <p className="text-sm text-[#6C757D]">
+            Upload a CSV file to bulk-import players with their stats. New players will be marked as{" "}
+            <span className="text-orange-400 font-medium">🔍 Scouting</span>.
+          </p>
+        </div>
+
+        <Card className="border-[#2A2D3A] bg-[#1A1D29]">
+          <CardHeader>
+            <CardTitle className="text-lg text-[#E9ECEF]">CSV Import</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* File Drop Zone */}
+              <div
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={onDrop}
+                className="border-2 border-dashed border-[#2A2D3A] rounded-xl p-8 text-center hover:border-[#E94560] hover:bg-[#E94560]/5 transition-colors cursor-pointer"
+                onClick={() => document.getElementById("csv-file")?.click()}
+              >
+                <input
+                  id="csv-file"
+                  type="file"
+                  accept=".csv"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) {
+                      setFile(f);
+                      setResult(null);
+                    }
+                  }}
+                />
+                {file ? (
+                  <div className="flex items-center justify-center gap-3">
+                    <FileSpreadsheet className="h-8 w-8 text-[#E94560]" />
+                    <div className="text-left">
+                      <p className="text-sm font-medium text-[#E9ECEF]">{file.name}</p>
+                      <p className="text-xs text-[#6C757D]">
+                        {(file.size / 1024).toFixed(1)} KB — Click to change
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <Upload className="h-10 w-10 text-[#6C757D] mx-auto mb-3" />
+                    <p className="text-sm font-medium text-[#ADB5BD]">
+                      Drop a CSV file here, or click to browse
+                    </p>
+                    <p className="text-xs text-[#6C757D] mt-1">
+                      Supports: Player,Team,Pos,Games,KDA,CSD@15,GD@15,DPM,KP%,etc.
+                    </p>
+                  </>
+                )}
+              </div>
+
+              {/* Settings */}
+              <div className="grid grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-[#ADB5BD]">League</Label>
+                  <Select value={league} onValueChange={(v) => v && setLeague(v)}>
+                    <SelectTrigger className="bg-[#141621] border-[#2A2D3A] text-[#E9ECEF]">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-[#1A1D29] border-[#2A2D3A]">
+                      {LEAGUES.map((l) => (
+                        <SelectItem key={l} value={l} className="text-[#E9ECEF]">
+                          {l}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-[#ADB5BD]">Season</Label>
+                  <Select value={season} onValueChange={(v) => v && setSeason(v)}>
+                    <SelectTrigger className="bg-[#141621] border-[#2A2D3A] text-[#E9ECEF]">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-[#1A1D29] border-[#2A2D3A]">
+                      {SEASONS.map((s) => (
+                        <SelectItem key={s} value={s} className="text-[#E9ECEF]">
+                          {s}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-[#ADB5BD]">Split</Label>
+                  <Select value={split} onValueChange={(v) => v && setSplit(v)}>
+                    <SelectTrigger className="bg-[#141621] border-[#2A2D3A] text-[#E9ECEF]">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-[#1A1D29] border-[#2A2D3A]">
+                      {SPLITS.map((s) => (
+                        <SelectItem key={s} value={s} className="text-[#E9ECEF]">
+                          {s}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full bg-[#E94560] text-white hover:bg-[#d13b54]"
+                disabled={loading || !file}
+              >
+                {loading ? "Importing..." : "Import Players"}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+
+        {/* Results */}
+        {result && (
+          <Card className="border-[#2A2D3A] bg-[#1A1D29] mt-6">
+            <CardHeader>
+              <CardTitle className="text-lg text-[#E9ECEF]">Import Results</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-3 gap-4 mb-6">
+                <div className="bg-[#141621] rounded-lg p-4 text-center border border-[#2A2D3A]">
+                  <UserPlus className="h-5 w-5 text-emerald-400 mx-auto mb-1" />
+                  <p className="text-2xl font-bold text-[#E9ECEF]">{result.created}</p>
+                  <p className="text-xs text-[#6C757D]">Created</p>
+                </div>
+                <div className="bg-[#141621] rounded-lg p-4 text-center border border-[#2A2D3A]">
+                  <UserCheck className="h-5 w-5 text-blue-400 mx-auto mb-1" />
+                  <p className="text-2xl font-bold text-[#E9ECEF]">{result.updated}</p>
+                  <p className="text-xs text-[#6C757D]">Updated</p>
+                </div>
+                <div className="bg-[#141621] rounded-lg p-4 text-center border border-[#2A2D3A]">
+                  <AlertCircle className="h-5 w-5 text-red-400 mx-auto mb-1" />
+                  <p className="text-2xl font-bold text-[#E9ECEF]">{result.errors.length}</p>
+                  <p className="text-xs text-[#6C757D]">Errors</p>
+                </div>
+              </div>
+
+              {result.players.length > 0 && (
+                <div className="mb-4">
+                  <h4 className="text-sm font-medium text-[#ADB5BD] mb-2">
+                    Players imported ({result.players.length})
+                  </h4>
+                  <div className="bg-[#141621] rounded-lg border border-[#2A2D3A] p-3 max-h-48 overflow-y-auto">
+                    <div className="flex flex-wrap gap-2">
+                      {result.players.map((p) => (
+                        <span
+                          key={p}
+                          className="inline-flex items-center gap-1 text-xs bg-[#232838] text-[#ADB5BD] px-2 py-1 rounded"
+                        >
+                          <CheckCircle className="h-3 w-3 text-emerald-400" />
+                          {p}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {result.errors.length > 0 && (
+                <div>
+                  <h4 className="text-sm font-medium text-[#ADB5BD] mb-2">Errors</h4>
+                  <div className="bg-[#141621] rounded-lg border border-red-500/20 p-3 max-h-48 overflow-y-auto">
+                    {result.errors.map((err, i) => (
+                      <p key={i} className="text-xs text-red-400 py-1">
+                        {err}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+      </div>
+    </div>
+  );
+}

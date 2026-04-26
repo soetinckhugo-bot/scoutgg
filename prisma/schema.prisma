@@ -1,0 +1,436 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Player {
+  id               String           @id @default(cuid())
+  pseudo           String
+  realName         String?
+  role             String
+  nationality      String?
+  age              Int?
+  currentTeam      String?
+  league           String
+  tier             String?
+  status           String           @default("SCOUTING")
+  riotPuuid        String?
+  riotId           String?
+  opggUrl          String?
+  golggUrl         String?
+  lolprosUrl       String?
+  twitterUrl       String?
+  twitchUrl        String?
+  leaguepediaUrl   String?
+  discordTag       String?
+  photoUrl         String?
+  bio              String?
+  behaviorTags     String?
+  isFeatured       Boolean          @default(false)
+  featuredAt       DateTime?
+  contractEndDate  DateTime?
+  isProspect       Boolean          @default(false)
+  prospectScore    Float?
+  prospectRank     Int?
+  prospectTrend    String?
+  prospectPhotoUrl String?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  favorites        Favorite[]
+  listItems        PlayerListItem[]
+  ratings          PlayerRating[]
+  proMatches       ProMatch[]
+  proStats         ProStats?
+  prospectMetrics  ProspectMetrics?
+  reports          Report[]
+  soloqPotw        SoloqPOTW[]
+  soloqStats       SoloqStats?
+  statHistory      StatHistory[]
+  timelineEvents   TimelineEvent[]
+  vods             Vod[]
+
+  @@index([role])
+  @@index([league])
+  @@index([status])
+  @@index([isFeatured])
+  @@index([pseudo])
+}
+
+model SoloqStats {
+  id           String   @id @default(cuid())
+  playerId     String   @unique
+  currentRank  String
+  peakLp       Int
+  winrate      Float
+  totalGames   Int
+  championPool String
+  lastUpdated  DateTime @updatedAt
+  player       Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+}
+
+model ProStats {
+  id                String  @id @default(cuid())
+  playerId          String  @unique
+
+  // === Identification ===
+  gamesPlayed       Int?
+  season            String
+  split             String?
+
+  // === Combat ===
+  k                 Float?
+  d                 Float?
+  a                 Float?
+  kda               Float?
+  kpPercent         Float?
+  ksPercent         Float?
+  dthPercent        Float?
+  fbPercent         Float?
+  fbVictim          Float?
+  soloKills         Float?
+  pentaKills        Float?
+
+  // === Counter Pick ===
+  ctrPercent        Float?
+
+  // === Early Game ===
+  gdAt10            Float?
+  xpdAt10           Float?
+  csdAt10           Float?
+  gdAt15            Float?
+  xpdAt15           Float?
+  csdAt15           Float?
+
+  // === Farming ===
+  cspm              Float?
+  csm               Float?
+  csPercentAt15     Float?
+
+  // === Damage ===
+  dpm               Float?
+  damagePercent     Float?
+  dPercentAt15      Float?
+  tdpg              Float?
+
+  // === Economy ===
+  egpm              Float?
+  gpm               Float?
+  goldPercent       Float?
+
+  // === Vision ===
+  wpm               Float?
+  cwpm              Float?
+  wcpm              Float?
+  vwpm              Float?
+  vsPercent         Float?
+  vspm              Float?
+
+  // === Objectives ===
+  stl               Float?
+
+  // === Averages (doublons du CSV mais utiles) ===
+  avgKills          Float?
+  avgDeaths         Float?
+  avgAssists        Float?
+  avgWpm            Float?
+  avgWcpm           Float?
+  avgVwpm           Float?
+
+  // === Legacy fields ===
+  championPool      String?
+  deathsUnder15     Float?
+  otpScore          Float?
+  poolSize          Int?
+  proximityJungle   Float?
+  winRateByChampion String?
+  visionScore       Float?
+
+  // === Calculated Scores ===
+  rawScore          Float?
+  globalScore       Float?
+  tierScore         Float?
+  tier              String?
+
+  player            Player  @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@index([season])
+  @@index([tier])
+}
+
+model ProMatch {
+  id            String   @id @default(cuid())
+  playerId      String
+  matchDate     DateTime
+  champion      String
+  result        String
+  duration      String
+  kda           String
+  cs            Int?
+  cspm          Float?
+  gold          Int?
+  gpm           Float?
+  damage        Int?
+  dpm           Float?
+  damagePercent Float?
+  kpPercent     Float?
+  visionScore   Int?
+  teamName      String
+  opponent      String
+  tournament    String
+  gameVersion   String?
+  patch         String?
+  items         String?
+  summoner1     String?
+  summoner2     String?
+  keystoneRune  String?
+  secondaryRune String?
+  side          String?
+  createdAt     DateTime @default(now())
+  player        Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@index([playerId])
+  @@index([matchDate])
+  @@index([tournament])
+}
+
+model ProspectMetrics {
+  id                   String   @id @default(cuid())
+  playerId             String   @unique
+  peakLpScore          Float    @default(0)
+  proWinrateScore      Float    @default(0)
+  currentLeagueScore   Float    @default(0)
+  bestProResultScore   Float    @default(0)
+  soloqGamesScore      Float    @default(0)
+  ageScore             Float    @default(0)
+  proChampionPoolScore Float    @default(0)
+  soloqWinrateScore    Float    @default(0)
+  eyeTestScore         Float    @default(0)
+  lastUpdated          DateTime @updatedAt
+  player               Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+}
+
+model Report {
+  id          String   @id @default(cuid())
+  playerId    String
+  title       String
+  content     String
+  strengths   String
+  weaknesses  String
+  verdict     String
+  author      String
+  isPremium   Boolean  @default(true)
+  publishedAt DateTime @default(now())
+  player      Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@index([playerId])
+  @@index([publishedAt])
+  @@index([isPremium])
+}
+
+model Vod {
+  id          String   @id @default(cuid())
+  playerId    String
+  title       String
+  url         String
+  platform    String
+  description String?
+  champion    String?
+  matchType   String
+  createdAt   DateTime @default(now())
+  player      Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+}
+
+model TimelineEvent {
+  id          String   @id @default(cuid())
+  playerId    String
+  type        String
+  title       String
+  description String?
+  date        DateTime @default(now())
+  metadata    String?
+  createdAt   DateTime @default(now())
+  player      Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@index([playerId])
+  @@index([date])
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  playerId  String
+  notes     String?
+  createdAt DateTime @default(now())
+  player    Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, playerId])
+  @@index([userId])
+  @@index([playerId])
+}
+
+model PlayerList {
+  id          String           @id @default(cuid())
+  userId      String
+  name        String
+  description String?
+  color       String           @default("#E94560")
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  players     PlayerListItem[]
+
+  @@index([userId])
+}
+
+model PlayerListItem {
+  id           String     @id @default(cuid())
+  playerListId String
+  playerId     String
+  addedAt      DateTime   @default(now())
+  player       Player     @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  playerList   PlayerList @relation(fields: [playerListId], references: [id], onDelete: Cascade)
+
+  @@unique([playerListId, playerId])
+  @@index([playerListId])
+  @@index([playerId])
+}
+
+model PlayerRating {
+  id        String   @id @default(cuid())
+  playerId  String
+  userId    String
+  mechanics Int      @default(0)
+  macro     Int      @default(0)
+  attitude  Int      @default(0)
+  potential Int      @default(0)
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  player    Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@unique([playerId, userId])
+  @@index([playerId])
+  @@index([userId])
+}
+
+model SoloqPOTW {
+  id          String   @id @default(cuid())
+  playerId    String
+  week        Int
+  year        Int
+  lpGain      Int      @default(0)
+  winrate     Float    @default(0)
+  gamesPlayed Int      @default(0)
+  reason      String   @default("")
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  player      Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@unique([week, year])
+  @@index([playerId])
+  @@index([isActive])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  link      String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([read])
+  @@index([createdAt])
+}
+
+model User {
+  id                   String        @id @default(cuid())
+  email                String        @unique
+  name                 String?
+  image                String?
+  passwordHash         String?
+  role                 String        @default("user")
+  isPremium            Boolean       @default(false)
+  premiumUntil         DateTime?
+  subscriptionStatus   String        @default("inactive")
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+  orgId                String?
+  createdAt            DateTime      @default(now())
+  org                  Organization? @relation(fields: [orgId], references: [id])
+
+  @@index([orgId])
+}
+
+model Organization {
+  id        String      @id @default(cuid())
+  name      String
+  slug      String      @unique
+  plan      String      @default("free")
+  maxSeats  Int         @default(5)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  invites   OrgInvite[]
+  users     User[]
+
+  @@index([slug])
+}
+
+model OrgInvite {
+  id        String       @id @default(cuid())
+  orgId     String
+  email     String
+  role      String       @default("member")
+  token     String       @unique
+  used      Boolean      @default(false)
+  expiresAt DateTime
+  createdAt DateTime     @default(now())
+  org       Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@unique([orgId, email])
+  @@index([token])
+}
+
+model ApiKey {
+  id        String    @id @default(cuid())
+  key       String    @unique
+  name      String
+  userId    String
+  tier      String    @default("scout_pro")
+  rateLimit Int       @default(100)
+  lastUsed  DateTime?
+  expiresAt DateTime?
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@index([key])
+}
+
+model StatHistory {
+  id          String   @id @default(cuid())
+  playerId    String
+  week        Int
+  year        Int
+  peakLp      Int
+  winrate     Float
+  totalGames  Int
+  kda         Float?
+  dpm         Float?
+  cspm        Float?
+  kpPercent   Float?
+  visionScore Float?
+  createdAt   DateTime @default(now())
+  player      Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@unique([playerId, week, year])
+  @@index([playerId])
+  @@index([week, year])
+}
