@@ -271,23 +271,23 @@ export default async function HomePage() {
                     </div>
                   </div>
                 </div>
-                {featuredPlayer.proStats && (
+                {featuredPlayer.soloqStats && (
                   <div className="grid grid-cols-4 gap-2 text-center">
                     <div className="bg-[#1A1D29] rounded py-2 px-1">
-                      <p className="text-xs text-[#6C757D] uppercase tracking-wider">KDA</p>
-                      <p className="text-sm font-bold text-[#E9ECEF] tabular-nums">{featuredPlayer.proStats.kda?.toFixed(2) || "-"}</p>
+                      <p className="text-xs text-[#6C757D] uppercase tracking-wider">Peak LP</p>
+                      <p className="text-sm font-bold text-[#E9ECEF] tabular-nums">{featuredPlayer.soloqStats.peakLp || "-"}</p>
                     </div>
                     <div className="bg-[#1A1D29] rounded py-2 px-1">
-                      <p className="text-xs text-[#6C757D] uppercase tracking-wider">CSD@15</p>
-                      <p className="text-sm font-bold text-[#E9ECEF] tabular-nums">{featuredPlayer.proStats.csdAt15 ? `${featuredPlayer.proStats.csdAt15 > 0 ? "+" : ""}${featuredPlayer.proStats.csdAt15.toFixed(1)}` : "-"}</p>
+                      <p className="text-xs text-[#6C757D] uppercase tracking-wider">Winrate</p>
+                      <p className="text-sm font-bold text-emerald-400 tabular-nums">{featuredPlayer.soloqStats.winrate ? `${featuredPlayer.soloqStats.winrate}%` : "-"}</p>
                     </div>
                     <div className="bg-[#1A1D29] rounded py-2 px-1">
-                      <p className="text-xs text-[#6C757D] uppercase tracking-wider">DPM</p>
-                      <p className="text-sm font-bold text-[#E9ECEF] tabular-nums">{featuredPlayer.proStats.dpm?.toFixed(0) || "-"}</p>
+                      <p className="text-xs text-[#6C757D] uppercase tracking-wider">Rank</p>
+                      <p className="text-sm font-bold text-[#E9ECEF] tabular-nums">{featuredPlayer.soloqStats.currentRank?.split(' ')[0] || "-"}</p>
                     </div>
                     <div className="bg-[#1A1D29] rounded py-2 px-1">
                       <p className="text-xs text-[#6C757D] uppercase tracking-wider">Games</p>
-                      <p className="text-sm font-bold text-[#E9ECEF] tabular-nums">{featuredPlayer.proStats.gamesPlayed || "-"}</p>
+                      <p className="text-sm font-bold text-[#E9ECEF] tabular-nums">{featuredPlayer.soloqStats.totalGames || "-"}</p>
                     </div>
                   </div>
                 )}
@@ -322,16 +322,20 @@ export default async function HomePage() {
                   </div>
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-2 text-center">
-                <div className="bg-[#1A1D29] rounded py-2">
-                  <p className="text-xs text-[#6C757D] uppercase tracking-wider">LP Gained</p>
-                  <p className="text-sm font-bold text-orange-400 tabular-nums">+342</p>
+              <div className="grid grid-cols-4 gap-2 text-center">
+                <div className="bg-[#1A1D29] rounded py-2 px-1">
+                  <p className="text-xs text-[#6C757D] uppercase tracking-wider">Peak LP</p>
+                  <p className="text-sm font-bold text-[#E9ECEF] tabular-nums">+312</p>
                 </div>
-                <div className="bg-[#1A1D29] rounded py-2">
+                <div className="bg-[#1A1D29] rounded py-2 px-1">
                   <p className="text-xs text-[#6C757D] uppercase tracking-wider">Winrate</p>
                   <p className="text-sm font-bold text-emerald-400 tabular-nums">68%</p>
                 </div>
-                <div className="bg-[#1A1D29] rounded py-2">
+                <div className="bg-[#1A1D29] rounded py-2 px-1">
+                  <p className="text-xs text-[#6C757D] uppercase tracking-wider">Rank</p>
+                  <p className="text-sm font-bold text-[#E9ECEF] tabular-nums">CHALLENGER</p>
+                </div>
+                <div className="bg-[#1A1D29] rounded py-2 px-1">
                   <p className="text-xs text-[#6C757D] uppercase tracking-wider">Games</p>
                   <p className="text-sm font-bold text-[#E9ECEF] tabular-nums">47</p>
                 </div>
@@ -569,74 +573,74 @@ export default async function HomePage() {
           
           <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {/* Europe Tier 1 */}
-            <div className="rounded-xl border border-[#2A2D3A] bg-white p-6">
-              <h3 className="text-lg font-semibold text-[#1A1A2E] mb-4">Europe Tier 1</h3>
+            <div className="rounded-xl border border-[#2A2D3A] bg-[#141621] p-6">
+              <h3 className="text-lg font-semibold text-[#E9ECEF] mb-4">Europe Tier 1</h3>
               <div className="space-y-2">
-                <Link href="/players?league=LEC" className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 transition-colors group">
-                  <span className="text-sm font-medium text-[#1A1A2E]">LEC</span>
+                <Link href="/players?league=LEC" className="flex items-center justify-between p-2 rounded-lg hover:bg-[#1A1D29] transition-colors group">
+                  <span className="text-sm font-medium text-[#E9ECEF]">LEC</span>
                   <span className="text-xs text-[#6C757D]">Europe</span>
                 </Link>
-                <Link href="/players?league=LFL" className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 transition-colors group">
-                  <span className="text-sm font-medium text-[#1A1A2E]">LFL</span>
+                <Link href="/players?league=LFL" className="flex items-center justify-between p-2 rounded-lg hover:bg-[#1A1D29] transition-colors group">
+                  <span className="text-sm font-medium text-[#E9ECEF]">LFL</span>
                   <span className="text-xs text-[#6C757D]">France</span>
                 </Link>
-                <Link href="/players?league=LES" className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 transition-colors group">
-                  <span className="text-sm font-medium text-[#1A1A2E]">LES</span>
+                <Link href="/players?league=LES" className="flex items-center justify-between p-2 rounded-lg hover:bg-[#1A1D29] transition-colors group">
+                  <span className="text-sm font-medium text-[#E9ECEF]">LES</span>
                   <span className="text-xs text-[#6C757D]">Spain</span>
                 </Link>
-                <Link href="/players?league=TCL" className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 transition-colors group">
-                  <span className="text-sm font-medium text-[#1A1A2E]">TCL</span>
+                <Link href="/players?league=TCL" className="flex items-center justify-between p-2 rounded-lg hover:bg-[#1A1D29] transition-colors group">
+                  <span className="text-sm font-medium text-[#E9ECEF]">TCL</span>
                   <span className="text-xs text-[#6C757D]">Turkey</span>
                 </Link>
-                <Link href="/players?league=PRM" className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 transition-colors group">
-                  <span className="text-sm font-medium text-[#1A1A2E]">PRM</span>
+                <Link href="/players?league=PRM" className="flex items-center justify-between p-2 rounded-lg hover:bg-[#1A1D29] transition-colors group">
+                  <span className="text-sm font-medium text-[#E9ECEF]">PRM</span>
                   <span className="text-xs text-[#6C757D]">Germany, Austria & Switzerland</span>
                 </Link>
               </div>
             </div>
 
             {/* Europe Tier 2 */}
-            <div className="rounded-xl border border-[#2A2D3A] bg-white p-6">
-              <h3 className="text-lg font-semibold text-[#1A1A2E] mb-4">Europe Tier 2</h3>
+            <div className="rounded-xl border border-[#2A2D3A] bg-[#141621] p-6">
+              <h3 className="text-lg font-semibold text-[#E9ECEF] mb-4">Europe Tier 2</h3>
               <div className="space-y-2">
-                <Link href="/players?league=AL" className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 transition-colors group">
-                  <span className="text-sm font-medium text-[#1A1A2E]">AL</span>
+                <Link href="/players?league=AL" className="flex items-center justify-between p-2 rounded-lg hover:bg-[#1A1D29] transition-colors group">
+                  <span className="text-sm font-medium text-[#E9ECEF]">AL</span>
                   <span className="text-xs text-[#6C757D]">Arabian League</span>
                 </Link>
-                <Link href="/players?league=EBL" className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 transition-colors group">
-                  <span className="text-sm font-medium text-[#1A1A2E]">EBL</span>
+                <Link href="/players?league=EBL" className="flex items-center justify-between p-2 rounded-lg hover:bg-[#1A1D29] transition-colors group">
+                  <span className="text-sm font-medium text-[#E9ECEF]">EBL</span>
                   <span className="text-xs text-[#6C757D]">Balkans</span>
                 </Link>
-                <Link href="/players?league=ROL" className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 transition-colors group">
-                  <span className="text-sm font-medium text-[#1A1A2E]">ROL</span>
+                <Link href="/players?league=ROL" className="flex items-center justify-between p-2 rounded-lg hover:bg-[#1A1D29] transition-colors group">
+                  <span className="text-sm font-medium text-[#E9ECEF]">ROL</span>
                   <span className="text-xs text-[#6C757D]">Benelux</span>
                 </Link>
-                <Link href="/players?league=HM" className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 transition-colors group">
-                  <span className="text-sm font-medium text-[#1A1A2E]">HM</span>
+                <Link href="/players?league=HM" className="flex items-center justify-between p-2 rounded-lg hover:bg-[#1A1D29] transition-colors group">
+                  <span className="text-sm font-medium text-[#E9ECEF]">HM</span>
                   <span className="text-xs text-[#6C757D]">Czech & Slovakia</span>
                 </Link>
-                <Link href="/players?league=HLL" className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 transition-colors group">
-                  <span className="text-sm font-medium text-[#1A1A2E]">HLL</span>
+                <Link href="/players?league=HLL" className="flex items-center justify-between p-2 rounded-lg hover:bg-[#1A1D29] transition-colors group">
+                  <span className="text-sm font-medium text-[#E9ECEF]">HLL</span>
                   <span className="text-xs text-[#6C757D]">Greece & Cyprus</span>
                 </Link>
-                <Link href="/players?league=LIT" className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 transition-colors group">
-                  <span className="text-sm font-medium text-[#1A1A2E]">LIT</span>
+                <Link href="/players?league=LIT" className="flex items-center justify-between p-2 rounded-lg hover:bg-[#1A1D29] transition-colors group">
+                  <span className="text-sm font-medium text-[#E9ECEF]">LIT</span>
                   <span className="text-xs text-[#6C757D]">Italy</span>
                 </Link>
-                <Link href="/players?league=RL" className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 transition-colors group">
-                  <span className="text-sm font-medium text-[#1A1A2E]">RL</span>
+                <Link href="/players?league=RL" className="flex items-center justify-between p-2 rounded-lg hover:bg-[#1A1D29] transition-colors group">
+                  <span className="text-sm font-medium text-[#E9ECEF]">RL</span>
                   <span className="text-xs text-[#6C757D]">Poland & Baltics</span>
                 </Link>
-                <Link href="/players?league=LPLOL" className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 transition-colors group">
-                  <span className="text-sm font-medium text-[#1A1A2E]">LPLOL</span>
+                <Link href="/players?league=LPLOL" className="flex items-center justify-between p-2 rounded-lg hover:bg-[#1A1D29] transition-colors group">
+                  <span className="text-sm font-medium text-[#E9ECEF]">LPLOL</span>
                   <span className="text-xs text-[#6C757D]">Portugal</span>
                 </Link>
-                <Link href="/players?league=NLC" className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 transition-colors group">
-                  <span className="text-sm font-medium text-[#1A1A2E]">NLC</span>
+                <Link href="/players?league=NLC" className="flex items-center justify-between p-2 rounded-lg hover:bg-[#1A1D29] transition-colors group">
+                  <span className="text-sm font-medium text-[#E9ECEF]">NLC</span>
                   <span className="text-xs text-[#6C757D]">UK & Nordics</span>
                 </Link>
-                <Link href="/players?league=LFL2" className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 transition-colors group">
-                  <span className="text-sm font-medium text-[#1A1A2E]">LFL2</span>
+                <Link href="/players?league=LFL2" className="flex items-center justify-between p-2 rounded-lg hover:bg-[#1A1D29] transition-colors group">
+                  <span className="text-sm font-medium text-[#E9ECEF]">LFL2</span>
                   <span className="text-xs text-[#6C757D]">France Division 2</span>
                 </Link>
               </div>
@@ -644,39 +648,39 @@ export default async function HomePage() {
             </div>
 
             {/* World */}
-            <div className="rounded-xl border border-[#2A2D3A] bg-white p-6">
-              <h3 className="text-lg font-semibold text-[#1A1A2E] mb-4">World</h3>
+            <div className="rounded-xl border border-[#2A2D3A] bg-[#141621] p-6">
+              <h3 className="text-lg font-semibold text-[#E9ECEF] mb-4">World</h3>
               <div className="space-y-2">
-                <Link href="/players?league=LCK" className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 transition-colors group">
-                  <span className="text-sm font-medium text-[#1A1A2E]">LCK</span>
+                <Link href="/players?league=LCK" className="flex items-center justify-between p-2 rounded-lg hover:bg-[#1A1D29] transition-colors group">
+                  <span className="text-sm font-medium text-[#E9ECEF]">LCK</span>
                   <span className="text-xs text-[#6C757D]">Korea</span>
                 </Link>
-                <Link href="/players?league=LPL" className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 transition-colors group">
-                  <span className="text-sm font-medium text-[#1A1A2E]">LPL</span>
+                <Link href="/players?league=LPL" className="flex items-center justify-between p-2 rounded-lg hover:bg-[#1A1D29] transition-colors group">
+                  <span className="text-sm font-medium text-[#E9ECEF]">LPL</span>
                   <span className="text-xs text-[#6C757D]">China</span>
                 </Link>
-                <Link href="/players?league=LDL" className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 transition-colors group">
-                  <span className="text-sm font-medium text-[#1A1A2E]">LDL</span>
+                <Link href="/players?league=LDL" className="flex items-center justify-between p-2 rounded-lg hover:bg-[#1A1D29] transition-colors group">
+                  <span className="text-sm font-medium text-[#E9ECEF]">LDL</span>
                   <span className="text-xs text-[#6C757D]">China Division 2</span>
                 </Link>
-                <Link href="/players?league=LCS" className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 transition-colors group">
-                  <span className="text-sm font-medium text-[#1A1A2E]">LCS</span>
+                <Link href="/players?league=LCS" className="flex items-center justify-between p-2 rounded-lg hover:bg-[#1A1D29] transition-colors group">
+                  <span className="text-sm font-medium text-[#E9ECEF]">LCS</span>
                   <span className="text-xs text-[#6C757D]">North America</span>
                 </Link>
-                <Link href="/players?league=NACL" className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 transition-colors group">
-                  <span className="text-sm font-medium text-[#1A1A2E]">NACL</span>
+                <Link href="/players?league=NACL" className="flex items-center justify-between p-2 rounded-lg hover:bg-[#1A1D29] transition-colors group">
+                  <span className="text-sm font-medium text-[#E9ECEF]">NACL</span>
                   <span className="text-xs text-[#6C757D]">NA Challengers</span>
                 </Link>
-                <Link href="/players?league=CBLOL" className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 transition-colors group">
-                  <span className="text-sm font-medium text-[#1A1A2E]">CBLOL</span>
+                <Link href="/players?league=CBLOL" className="flex items-center justify-between p-2 rounded-lg hover:bg-[#1A1D29] transition-colors group">
+                  <span className="text-sm font-medium text-[#E9ECEF]">CBLOL</span>
                   <span className="text-xs text-[#6C757D]">Brazil</span>
                 </Link>
-                <Link href="/players?league=LCK+CL" className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 transition-colors group">
-                  <span className="text-sm font-medium text-[#1A1A2E]">LCK CL</span>
+                <Link href="/players?league=LCK+CL" className="flex items-center justify-between p-2 rounded-lg hover:bg-[#1A1D29] transition-colors group">
+                  <span className="text-sm font-medium text-[#E9ECEF]">LCK CL</span>
                   <span className="text-xs text-[#6C757D]">Korea Division 2</span>
                 </Link>
-                <Link href="/players?league=LCP" className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 transition-colors group">
-                  <span className="text-sm font-medium text-[#1A1A2E]">LCP</span>
+                <Link href="/players?league=LCP" className="flex items-center justify-between p-2 rounded-lg hover:bg-[#1A1D29] transition-colors group">
+                  <span className="text-sm font-medium text-[#E9ECEF]">LCP</span>
                   <span className="text-xs text-[#6C757D]">Taiwan</span>
                 </Link>
               </div>
