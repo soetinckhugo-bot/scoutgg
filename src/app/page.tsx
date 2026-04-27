@@ -271,23 +271,23 @@ export default async function HomePage() {
                     </div>
                   </div>
                 </div>
-                {featuredPlayer.soloqStats && (
+                {featuredPlayer.proStats && (
                   <div className="grid grid-cols-4 gap-2 text-center">
                     <div className="bg-[#1A1D29] rounded py-2 px-1">
-                      <p className="text-xs text-[#6C757D] uppercase tracking-wider">Peak LP</p>
-                      <p className="text-sm font-bold text-[#E9ECEF] tabular-nums">{featuredPlayer.soloqStats.peakLp || "-"}</p>
+                      <p className="text-xs text-[#6C757D] uppercase tracking-wider">KDA</p>
+                      <p className="text-sm font-bold text-[#E9ECEF] tabular-nums">{featuredPlayer.proStats.kda?.toFixed(2) || "-"}</p>
                     </div>
                     <div className="bg-[#1A1D29] rounded py-2 px-1">
-                      <p className="text-xs text-[#6C757D] uppercase tracking-wider">Winrate</p>
-                      <p className="text-sm font-bold text-emerald-400 tabular-nums">{featuredPlayer.soloqStats.winrate ? `${featuredPlayer.soloqStats.winrate}%` : "-"}</p>
+                      <p className="text-xs text-[#6C757D] uppercase tracking-wider">CSD@15</p>
+                      <p className="text-sm font-bold text-[#E9ECEF] tabular-nums">{featuredPlayer.proStats.csdAt15 ? `${featuredPlayer.proStats.csdAt15 > 0 ? "+" : ""}${featuredPlayer.proStats.csdAt15.toFixed(1)}` : "-"}</p>
                     </div>
                     <div className="bg-[#1A1D29] rounded py-2 px-1">
-                      <p className="text-xs text-[#6C757D] uppercase tracking-wider">Rank</p>
-                      <p className="text-sm font-bold text-[#E9ECEF] tabular-nums">{featuredPlayer.soloqStats.currentRank?.split(' ')[0] || "-"}</p>
+                      <p className="text-xs text-[#6C757D] uppercase tracking-wider">DPM</p>
+                      <p className="text-sm font-bold text-[#E9ECEF] tabular-nums">{featuredPlayer.proStats.dpm?.toFixed(0) || "-"}</p>
                     </div>
                     <div className="bg-[#1A1D29] rounded py-2 px-1">
                       <p className="text-xs text-[#6C757D] uppercase tracking-wider">Games</p>
-                      <p className="text-sm font-bold text-[#E9ECEF] tabular-nums">{featuredPlayer.soloqStats.totalGames || "-"}</p>
+                      <p className="text-sm font-bold text-[#E9ECEF] tabular-nums">{featuredPlayer.proStats.gamesPlayed || "-"}</p>
                     </div>
                   </div>
                 )}
@@ -318,7 +318,12 @@ export default async function HomePage() {
                   <p className="text-xs text-[#6C757D]">Vladimir T. • 21 yo • France</p>
                   <div className="flex items-center gap-2 mt-1">
                     <Badge className={`text-xs h-5 px-2 ${ROLE_COLORS["MID"] || ""}`}>MID</Badge>
-                    <span className="text-xs text-[#6C757D]">Karmine Corp</span>
+                    <Badge className="text-xs h-5 px-2 bg-[#1A1A2E] text-[#ADB5BD] border-[#2A2D3A]">UNDER CONTRACT</Badge>
+                  </div>
+                  <div className="flex items-center gap-2 mt-1 text-xs text-[#6C757D]">
+                    <span>LFL</span>
+                    <span>•</span>
+                    <span>Karmine Corp</span>
                   </div>
                 </div>
               </div>
