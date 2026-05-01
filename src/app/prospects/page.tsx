@@ -10,7 +10,6 @@ import {
   Star,
   TrendingUp,
   TrendingDown,
-  Minus,
   Sparkles,
   Info,
 } from "lucide-react";
@@ -93,27 +92,24 @@ const getProspects = cache(async (searchParams: {
 function TrendIndicator({ trend }: { trend: string | null }) {
   if (trend === "up")
     return (
-      <span className="inline-flex items-center gap-0.5 text-emerald-400 text-xs font-bold bg-emerald-500/10 px-2 py-1 rounded">
+      <span className="inline-flex items-center gap-0.5 text-success text-xs font-bold bg-success/10 px-2 py-1 rounded">
         <TrendingUp className="h-3 w-3" />
       </span>
     );
   if (trend === "down")
     return (
-      <span className="inline-flex items-center gap-0.5 text-red-400 text-xs font-bold bg-red-500/10 px-2 py-1 rounded">
+      <span className="inline-flex items-center gap-0.5 text-tier-d text-xs font-bold bg-tier-d/10 px-2 py-1 rounded">
         <TrendingDown className="h-3 w-3" />
       </span>
     );
   if (trend === "new")
     return (
-      <span className="inline-flex items-center gap-0.5 text-blue-400 text-xs font-bold bg-blue-500/10 px-2 py-1 rounded">
+      <span className="inline-flex items-center gap-0.5 text-info text-xs font-bold bg-info/10 px-2 py-1 rounded">
         <Sparkles className="h-3 w-3" /> NEW
       </span>
     );
-  return (
-    <span className="inline-flex items-center gap-0.5 text-text-body text-xs bg-surface-hover px-2 py-1 rounded">
-      <Minus className="h-3 w-3" />
-    </span>
-  );
+  // Stable: no badge to reduce visual noise
+  return null;
 }
 
 function PodiumCard({
