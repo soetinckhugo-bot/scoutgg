@@ -120,13 +120,13 @@ function scoreProWinrate(winrate: number | null): number {
 }
 
 // --- 20% Age ---
-// Scale: 14-16 = 20 pts (max), each year older removes 1 point.
-// 14=20, 15=20, 16=20, 17=19, 18=18, 19=17, 20=16, 21=15...
+// Scale: 14-16 = 20 pts (max), each year older removes 2 points.
+// 14=20, 15=20, 16=20, 17=18, 18=16, 19=14, 20=12, 21=10...
 function scoreAge(age: number | null): number {
   if (age === null || age === undefined) return 10;
   if (age <= 16) return 20;
-  // Linear decay: every year above 16 costs 1 point
-  const score = 20 - (age - 16);
+  // Linear decay: every year above 16 costs 2 points
+  const score = 20 - (age - 16) * 2;
   return Math.max(1, score);
 }
 

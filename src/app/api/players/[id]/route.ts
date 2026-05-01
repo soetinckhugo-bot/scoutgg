@@ -3,6 +3,7 @@ import { db } from "@/lib/server/db";
 import { PlayerUpdateSchema } from "@/lib/schemas";
 import { requireAdmin } from "@/lib/server/auth";
 import { logger } from "@/lib/logger";
+import { computeProspectScore } from "@/lib/prospect-scoring";
 
 export async function GET(
   request: Request,
@@ -53,7 +54,7 @@ export async function PUT(
 
     const body = parsed.data;
 
-    const player = await db.player.update({
+    await db.player.update({
       where: { id },
       data: {
         ...(body.pseudo !== undefined && { pseudo: body.pseudo }),
@@ -87,6 +88,38 @@ export async function PUT(
         ...(body.isProspect !== undefined && { isProspect: body.isProspect }),
       },
     });
+
+    // Fetch updated player with relations for score recalculation
+    const player = await db.player.findUnique({
+      where: { id },
+      include: { proStats: true, soloqStats: true },
+    });
+
+    if (!player) {
+      return NextResponse.json({ error: "Player not found after update" }, { status: 404 });
+    }
+
+    // Auto-recalculate prospect score if player is marked as prospect
+    if (player.isProspect) {
+      try {
+        const { total } = computeProspectScore({
+          peakLp: player.peakElo2Years ?? 0,
+          bestProResult: player.bestProResult,
+          currentLeague: player.league,
+          proWinrate: player.proStats?.winRate ?? null,
+          age: player.age,
+          globalScore: player.proStats?.globalScore ?? null,
+          eyeTestRating: player.eyeTestRating,
+        });
+        await db.player.update({
+          where: { id },
+          data: { prospectScore: total },
+        });
+        (player as any).prospectScore = total;
+      } catch (scoreError) {
+        logger.error("Failed to auto-recalculate prospect score", { playerId: id, error: scoreError });
+      }
+    }
 
     return NextResponse.json(player);
   } catch (error) {
