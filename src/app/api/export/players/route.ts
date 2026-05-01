@@ -51,6 +51,7 @@ export async function GET(request: NextRequest) {
         proStats: true,
       },
       orderBy: { pseudo: "asc" },
+      take: 1000,
     });
 
     const headers = [

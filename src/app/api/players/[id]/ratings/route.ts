@@ -18,6 +18,7 @@ export async function GET(
     const ratings = await db.playerRating.findMany({
       where: { playerId },
       orderBy: { createdAt: "desc" },
+      take: 100,
     });
 
     // Calculate averages

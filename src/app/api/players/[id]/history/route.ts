@@ -12,6 +12,7 @@ export async function GET(
     const history = await db.statHistory.findMany({
       where: { playerId },
       orderBy: [{ year: "asc" }, { week: "asc" }],
+      take: 100,
     });
 
     return NextResponse.json({ history });

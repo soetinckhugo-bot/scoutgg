@@ -21,6 +21,7 @@ export async function GET(
     const matches = await db.proMatch.findMany({
       where: { playerId: id },
       orderBy: { matchDate: "desc" },
+      take: 100,
     });
     return NextResponse.json({ matches });
   } catch (error) {

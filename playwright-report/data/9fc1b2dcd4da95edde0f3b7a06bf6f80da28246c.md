@@ -6,8 +6,8 @@
 
 # Test info
 
-- Name: players.spec.ts >> Players Page — Search & Filters >> export CSV button is present
-- Location: e2e\players.spec.ts:73:7
+- Name: players.spec.ts >> Players Page — Search & Filters >> filters by status
+- Location: e2e\players.spec.ts:27:7
 
 # Error details
 
@@ -46,8 +46,8 @@ Error: page.waitForLoadState: Test timeout of 30000ms exceeded.
           - /url: /compare
         - link "Similarity" [ref=e16] [cursor=pointer]:
           - /url: /similarity
-        - link "Tiers" [ref=e17] [cursor=pointer]:
-          - /url: /tierlists
+        - link "SoloQ" [ref=e17] [cursor=pointer]:
+          - /url: /soloq
         - link "Pricing" [ref=e18] [cursor=pointer]:
           - /url: /pricing
         - generic [ref=e19]:
@@ -605,43 +605,37 @@ Error: page.waitForLoadState: Test timeout of 30000ms exceeded.
               - /url: https://youtube.com/@LeagueScout
               - img [ref=e642]
         - generic [ref=e644]:
-          - heading "Platform" [level=3] [ref=e645]
+          - heading "Company" [level=3] [ref=e645]
           - list [ref=e646]:
             - listitem [ref=e647]:
-              - link "Players" [ref=e648] [cursor=pointer]:
-                - /url: /players
-            - listitem [ref=e649]:
-              - link "Reports" [ref=e650] [cursor=pointer]:
-                - /url: /reports
-            - listitem [ref=e651]:
-              - link "Tier Lists" [ref=e652] [cursor=pointer]:
-                - /url: /tierlists
-            - listitem [ref=e653]:
-              - link "Pricing" [ref=e654] [cursor=pointer]:
-                - /url: /pricing
-        - generic [ref=e655]:
-          - heading "Company" [level=3] [ref=e656]
-          - list [ref=e657]:
-            - listitem [ref=e658]:
-              - link "About" [ref=e659] [cursor=pointer]:
+              - link "About" [ref=e648] [cursor=pointer]:
                 - /url: /about
-            - listitem [ref=e660]:
-              - link "Contact" [ref=e661] [cursor=pointer]:
+            - listitem [ref=e649]:
+              - link "Contact" [ref=e650] [cursor=pointer]:
                 - /url: /contact
-        - generic [ref=e662]:
-          - heading "Legal" [level=3] [ref=e663]
-          - list [ref=e664]:
-            - listitem [ref=e665]:
-              - link "Terms of Service" [ref=e666] [cursor=pointer]:
+            - listitem [ref=e651]:
+              - link "Pricing" [ref=e652] [cursor=pointer]:
+                - /url: /pricing
+            - listitem [ref=e653]:
+              - link "Scoring" [ref=e654] [cursor=pointer]:
+                - /url: /scoring
+            - listitem [ref=e655]:
+              - link "Feedback" [ref=e656] [cursor=pointer]:
+                - /url: /feedback
+        - generic [ref=e657]:
+          - heading "Legal" [level=3] [ref=e658]
+          - list [ref=e659]:
+            - listitem [ref=e660]:
+              - link "Terms of Service" [ref=e661] [cursor=pointer]:
                 - /url: /tos
-            - listitem [ref=e667]:
-              - link "Privacy Policy" [ref=e668] [cursor=pointer]:
+            - listitem [ref=e662]:
+              - link "Privacy Policy" [ref=e663] [cursor=pointer]:
                 - /url: /privacy
-      - generic [ref=e669]:
-        - paragraph [ref=e670]: © 2026 LeagueScout. All rights reserved.
-        - paragraph [ref=e671]: LeagueScout is not endorsed by Riot Games.
+      - generic [ref=e664]:
+        - paragraph [ref=e665]: © 2026 LeagueScout. All rights reserved.
+        - paragraph [ref=e666]: LeagueScout is not endorsed by Riot Games.
   - region "Notifications alt+T"
-  - alert [ref=e672]
+  - alert [ref=e667]
 ```
 
 # Test source
