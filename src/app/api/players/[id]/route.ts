@@ -106,7 +106,6 @@ export async function PUT(
           peakLp: player.peakElo2Years ?? 0,
           bestProResult: player.bestProResult,
           currentLeague: player.league,
-          proWinrate: player.proStats?.winRate ?? null,
           age: player.age,
           globalScore: player.proStats?.globalScore ?? null,
           eyeTestRating: player.eyeTestRating,

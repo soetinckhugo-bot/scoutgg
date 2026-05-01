@@ -7,7 +7,6 @@
 // • Best Pro Result          25%  — Meilleur résultat en tournoi pro
 // • Age                      20%  — Plus jeune = meilleur potentiel (à partir de 14 ans)
 // • Current League Tier      10%  — ERL1 major > ERL1 minor > ERL amateur
-// • Pro Winrate (année)      10%  — Winrate en compétitif sur la saison
 // • Score Global (année)     10%  — Score global de l'année en cours (globalScore)
 // • Eye Test (scout)         10%  — Appréciation personnelle du scout (0-5)
 // ============================================================================
@@ -112,13 +111,6 @@ function scoreCurrentLeague(league: string): number {
   return 3; // fallback / unknown
 }
 
-// --- 10% Pro Winrate (annual) ---
-function scoreProWinrate(winrate: number | null): number {
-  if (winrate === null || winrate === undefined) return 5; // default for unknown
-  // 0% → 0 pts | 100% → 10 pts
-  return winrate * 10;
-}
-
 // --- 20% Age ---
 // Scale: 14-16 = 20 pts (max), each year older removes 2 points.
 // 14=20, 15=20, 16=20, 17=18, 18=16, 19=14, 20=12, 21=10...
@@ -150,7 +142,6 @@ export interface ProspectScoreBreakdown {
   bestProResultScore: number;   // 25%
   ageScore: number;             // 20%
   currentLeagueScore: number;   // 10%
-  proWinrateScore: number;      // 10%
   globalYearScore: number;      // 10%
   eyeTestScore: number;         // 10%
 }
@@ -159,7 +150,6 @@ export function computeProspectScore(params: {
   peakLp: number;
   bestProResult: string | null;
   currentLeague: string;
-  proWinrate: number | null;
   age: number | null;
   globalScore: number | null;
   eyeTestRating: number | null;
@@ -171,7 +161,6 @@ export function computeProspectScore(params: {
   const bestProResultScore = scoreBestProResult(params.bestProResult, params.currentLeague);
   const ageScore = scoreAge(params.age);
   const currentLeagueScore = scoreCurrentLeague(params.currentLeague);
-  const proWinrateScore = scoreProWinrate(params.proWinrate);
   const globalYearScore = scoreGlobalYear(params.globalScore);
   const eyeTestScore = scoreEyeTest(params.eyeTestRating);
 
@@ -180,7 +169,6 @@ export function computeProspectScore(params: {
     bestProResultScore +
     ageScore +
     currentLeagueScore +
-    proWinrateScore +
     globalYearScore +
     eyeTestScore
   );
@@ -192,7 +180,6 @@ export function computeProspectScore(params: {
       bestProResultScore: Math.round(bestProResultScore * 10) / 10,
       ageScore: Math.round(ageScore * 10) / 10,
       currentLeagueScore: Math.round(currentLeagueScore * 10) / 10,
-      proWinrateScore: Math.round(proWinrateScore * 10) / 10,
       globalYearScore: Math.round(globalYearScore * 10) / 10,
       eyeTestScore: Math.round(eyeTestScore * 10) / 10,
     },

@@ -389,16 +389,16 @@ export default async function ProspectsPage(props: {
             <h3 className="text-sm font-semibold text-text-heading">How prospect scoring works</h3>
           </div>
           <p className="text-xs text-text-body mb-3">
-            Each prospect is scored out of <strong>100 points</strong> based on 7 weighted criteria.
+            Each prospect is scored out of <strong>100 points</strong> based on 6 weighted criteria.
             The higher the score, the stronger the prospect profile.
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
             {[
               { label: "Peak SoloQ LP", pct: "25%", desc: "Highest LP reached in 2 years" },
               { label: "Best Pro Result", pct: "25%", desc: "Tournament placement in their league" },
-              { label: "Age", pct: "20%", desc: "Younger = higher potential (14 = max)" },
+              { label: "Age", pct: "20%", desc: "Younger = higher potential (16 = max)" },
               { label: "League Tier", pct: "10%", desc: "T1/T2/T3/T4 competitive level" },
-              { label: "Pro Winrate", pct: "10%", desc: "Season winrate in pro matches" },
+
               { label: "Global Score", pct: "10%", desc: "Overall performance rating" },
               { label: "Eye Test", pct: "10%", desc: "Scout rating (0–5 scale)" },
             ].map((item) => (

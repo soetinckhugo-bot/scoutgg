@@ -57,7 +57,6 @@ export async function GET(request: NextRequest) {
 
     const computed = computeProspectScore({
       peakLp: p.peakElo2Years ?? ss?.peakLp ?? 0,
-      proWinrate: ps?.winRate ?? null,
       currentLeague: p.league,
       bestProResult: p.bestProResult ?? null,
       age: p.age,
