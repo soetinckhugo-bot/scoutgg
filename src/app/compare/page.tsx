@@ -148,10 +148,10 @@ function PlayerHeader({
             alt={player.pseudo}
             width={56}
             height={56}
-            className="rounded-full object-cover ring-2 ring-[#2A2D3A]"
+            className="rounded-full object-cover ring-2 ring-border"
           />
         ) : (
-          <div className="w-[56px] h-[56px] rounded-full bg-muted flex items-center justify-center text-xl font-bold text-text-subtle ring-2 ring-[#2A2D3A]">
+          <div className="w-[56px] h-[56px] rounded-full bg-muted flex items-center justify-center text-xl font-bold text-text-subtle ring-2 ring-border">
             {(player.pseudo?.[0] ?? "?").toUpperCase()}
           </div>
         )}

@@ -160,7 +160,7 @@ export default function ProChampions({ matches }: ProChampionsProps) {
                   {/* Champion */}
                   <td className="py-1.5 px-2">
                     <div className="flex items-center gap-2">
-                      <div className="relative w-8 h-8 rounded overflow-hidden flex-shrink-0 ring-1 ring-[#2A2D3A]">
+                      <div className="relative w-8 h-8 rounded overflow-hidden flex-shrink-0 ring-1 ring-border">
                         <Image
                           src={getChampionIconUrl(champ.champion)}
                           alt={champ.champion}

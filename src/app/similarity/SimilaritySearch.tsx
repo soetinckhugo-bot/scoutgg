@@ -199,7 +199,7 @@ export default function SimilaritySearch() {
                 setSelectedPlayer(null);
                 setSimilarityResults([]);
               }}
-              className="text-text-muted hover:text-text-heading transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E94560] rounded px-2 py-1"
+              className="text-text-muted hover:text-text-heading transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-accent rounded px-2 py-1"
               aria-label="Change selected player"
             >
               Change
@@ -221,7 +221,7 @@ export default function SimilaritySearch() {
             <button
               onClick={() => setMode("scope")}
               aria-pressed={mode === "scope"}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E94560] ${
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-accent ${
                 mode === "scope"
                   ? "bg-primary text-text-heading-foreground"
                   : "bg-card text-text-muted hover:text-text-heading"
@@ -232,7 +232,7 @@ export default function SimilaritySearch() {
             <button
               onClick={() => setMode("player")}
               aria-pressed={mode === "player"}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E94560] ${
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-accent ${
                 mode === "player"
                   ? "bg-primary text-text-heading-foreground"
                   : "bg-card text-text-muted hover:text-text-heading"
@@ -250,7 +250,7 @@ export default function SimilaritySearch() {
                   onClick={() => setComparisonScope(scope)}
                   aria-pressed={comparisonScope === scope}
                   aria-label={`Compare by ${getScopeLabel(scope)}`}
-                  className={`flex items-center justify-center gap-2 px-3 py-3 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E94560] ${
+                  className={`flex items-center justify-center gap-2 px-3 py-3 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-accent ${
                     comparisonScope === scope
                       ? "bg-primary text-text-heading-foreground"
                       : "bg-card text-text-muted hover:bg-surface-hover"
@@ -282,7 +282,7 @@ export default function SimilaritySearch() {
                         setQuery("");
                         setResults([]);
                       }}
-                      className="flex items-center gap-3 w-full px-4 py-3 hover:bg-surface-hover transition-colors text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E94560] rounded-lg"
+                      className="flex items-center gap-3 w-full px-4 py-3 hover:bg-surface-hover transition-colors text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-accent rounded-lg"
                       aria-label={`Select target player ${player.pseudo}`}
                     >
                       <div className="w-8 h-8 rounded-full bg-card flex items-center justify-center text-xs font-bold text-text-muted">
@@ -306,7 +306,7 @@ export default function SimilaritySearch() {
                   <span className="text-sm text-text-heading">{targetPlayer.pseudo}</span>
                   <button
                     onClick={() => setTargetPlayer(null)}
-                    className="text-text-muted hover:text-text-heading text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E94560] rounded px-1"
+                    className="text-text-muted hover:text-text-heading text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-accent rounded px-1"
                     aria-label="Remove selected target player"
                   >
                     Remove
@@ -389,7 +389,7 @@ export default function SimilaritySearch() {
                     aria-pressed={expandedBreakdown === result.player.id}
                     aria-expanded={expandedBreakdown === result.player.id}
                     aria-label={`${expandedBreakdown === result.player.id ? 'Collapse' : 'Expand'} similarity breakdown for ${result.player.pseudo}`}
-                    className="p-1 text-text-muted hover:text-text-heading focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E94560] rounded"
+                    className="p-1 text-text-muted hover:text-text-heading focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-accent rounded"
                   >
                     {expandedBreakdown === result.player.id ? (
                       <ChevronUp className="h-4 w-4" />

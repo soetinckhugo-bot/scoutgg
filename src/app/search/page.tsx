@@ -154,7 +154,7 @@ export default async function SearchPage(props: {
             name="q"
             placeholder="Search by name, team, or keyword..."
             defaultValue={searchParams.q || ""}
-            className="w-full pl-10 pr-4 py-2.5 rounded-md border border-border bg-card text-text-heading focus:outline-none focus:ring-2 focus:ring-[#0F3460]"
+            className="w-full pl-10 pr-4 py-2.5 rounded-md border border-border bg-card text-text-heading focus:outline-none focus:ring-2 focus:ring-accent"
           />
         </div>
       </form>
