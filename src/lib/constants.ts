@@ -16,16 +16,13 @@ export const STATUS_COLORS: Record<string, string> = {
 
 export const ROLES = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"];
 export const LEAGUES = ["LCK", "LPL", "LEC", "LCS", "CBLOL", "LCP", "LFL", "LES", "TCL", "PRM", "NACL", "LDL", "LCK CL", "ROL", "NLC", "LPLOL", "EBL", "HLL", "LIT", "RL", "AL", "HM", "LFL2", "PRM2", "Amateur"];
-export const TIERS = ["S+", "S", "A+", "A", "B+", "B", "C"];
+export const TIERS = ["T1", "T2", "T3", "T4"];
 
 export const TIER_LABELS: Record<string, string> = {
-  "S+": "World-class — LCK/LPL Material",
-  "S": "Major League — LEC/LCS/CBLOL level",
-  "A+": "Top ERL — LFL/LES/TCL/PRM level",
-  "A": "Solid ERL — ERL Major/Minor level",
-  "B+": "Developing — ERL2/Academy potential",
-  "B": "Raw talent — Needs Tier 4 experience",
-  "C": "Emerging — Keep an eye on",
+  "T1": "Tier 1 — LCK / LPL",
+  "T2": "Tier 2 — LEC / LCS / CBLOL / LCP",
+  "T3": "Tier 3 — LFL / LES / TCL / PRM / NACL / LDL / LCK CL",
+  "T4": "Tier 4 — ROL / NLC / LPLOL / EBL / HLL / LIT / RL / AL / HM / LFL2 / PRM2 / Amateur",
 };
 
 // New 4-tier league system with coefficients
@@ -62,13 +59,10 @@ export const LEAGUE_TIERS: Record<string, { tier: number; coefficient: number; r
 };
 
 export const TIER_COLORS: Record<string, string> = {
-  "S+": "text-amber-300 bg-amber-300/10 border-amber-300/30",
-  "S": "text-amber-400 bg-amber-400/10 border-amber-400/30",
-  "A+": "text-yellow-400 bg-yellow-400/10 border-yellow-400/30",
-  "A": "text-orange-400 bg-orange-400/10 border-orange-400/30",
-  "B+": "text-orange-500 bg-orange-500/10 border-orange-500/30",
-  "B": "text-red-400 bg-red-400/10 border-red-400/30",
-  "C": "text-slate-400 bg-slate-400/10 border-slate-400/30",
+  "T1": "text-amber-300 bg-amber-300/10 border-amber-300/30",
+  "T2": "text-amber-400 bg-amber-400/10 border-amber-400/30",
+  "T3": "text-orange-400 bg-orange-400/10 border-orange-400/30",
+  "T4": "text-slate-400 bg-slate-400/10 border-slate-400/30",
 };
 
 // Rank colors for SoloQ display

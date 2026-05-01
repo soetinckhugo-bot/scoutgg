@@ -4,7 +4,13 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Star, ArrowRight } from "lucide-react";
 import type { Metadata } from "next";
-import { TIER_COLORS } from "@/lib/constants";
+// Local colors for tierlists (S/A/B/C grading, separate from league tier T1/T2/T3/T4)
+const TIER_COLORS: Record<string, string> = {
+  S: "text-amber-300 bg-amber-300/10 border-amber-300/30",
+  A: "text-amber-400 bg-amber-400/10 border-amber-400/30",
+  B: "text-orange-400 bg-orange-400/10 border-orange-400/30",
+  C: "text-slate-400 bg-slate-400/10 border-slate-400/30",
+};
 
 export const metadata: Metadata = {
   title: "Tier Lists",
