@@ -23,6 +23,14 @@ import { logger } from "@/lib/logger";
  * Admin only to prevent abuse of Riot API quota
  */
 export async function POST(request: NextRequest) {
+  // Check Riot API key is configured
+  if (!process.env.RIOT_API_KEY) {
+    return NextResponse.json(
+      { error: "Riot API key is not configured. Please set RIOT_API_KEY in environment variables." },
+      { status: 503 }
+    );
+  }
+
   // Admin-only to protect Riot API quota
   const unauthorized = await requireAdmin();
   if (unauthorized) return unauthorized;
@@ -65,42 +73,72 @@ export async function POST(request: NextRequest) {
     // Try to get PUUID from player record
     let puuid = player.riotPuuid;
     let summonerId: string | null = null;
+    let lookupMethod = "stored";
 
     // If no PUUID, try riotId field (format: gameName#tagLine)
     if (!puuid && player.riotId) {
-      const [gameName, tagLine] = player.riotId.split("#");
-      if (gameName && tagLine) {
-        const account = await getAccountByRiotId(gameName.trim(), tagLine.trim());
+      const hashIndex = player.riotId.lastIndexOf("#");
+      if (hashIndex > 0) {
+        const gameName = player.riotId.slice(0, hashIndex).trim();
+        const tagLine = player.riotId.slice(hashIndex + 1).trim();
+        console.log("[Riot Sync] Looking up by Riot ID:", { gameName, tagLine });
+        const account = await getAccountByRiotId(gameName, tagLine);
         if (account) {
           puuid = account.puuid;
+          lookupMethod = "riotId";
+        } else {
+          console.log("[Riot Sync] Account not found for Riot ID:", { gameName, tagLine });
         }
       }
     }
 
     // Fallback: try to derive from opggUrl
     if (!puuid && player.opggUrl) {
-      const match = player.opggUrl.match(/summoners\/\w+\/([^/]+)/);
+      // Support multiple op.gg URL formats:
+      // https://op.gg/summoners/euw/GameName-TagLine
+      // https://op.gg/fr/lol/summoners/euw/GameName-TagLine
+      // https://www.op.gg/summoners/euw/GameName-TagLine
+      const match = player.opggUrl.match(/summoners\/([\w-]+)\/([^/?#]+)/);
       if (match) {
-        const riotIdFromUrl = decodeURIComponent(match[1]);
-        const [gameName, tagLine] = riotIdFromUrl.split("-");
-        if (gameName && tagLine) {
+        const region = match[1];
+        const riotIdFromUrl = decodeURIComponent(match[2]);
+        const lastDash = riotIdFromUrl.lastIndexOf("-");
+        if (lastDash > 0) {
+          const gameName = riotIdFromUrl.slice(0, lastDash);
+          const tagLine = riotIdFromUrl.slice(lastDash + 1);
+          console.log("[Riot Sync] Looking up by op.gg URL:", { region, gameName, tagLine, raw: riotIdFromUrl });
           const account = await getAccountByRiotId(gameName, tagLine);
           if (account) {
             puuid = account.puuid;
+            lookupMethod = "opgg";
+          } else {
+            console.log("[Riot Sync] Account not found for op.gg derived Riot ID:", { gameName, tagLine });
           }
         }
+      } else {
+        console.log("[Riot Sync] Could not parse op.gg URL:", player.opggUrl);
       }
     }
 
     if (!puuid) {
+      const reasons: string[] = [];
+      if (!player.riotId && !player.opggUrl && !player.riotPuuid) {
+        reasons.push("No Riot ID, op.gg URL, or stored PUUID found for this player.");
+      } else {
+        if (player.riotId) reasons.push(`Riot ID '${player.riotId}' not found on Riot servers.`);
+        if (player.opggUrl) reasons.push(`Could not resolve account from op.gg URL.`);
+        if (player.riotPuuid) reasons.push(`Stored PUUID is invalid or expired.`);
+      }
       return NextResponse.json(
         {
-          error:
-            "No Riot PUUID found for player. Please set riotId (gameName#tagLine) or opggUrl.",
+          error: "No Riot PUUID found for player.",
+          details: reasons.join(" ") + " Please check the Riot ID format (gameName#tagLine) or verify the op.gg URL.",
         },
         { status: 400 }
       );
     }
+
+    console.log("[Riot Sync] PUUID resolved via:", lookupMethod, puuid);
 
     // Update player with PUUID if we just found it
     if (!player.riotPuuid && puuid) {
