@@ -49,15 +49,15 @@ interface BoardPlayer {
 interface Column {
   id: string;
   title: string;
-  color: string;
+  colorClass: string;
   players: BoardPlayer[];
 }
 
 const DEFAULT_COLUMNS: Column[] = [
-  { id: "must-sign", title: "Must Sign", color: "#28A745", players: [] },
-  { id: "monitor", title: "Monitor", color: "#FFC107", players: [] },
-  { id: "backup", title: "Backup Option", color: "#0F3460", players: [] },
-  { id: "pass", title: "Pass", color: "#DC3545", players: [] },
+  { id: "must-sign", title: "Must Sign", colorClass: "bg-success", players: [] },
+  { id: "monitor", title: "Monitor", colorClass: "bg-warning", players: [] },
+  { id: "backup", title: "Backup Option", colorClass: "bg-accent", players: [] },
+  { id: "pass", title: "Pass", colorClass: "bg-destructive", players: [] },
 ];
 
 export default function DraftBoardPage() {
@@ -279,8 +279,7 @@ export default function DraftBoardPage() {
                   className="flex items-center gap-2 mb-3 px-1"
                 >
                   <div
-                    className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: column.color }}
+                    className={`w-3 h-3 rounded-full ${column.colorClass}`}
                   />
                   <h3 className="font-semibold text-text-heading">
                     {column.title}

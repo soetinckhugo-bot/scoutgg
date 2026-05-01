@@ -81,6 +81,20 @@ const PRESET_COLORS = [
   "#DC3545",
 ];
 
+function hexToTwClass(hex: string): string | undefined {
+  const map: Record<string, string> = {
+    "#E94560": "bg-primary-accent",
+    "#0F3460": "bg-accent",
+    "#28A745": "bg-success",
+    "#FFC107": "bg-warning",
+    "#17A2B8": "bg-info",
+    "#6F42C1": "bg-purple",
+    "#FD7E14": "bg-orange",
+    "#DC3545": "bg-destructive",
+  };
+  return map[hex.toUpperCase()];
+}
+
 export default function ListsPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -217,18 +231,21 @@ export default function ListsPage() {
                 <div>
                   <label className="text-sm font-medium mb-2 block text-text-heading">Color</label>
                   <div className="flex flex-wrap gap-2">
-                    {PRESET_COLORS.map((c) => (
-                      <button
-                        key={c}
-                        onClick={() => setNewListColor(c)}
-                        className={`w-8 h-8 rounded-full border-2 transition-all ${
-                          newListColor === c
-                            ? "border-white scale-110"
-                            : "border-transparent"
-                        }`}
-                        style={{ backgroundColor: c }}
-                      />
-                    ))}
+                    {PRESET_COLORS.map((c) => {
+                      const twClass = hexToTwClass(c);
+                      return (
+                        <button
+                          key={c}
+                          onClick={() => setNewListColor(c)}
+                          className={`w-8 h-8 rounded-full border-2 transition-all ${
+                            newListColor === c
+                              ? "border-white scale-110"
+                              : "border-transparent"
+                          } ${twClass || ""}`}
+                          style={twClass ? undefined : { backgroundColor: c }}
+                        />
+                      );
+                    })}
                   </div>
                 </div>
                 <Button
@@ -276,8 +293,8 @@ export default function ListsPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div
-                        className="w-4 h-10 rounded-full"
-                        style={{ backgroundColor: list.color }}
+                        className={`w-4 h-10 rounded-full ${hexToTwClass(list.color) || ""}`}
+                        style={hexToTwClass(list.color) ? undefined : { backgroundColor: list.color }}
                       />
                       <div>
                         <CardTitle className="text-lg text-text-heading">{list.name}</CardTitle>

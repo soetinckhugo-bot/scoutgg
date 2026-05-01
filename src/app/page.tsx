@@ -237,7 +237,7 @@ export default async function HomePage() {
         {/* Subtle background pattern */}
         <div className="absolute inset-0 bg-background">
           <div className="absolute inset-0 opacity-20" style={{
-            backgroundImage: `radial-gradient(circle at 25% 50%, #0F3460 0%, transparent 50%), radial-gradient(circle at 75% 50%, #E94560 0%, transparent 40%)`
+            backgroundImage: `radial-gradient(circle at 25% 50%, var(--accent) 0%, transparent 50%), radial-gradient(circle at 75% 50%, var(--primary-accent) 0%, transparent 40%)`
           }} />
         </div>
         <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
@@ -288,7 +288,7 @@ export default async function HomePage() {
                     <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center text-xl font-bold text-text-heading">{(featuredPlayer.pseudo?.[0] ?? "?").toUpperCase()}</div>
                   )}
                   <div>
-                    <h3 className="text-lg font-bold text-text-heading">{featuredPlayer.pseudo}</h3>
+                    <h2 className="text-lg font-bold text-text-heading">{featuredPlayer.pseudo}</h2>
                     <p className="text-xs text-text-muted">
                       {featuredPlayer.realName && <span>{featuredPlayer.realName}</span>}
                       {featuredPlayer.age && <span> • {featuredPlayer.age} yo</span>}
@@ -352,7 +352,7 @@ export default async function HomePage() {
                     <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center text-xl font-bold text-text-heading">{(soloqPotw.player.pseudo?.[0] ?? "?").toUpperCase()}</div>
                   )}
                   <div>
-                    <h3 className="text-lg font-bold text-text-heading">{soloqPotw.player.pseudo}</h3>
+                    <h2 className="text-lg font-bold text-text-heading">{soloqPotw.player.pseudo}</h2>
                     <p className="text-xs text-text-muted">
                       {soloqPotw.player.realName && <span>{soloqPotw.player.realName}</span>}
                       {soloqPotw.player.age && <span> • {soloqPotw.player.age} yo</span>}
@@ -400,7 +400,7 @@ export default async function HomePage() {
           ) : (
             <div className="rounded-xl border border-border bg-card overflow-hidden flex flex-col h-full items-center justify-center p-8 text-center">
               <ScoutIcon icon={Zap} size="xl" variant="gold" glow bg />
-              <h3 className="text-lg font-bold text-text-heading mb-1">Player of SOLOQ</h3>
+              <h2 className="text-lg font-bold text-text-heading mb-1">Player of SOLOQ</h2>
               <p className="text-sm text-text-muted">No SOLOQ player of the week yet. Check back soon!</p>
             </div>
           )}

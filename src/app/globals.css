@@ -60,6 +60,13 @@
   --color-tier-c: #F97316;
   --color-tier-d: #EF4444;
 
+  /* ── Functional Color Tokens ── */
+  --color-success: #28A745;
+  --color-warning: #FFC107;
+  --color-info: #17A2B8;
+  --color-purple: #6F42C1;
+  --color-orange: #FD7E14;
+
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
