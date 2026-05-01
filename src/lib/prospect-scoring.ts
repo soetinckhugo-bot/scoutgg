@@ -94,22 +94,22 @@ function scoreBestProResult(
 }
 
 // --- 10% Current League Tier ---
-// 4-tier system:
-// Tier 1: LCK, LPL                              → 5 pts
-// Tier 2: LEC, LCS, CBLOL, LCP                  → 4 pts
-// Tier 3: LFL, LES, TCL, PRM, NACL, LDL, LCK CL → 3 pts
-// Tier 4: ROL, NLC, LPLOL, EBL, HLL, LIT, RL, AL, HM, LFL2, PRM2, Amateur → 2 pts
+// Rescaled for prospects (mostly T3/T4):
+// T1/T2: LCK, LPL, LEC, LCS, CBLOL, LCP        → 10 pts (max)
+// T3: LFL, LES, TCL, PRM, NACL, LDL, LCK CL    → 10 pts (max for prospects)
+// T4: ROL, NLC, LPLOL, EBL, HLL, LIT, RL, AL, HM, LFL2, PRM2, Amateur → 5 pts
+// Unknown / other                              → 3 pts
 function scoreCurrentLeague(league: string): number {
   const tier1 = ["LCK", "LPL"];
   const tier2 = ["LEC", "LCS", "CBLOL", "LCP"];
   const tier3 = ["LFL", "LES", "TCL", "PRM", "NACL", "LDL", "LCK CL"];
   const tier4 = ["ROL", "NLC", "LPLOL", "EBL", "HLL", "LIT", "RL", "AL", "HM", "LFL2", "PRM2", "AMATEUR"];
 
-  if (tier1.includes(league)) return 5;
-  if (tier2.includes(league)) return 4;
-  if (tier3.includes(league)) return 3;
-  if (tier4.includes(league)) return 2;
-  return 1; // fallback / unknown
+  if (tier1.includes(league)) return 10;
+  if (tier2.includes(league)) return 10;
+  if (tier3.includes(league)) return 10;
+  if (tier4.includes(league)) return 5;
+  return 3; // fallback / unknown
 }
 
 // --- 10% Pro Winrate (annual) ---
@@ -120,13 +120,13 @@ function scoreProWinrate(winrate: number | null): number {
 }
 
 // --- 20% Age ---
-// Scale: 14 = 20 pts (max), each year older removes points.
-// Formula linear from 14 to 24+: 14=20, 16=18, 18=16, 20=14, 22=12, 24=10, 26=8...
+// Scale: 14-16 = 20 pts (max), each year older removes 1 point.
+// 14=20, 15=20, 16=20, 17=19, 18=18, 19=17, 20=16, 21=15...
 function scoreAge(age: number | null): number {
   if (age === null || age === undefined) return 10;
-  if (age <= 14) return 20;
-  // Linear decay: every year above 14 costs 1 point
-  const score = 20 - (age - 14);
+  if (age <= 16) return 20;
+  // Linear decay: every year above 16 costs 1 point
+  const score = 20 - (age - 16);
   return Math.max(1, score);
 }
 
