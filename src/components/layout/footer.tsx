@@ -1,15 +1,11 @@
 import Link from "next/link";
 
 const footerLinks = {
-  Platform: [
-    { href: "/players", label: "Players" },
-    { href: "/reports", label: "Reports" },
-    { href: "/tierlists", label: "Tier Lists" },
-    { href: "/pricing", label: "Pricing" },
-  ],
   Company: [
     { href: "/about", label: "About" },
     { href: "/contact", label: "Contact" },
+    { href: "/pricing", label: "Pricing" },
+    { href: "/feedback", label: "Feedback" },
   ],
   Legal: [
     { href: "/tos", label: "Terms of Service" },

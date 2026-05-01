@@ -52,6 +52,7 @@ const CODE_MAP: Record<string, string> = {
   br: "br",
   tw: "tw",
   // Noms complets (provenant des imports CSV)
+  china: "cn",
   canada: "ca",
   croatia: "hr",
   "czech republic": "cz",

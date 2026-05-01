@@ -261,7 +261,7 @@ export default function DashboardPage() {
           value={reports.length}
           color="bg-purple-500/20 text-purple-400"
         />
-        <Link href="/pipeline" className="contents">
+        <Link href="/pipeline" className="block group">
           <QuickStatItem
             icon={ClipboardList}
             label="Pipeline"

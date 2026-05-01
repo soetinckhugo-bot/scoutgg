@@ -301,8 +301,7 @@ export default async function PlayerPage(props: {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_240px] gap-6">
-          <div className="space-y-6">
+        <div className="space-y-6">
             {/* Bio */}
             {player.bio && (
               <div className="bg-card rounded-lg border border-border p-4">
@@ -326,8 +325,8 @@ export default async function PlayerPage(props: {
               {/* Overview Tab */}
               <TabsContent value="overview" className="space-y-6 animate-fade-in">
                 <div className="rounded-xl border border-border bg-card overflow-hidden">
-                  <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
-                    <SectionHeader className="text-text-heading">Pro Stats</SectionHeader>
+                  <div className="flex items-center gap-2 px-4 py-3 bg-primary-accent border-b border-primary-accent/50">
+                    <SectionHeader className="text-white">Pro Stats</SectionHeader>
                   </div>
                   <div className="p-4">
                     <ProStatsFull
@@ -339,16 +338,16 @@ export default async function PlayerPage(props: {
                   </div>
                 </div>
                 <div className="rounded-xl border border-border bg-card overflow-hidden">
-                  <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
-                    <SectionHeader className="text-text-heading">Performance Radar — {player.role}</SectionHeader>
+                  <div className="flex items-center gap-2 px-4 py-3 bg-primary-accent border-b border-primary-accent/50">
+                    <SectionHeader className="text-white">Performance Radar — {player.role}</SectionHeader>
                   </div>
                   <div className="p-4">
                     <RoleRadar playerId={player.id} />
                   </div>
                 </div>
                 <div className="rounded-xl border border-border bg-card overflow-hidden">
-                  <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
-                    <SectionHeader className="text-text-heading">Percentiles</SectionHeader>
+                  <div className="flex items-center gap-2 px-4 py-3 bg-primary-accent border-b border-primary-accent/50">
+                    <SectionHeader className="text-white">Percentiles</SectionHeader>
                   </div>
                   <div className="p-4">
                     <RolePercentiles playerId={player.id} />
@@ -359,24 +358,24 @@ export default async function PlayerPage(props: {
               {/* SoloQ Tab */}
               <TabsContent value="soloq" className="space-y-6 animate-fade-in">
                 <div className="rounded-xl border border-border bg-card overflow-hidden">
-                  <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
-                    <SectionHeader className="text-text-heading">SoloQ Accounts</SectionHeader>
+                  <div className="flex items-center gap-2 px-4 py-3 bg-primary-accent border-b border-primary-accent/50">
+                    <SectionHeader className="text-white">SoloQ Accounts</SectionHeader>
                   </div>
                   <div className="p-4">
                     <SoloqAccounts playerId={player.id} riotId={player.riotId} soloqStats={player.soloqStats} isAdmin={isAdmin} />
                   </div>
                 </div>
                 <div className="rounded-xl border border-border bg-card overflow-hidden">
-                  <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
-                    <SectionHeader className="text-text-heading">Match History</SectionHeader>
+                  <div className="flex items-center gap-2 px-4 py-3 bg-primary-accent border-b border-primary-accent/50">
+                    <SectionHeader className="text-white">Match History</SectionHeader>
                   </div>
                   <div className="p-4">
                     <MatchHistory playerId={player.id} />
                   </div>
                 </div>
                 <div className="rounded-xl border border-border bg-card overflow-hidden">
-                  <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
-                    <SectionHeader className="text-text-heading">Champion Pool</SectionHeader>
+                  <div className="flex items-center gap-2 px-4 py-3 bg-primary-accent border-b border-primary-accent/50">
+                    <SectionHeader className="text-white">Champion Pool</SectionHeader>
                   </div>
                   <div className="p-4">
                     {player.soloqStats?.championPool ? (
@@ -391,8 +390,8 @@ export default async function PlayerPage(props: {
                   </div>
                 </div>
                 <div className="rounded-xl border border-border bg-card overflow-hidden">
-                  <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
-                    <SectionHeader className="text-text-heading">Rank History</SectionHeader>
+                  <div className="flex items-center gap-2 px-4 py-3 bg-primary-accent border-b border-primary-accent/50">
+                    <SectionHeader className="text-white">Rank History</SectionHeader>
                   </div>
                   <div className="p-4">
                     <StatHistoryChart playerId={player.id} />
@@ -404,16 +403,16 @@ export default async function PlayerPage(props: {
               <TabsContent value="pro" className="space-y-6 animate-fade-in">
                 <ProInsightCards proMatches={player.proMatches} />
                 <div className="rounded-xl border border-border bg-card overflow-hidden">
-                  <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
-                    <SectionHeader className="text-text-heading">Pro Champions</SectionHeader>
+                  <div className="flex items-center gap-2 px-4 py-3 bg-primary-accent border-b border-primary-accent/50">
+                    <SectionHeader className="text-white">Pro Champions</SectionHeader>
                   </div>
                   <div className="p-4">
                     <ProChampions matches={player.proMatches} />
                   </div>
                 </div>
                 <div className="rounded-xl border border-border bg-card overflow-hidden">
-                  <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
-                    <SectionHeader className="text-text-heading">Pro Matches</SectionHeader>
+                  <div className="flex items-center gap-2 px-4 py-3 bg-primary-accent border-b border-primary-accent/50">
+                    <SectionHeader className="text-white">Pro Matches</SectionHeader>
                   </div>
                   <div className="p-4">
                     <ProMatchHistory matches={player.proMatches} />
@@ -428,9 +427,9 @@ export default async function PlayerPage(props: {
                   <div className="space-y-4">
                     {freeReports.length > 0 && (
                       <div className="rounded-xl border border-border bg-card overflow-hidden">
-                        <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
+                        <div className="flex items-center gap-2 px-4 py-3 bg-primary-accent border-b border-primary-accent/50">
                           <FileText className="h-4 w-4 text-text-muted" />
-                          <SectionHeader className="text-text-heading">Free Reports</SectionHeader>
+                          <SectionHeader className="text-white">Free Reports</SectionHeader>
                         </div>
                         <div className="divide-y divide-border">
                           {freeReports.map((report) => (
@@ -444,9 +443,9 @@ export default async function PlayerPage(props: {
 
                     {premiumReports.length > 0 && (
                       <div className="rounded-xl border border-border bg-card overflow-hidden">
-                        <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
+                        <div className="flex items-center gap-2 px-4 py-3 bg-primary-accent border-b border-primary-accent/50">
                           <FileText className="h-4 w-4 text-text-muted" />
-                          <SectionHeader className="text-text-heading">Premium Reports</SectionHeader>
+                          <SectionHeader className="text-white">Premium Reports</SectionHeader>
                         </div>
                         <div className="divide-y divide-border">
                           {premiumReports.map((report) => (
@@ -473,8 +472,8 @@ export default async function PlayerPage(props: {
 
                 {/* Stat History */}
                 <div className="rounded-xl border border-border bg-card overflow-hidden">
-                  <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
-                    <SectionHeader className="text-text-heading">Stat History</SectionHeader>
+                  <div className="flex items-center gap-2 px-4 py-3 bg-primary-accent border-b border-primary-accent/50">
+                    <SectionHeader className="text-white">Stat History</SectionHeader>
                   </div>
                   <div className="p-4">
                     <StatHistoryChart playerId={player.id} />
@@ -483,8 +482,8 @@ export default async function PlayerPage(props: {
 
                 {/* Similar Players */}
                 <div className="rounded-xl border border-border bg-card overflow-hidden">
-                  <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
-                    <SectionHeader className="text-text-heading">Similar Players</SectionHeader>
+                  <div className="flex items-center gap-2 px-4 py-3 bg-primary-accent border-b border-primary-accent/50">
+                    <SectionHeader className="text-white">Similar Players</SectionHeader>
                   </div>
                   <div className="p-4">
                     <SimilarPlayers playerId={player.id} />
@@ -495,9 +494,9 @@ export default async function PlayerPage(props: {
               {/* VODs Tab */}
               <TabsContent value="vods" className="space-y-6 animate-fade-in">
                 <div className="rounded-xl border border-border bg-card overflow-hidden">
-                  <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
+                  <div className="flex items-center gap-2 px-4 py-3 bg-primary-accent border-b border-primary-accent/50">
                     <Play className="h-4 w-4 text-text-muted" />
-                    <SectionHeader className="text-text-heading">VODs ({player.vods.length})</SectionHeader>
+                    <SectionHeader className="text-white">VODs ({player.vods.length})</SectionHeader>
                   </div>
                   {player.vods.length > 0 ? (
                     <div className="divide-y divide-border">
@@ -560,21 +559,6 @@ export default async function PlayerPage(props: {
 
             </Tabs>
           </div>
-
-          <aside className="space-y-4 animate-slide-in-right">
-            {/* Contract Info */}
-            {player.contractEndDate && (
-              <div className="rounded-xl border border-border bg-card overflow-hidden">
-                <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
-                  <SectionHeader className="text-text-heading">Contract</SectionHeader>
-                </div>
-                <div className="p-4">
-                  <DataLabel>Until</DataLabel>
-                  <DataValue>{new Date(player.contractEndDate).toLocaleDateString("en-US", { month: "short", year: "numeric" })}</DataValue>
-                </div>
-              </div>
-            )}
-          </aside>
         </div>
       </div>
       </div>

@@ -519,10 +519,7 @@ export default async function HomePage() {
           <div className="grid md:grid-cols-2 gap-8 items-center mb-16">
             <div className="bg-card rounded-xl border border-border p-6">
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-3 h-3 rounded-full bg-red-500" />
-                <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                <div className="w-3 h-3 rounded-full bg-green-500" />
-                <span className="text-xs text-text-muted ml-2">leaguescout.gg</span>
+                <span className="text-xs text-text-muted">leaguescout.gg</span>
               </div>
               <div className="aspect-square bg-background rounded-lg flex items-center justify-center">
                 <div className="text-center">

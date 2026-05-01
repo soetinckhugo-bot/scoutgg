@@ -177,6 +177,9 @@ export default function PlayerCard({
                 <Badge className={`text-xs h-4 px-1 ${ROLE_COLORS[player.role] || ""}`}>
                   {player.role}
                 </Badge>
+                {player.nationality && (
+                  <Flag code={player.nationality} />
+                )}
               </div>
               <div className="flex items-center gap-2 flex-wrap">
                 {player.realName && (
@@ -196,13 +199,10 @@ export default function PlayerCard({
                 )}
               </div>
 
-              {/* Meta: tier / nationality */}
+              {/* Meta: tier */}
               <div className="flex items-center gap-2 mt-1 flex-wrap text-[10px] text-text-muted">
                 {tierLabel && (
                   <span>{tierLabel}</span>
-                )}
-                {player.nationality && (
-                  <Flag code={player.nationality} />
                 )}
               </div>
 
