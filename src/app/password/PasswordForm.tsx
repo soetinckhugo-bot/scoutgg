@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Lock, ArrowRight, Shield } from "lucide-react";
+import { Lock, ArrowRight, Shield, Eye, EyeOff } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -14,9 +13,9 @@ interface PasswordFormProps {
 
 export default function PasswordForm({ redirect }: PasswordFormProps) {
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,14 +30,15 @@ export default function PasswordForm({ redirect }: PasswordFormProps) {
       });
 
       if (res.ok) {
-        router.push(redirect);
-        router.refresh();
-      } else {
-        setError(true);
-        setLoading(false);
+        window.location.href = redirect;
+        return;
       }
+
+      const data = await res.json().catch(() => ({ error: "Invalid password" }));
+      setError(true);
     } catch {
       setError(true);
+    } finally {
       setLoading(false);
     }
   };
@@ -55,32 +55,45 @@ export default function PasswordForm({ redirect }: PasswordFormProps) {
               LeagueScout
             </h1>
             <p className="text-sm text-text-body">
-              Site en développement. Entre le mot de passe pour accéder.
+              Development site. Enter the password to access.
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="password" className="text-text-body">
-                Mot de passe
+                Password
               </Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
                 <Input
                   id="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="pl-9"
+                  className="pl-9 pr-10"
                   autoFocus
+                  autoComplete="current-password"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-body transition-colors"
+                  tabIndex={-1}
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
               </div>
             </div>
 
             {error && (
               <p className="text-sm text-destructive text-center">
-                Mot de passe incorrect.
+                Incorrect password.
               </p>
             )}
 
@@ -90,10 +103,10 @@ export default function PasswordForm({ redirect }: PasswordFormProps) {
               disabled={loading || !password}
             >
               {loading ? (
-                "Vérification..."
+                "Verifying..."
               ) : (
                 <>
-                  Entrer
+                  Enter
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
