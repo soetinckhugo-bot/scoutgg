@@ -3,9 +3,11 @@ import Stripe from "stripe";
 import { db } from "@/lib/server/db";
 import { logger } from "@/lib/logger";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-  apiVersion: "2026-03-25.dahlia",
-});
+function getStripe() {
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) throw new Error("STRIPE_SECRET_KEY not configured");
+  return new Stripe(key, { apiVersion: "2026-03-25.dahlia" });
+}
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET || "";
 
@@ -16,7 +18,7 @@ export async function POST(request: Request) {
   let event: Stripe.Event;
 
   try {
-    event = stripe.webhooks.constructEvent(payload, sig, endpointSecret);
+    event = getStripe().webhooks.constructEvent(payload, sig, endpointSecret);
   } catch (err: any) {
     logger.error("Stripe webhook signature verification failed:", err.message);
     return NextResponse.json(

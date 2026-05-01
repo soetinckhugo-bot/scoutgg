@@ -4,14 +4,18 @@ import Stripe from "stripe";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/server/auth-options";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-  apiVersion: "2026-03-25.dahlia",
-});
+function getStripe() {
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) throw new Error("STRIPE_SECRET_KEY not configured");
+  return new Stripe(key, { apiVersion: "2026-03-25.dahlia" });
+}
 
-const PRICE_IDS: Record<string, string> = {
-  Supporter: process.env.STRIPE_PRICE_ID_SUPPORTER || "",
-  "Scout Pro": process.env.STRIPE_PRICE_ID_SCOUTPRO || "",
-};
+function getPriceIds(): Record<string, string> {
+  return {
+    Supporter: process.env.STRIPE_PRICE_ID_SUPPORTER || "",
+    "Scout Pro": process.env.STRIPE_PRICE_ID_SCOUTPRO || "",
+  };
+}
 
 export async function POST(request: Request) {
   const session = await getServerSession(authOptions);
@@ -27,6 +31,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const tier = body.tier as string;
 
+    const PRICE_IDS = getPriceIds();
     if (!tier || !PRICE_IDS[tier]) {
       return NextResponse.json(
         { error: "Invalid tier selected" },
@@ -42,7 +47,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const checkoutSession = await stripe.checkout.sessions.create({
+    const checkoutSession = await getStripe().checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: [
         {
