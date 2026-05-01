@@ -60,15 +60,6 @@ const getProspects = cache(async (searchParams: {
     if (searchParams.role) where.role = searchParams.role;
     if (searchParams.region) where.nationality = searchParams.region;
 
-    let orderBy: any = { prospectScore: "desc" };
-    if (searchParams.sort === "age") {
-      orderBy = { age: "asc" };
-    } else if (searchParams.sort === "nationality") {
-      orderBy = { nationality: "asc" };
-    } else if (searchParams.sort === "role") {
-      orderBy = { role: "asc" };
-    }
-
     const players = await db.player.findMany({
       where,
       include: {
@@ -76,11 +67,21 @@ const getProspects = cache(async (searchParams: {
         proStats: true,
         prospectMetrics: true,
       },
-      orderBy,
+      orderBy: { prospectScore: "desc" },
       take: PROSPECT_LIMIT,
     });
 
-    const ranked = players.map((p, i) => ({
+    // Always top 30 by score; sort in-memory for display grouping
+    const sorted = [...players];
+    if (searchParams.sort === "age") {
+      sorted.sort((a, b) => (a.age ?? 999) - (b.age ?? 999));
+    } else if (searchParams.sort === "nationality") {
+      sorted.sort((a, b) => (a.nationality || "").localeCompare(b.nationality || ""));
+    } else if (searchParams.sort === "role") {
+      sorted.sort((a, b) => (a.role || "").localeCompare(b.role || ""));
+    }
+
+    const ranked = sorted.map((p, i) => ({
       ...p,
       displayRank: i + 1,
     }));
