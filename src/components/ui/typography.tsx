@@ -19,7 +19,7 @@ export function SectionTitle({ children, className }: { children: React.ReactNod
 // Section header (label) — uppercase, muted, for subsections
 export function SectionHeader({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <span className={cn("text-xs font-semibold uppercase tracking-wider text-muted-foreground", className)}>
+    <span className={cn("text-xs font-semibold uppercase tracking-wider text-text-muted", className)}>
       {children}
     </span>
   );
@@ -37,12 +37,12 @@ export function BodyText({ children, className }: { children: React.ReactNode; c
 
 // Secondary text — smaller body, descriptions
 export function SecondaryText({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <p className={cn("text-sm text-muted-foreground", className)}>{children}</p>;
+  return <p className={cn("text-sm text-text-muted", className)}>{children}</p>;
 }
 
 // Caption — metadata, labels, small info
 export function Caption({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <span className={cn("text-xs text-muted-foreground", className)}>{children}</span>;
+  return <span className={cn("text-xs text-text-muted", className)}>{children}</span>;
 }
 
 // Data value — numbers, stats, metrics (with tabular-nums)
@@ -64,7 +64,7 @@ export function DataValue({ children, className, highlight = false }: {
 
 // Data label — label for a data value
 export function DataLabel({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <span className={cn("text-xs text-muted-foreground uppercase tracking-wider", className)}>{children}</span>;
+  return <span className={cn("text-xs text-text-muted uppercase tracking-wider", className)}>{children}</span>;
 }
 
 // Badge text — for badge/label content

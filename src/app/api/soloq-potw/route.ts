@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/server/db";
 import { requireAdmin } from "@/lib/server/auth";
 import { z } from "zod";
+import { logger } from "@/lib/logger";
 
 const potwSchema = z.object({
   playerId: z.string().min(1),
@@ -83,7 +84,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ potw, currentWeek, currentYear });
   } catch (error) {
-    console.error("Error fetching Soloq POTW:", error);
+    logger.error("Error fetching Soloq POTW:", { error });
     return NextResponse.json(
       { error: "Failed to fetch" },
       { status: 500 }
@@ -134,7 +135,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true, potw });
   } catch (error) {
-    console.error("Error creating Soloq POTW:", error);
+    logger.error("Error creating Soloq POTW:", { error });
     return NextResponse.json(
       { success: false, error: "Failed to create" },
       { status: 500 }
@@ -157,7 +158,7 @@ export async function DELETE(request: NextRequest) {
     await db.soloqPOTW.delete({ where: { id } });
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error deleting Soloq POTW:", error);
+    logger.error("Error deleting Soloq POTW:", { error });
     return NextResponse.json(
       { error: "Failed to delete" },
       { status: 500 }

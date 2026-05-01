@@ -88,6 +88,6 @@ test.describe("API Error Handling", () => {
 
   test("negative page is handled", async ({ request }) => {
     const response = await request.get("/api/players?page=-1");
-    expect(response.status()).toBe(200);
+    expect(response.status()).toBe(400);
   });
 });

@@ -220,17 +220,22 @@ export async function syncRostersWithLeaguepedia(
   try {
     const lpPlayers = await getLeaguePlayers(league, year, split);
 
+    // Load all existing players in ONE query
+    const allPlayers = await db.player.findMany({
+      select: { id: true, pseudo: true, currentTeam: true },
+    });
+
+    // Build lookup map
+    const playerByPseudo = new Map(allPlayers.map((p) => [p.pseudo.toLowerCase(), p]));
+
+    // Collect updates
+    const updates: Array<{ id: string; team: string }> = [];
+
     for (const lpPlayer of lpPlayers) {
       try {
-        // Chercher le joueur dans notre BDD
-        const player = await db.player.findFirst({
-          where: {
-            pseudo: { contains: lpPlayer.Name },
-          },
-        });
+        const player = playerByPseudo.get(lpPlayer.Name.toLowerCase());
 
         if (!player) {
-          // Joueur pas dans notre BDD — on pourrait le créer
           result.details.push({
             player: lpPlayer.Name,
             action: "not_found",
@@ -238,16 +243,8 @@ export async function syncRostersWithLeaguepedia(
           continue;
         }
 
-        // Mettre à jour l'équipe si différente
         if (player.currentTeam !== lpPlayer.Team) {
-          await db.player.update({
-            where: { id: player.id },
-            data: {
-              currentTeam: lpPlayer.Team,
-              league,
-            },
-          });
-
+          updates.push({ id: player.id, team: lpPlayer.Team });
           result.updated++;
           result.details.push({
             player: player.pseudo,
@@ -264,6 +261,18 @@ export async function syncRostersWithLeaguepedia(
       } catch (err: any) {
         result.errors.push(`${lpPlayer.Name}: ${err.message}`);
       }
+    }
+
+    // Batch update all players at once
+    if (updates.length > 0) {
+      await db.$transaction(
+        updates.map((u) =>
+          db.player.update({
+            where: { id: u.id },
+            data: { currentTeam: u.team, league },
+          })
+        )
+      );
     }
   } catch (err: any) {
     result.errors.push(`Global error: ${err.message}`);

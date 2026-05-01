@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { db } from "@/lib/server/db";
 import { authOptions } from "@/lib/server/auth-options";
+import { logger } from "@/lib/logger";
 
 export async function GET(request: Request) {
   try {
@@ -59,7 +60,7 @@ export async function GET(request: Request) {
       `${process.env.NEXTAUTH_URL}/login?callbackUrl=/api/org/join?token=${token}`
     );
   } catch (error) {
-    console.error("Join error:", error);
+    logger.error("Join error:", { error });
     return NextResponse.json({ error: "Failed" }, { status: 500 });
   }
 }

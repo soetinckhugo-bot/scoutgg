@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -51,6 +52,10 @@ interface ProspectPlayer {
   photoUrl: string | null;
   prospectPhotoUrl: string | null;
   isProspect: boolean;
+  hasPlayedInMajorLeague: boolean;
+  peakElo2Years: number | null;
+  bestProResult: string | null;
+  eyeTestRating: number | null;
   prospectScore: number | null;
   prospectRank: number | null;
   prospectTrend: string | null;
@@ -72,7 +77,7 @@ interface ProspectPlayer {
 const TREND_OPTIONS = [
   { value: "up", label: "▲ Up", color: "text-green-500" },
   { value: "down", label: "▼ Down", color: "text-red-500" },
-  { value: "stable", label: "▬ Stable", color: "text-gray-400" },
+  { value: "stable", label: "▬ Stable", color: "text-text-body" },
   { value: "new", label: "✦ New", color: "text-blue-500" },
 ];
 
@@ -135,6 +140,10 @@ export default function ProspectsTab() {
       league: "LFL",
       status: "ACADEMY",
       isProspect: true,
+      hasPlayedInMajorLeague: false,
+      peakElo2Years: null,
+      bestProResult: "",
+      eyeTestRating: null,
       prospectRank: null,
       prospectTrend: "new",
       prospectScore: 0,
@@ -210,7 +219,7 @@ export default function ProspectsTab() {
   );
 
   if (loading) {
-    return <p className="text-center text-gray-400 py-8">Loading prospects...</p>;
+    return <p className="text-center text-text-body py-8">Loading prospects...</p>;
   }
 
   return (
@@ -218,11 +227,11 @@ export default function ProspectsTab() {
       {/* Actions bar */}
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#6C757D]" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
           <Input
             type="search"
             placeholder="Search prospects..."
-            className="pl-10 dark:bg-[#1e293b] dark:border-gray-700 dark:text-white"
+            className="pl-10 bg-card border-border text-text-heading"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -231,13 +240,13 @@ export default function ProspectsTab() {
           <Button
             variant="outline"
             onClick={recalculateScores}
-            className="border-[#E9ECEF] dark:border-gray-700"
+            className="border-border"
           >
             <RefreshCw className="h-4 w-4 mr-2" />
             Recalculate
           </Button>
           <Button
-            className="bg-[#1A1A2E] text-white hover:bg-[#16213E]"
+            className="bg-surface-elevated text-text-heading hover:bg-secondary"
             onClick={startAdd}
           >
             <Plus className="h-4 w-4 mr-2" />
@@ -248,64 +257,64 @@ export default function ProspectsTab() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <Card className="border-[#E9ECEF] dark:border-gray-700">
+        <Card className="border-border">
           <CardContent className="p-4">
-            <p className="text-2xl font-bold text-[#1A1A2E] dark:text-white">{prospects.length}</p>
-            <p className="text-sm text-[#6C757D] dark:text-gray-400">Total Prospects</p>
+            <p className="text-2xl font-bold text-text-heading">{prospects.length}</p>
+            <p className="text-sm text-text-body">Total Prospects</p>
           </CardContent>
         </Card>
-        <Card className="border-[#E9ECEF] dark:border-gray-700">
+        <Card className="border-border">
           <CardContent className="p-4">
             <p className="text-2xl font-bold text-green-600">
               {prospects.filter((p) => p.prospectTrend === "up" || p.prospectTrend === "new").length}
             </p>
-            <p className="text-sm text-[#6C757D] dark:text-gray-400">Rising / New</p>
+            <p className="text-sm text-text-body">Rising / New</p>
           </CardContent>
         </Card>
-        <Card className="border-[#E9ECEF] dark:border-gray-700">
+        <Card className="border-border">
           <CardContent className="p-4">
-            <p className="text-2xl font-bold text-[#E94560]">
+            <p className="text-2xl font-bold text-primary-accent">
               {prospects.filter((p) => p.prospectTrend === "down").length}
             </p>
-            <p className="text-sm text-[#6C757D] dark:text-gray-400">Declining</p>
+            <p className="text-sm text-text-body">Declining</p>
           </CardContent>
         </Card>
-        <Card className="border-[#E9ECEF] dark:border-gray-700">
+        <Card className="border-border">
           <CardContent className="p-4">
             <p className="text-2xl font-bold text-yellow-500">
               {prospects[0]?.prospectScore?.toFixed(0) || "—"}
             </p>
-            <p className="text-sm text-[#6C757D] dark:text-gray-400">Top Score</p>
+            <p className="text-sm text-text-body">Top Score</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Prospects Table */}
-      <Card className="border-[#E9ECEF] dark:border-gray-700">
+      <Card className="border-border">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#E9ECEF] dark:border-gray-700 bg-[#F8F9FA] dark:bg-[#1e293b]">
-                  <th className="text-left p-3 text-xs font-semibold text-[#6C757D] dark:text-gray-400 uppercase">Rank</th>
-                  <th className="text-left p-3 text-xs font-semibold text-[#6C757D] dark:text-gray-400 uppercase">Trend</th>
-                  <th className="text-left p-3 text-xs font-semibold text-[#6C757D] dark:text-gray-400 uppercase">Player</th>
-                  <th className="text-left p-3 text-xs font-semibold text-[#6C757D] dark:text-gray-400 uppercase">Role</th>
-                  <th className="text-left p-3 text-xs font-semibold text-[#6C757D] dark:text-gray-400 uppercase">Age</th>
-                  <th className="text-left p-3 text-xs font-semibold text-[#6C757D] dark:text-gray-400 uppercase">Team</th>
-                  <th className="text-left p-3 text-xs font-semibold text-[#6C757D] dark:text-gray-400 uppercase">League</th>
-                  <th className="text-left p-3 text-xs font-semibold text-[#6C757D] dark:text-gray-400 uppercase">Score</th>
-                  <th className="text-left p-3 text-xs font-semibold text-[#6C757D] dark:text-gray-400 uppercase">Actions</th>
+                <tr className="border-b border-border bg-card">
+                  <th className="text-left p-3 text-xs font-semibold text-text-body uppercase">Rank</th>
+                  <th className="text-left p-3 text-xs font-semibold text-text-body uppercase">Trend</th>
+                  <th className="text-left p-3 text-xs font-semibold text-text-body uppercase">Player</th>
+                  <th className="text-left p-3 text-xs font-semibold text-text-body uppercase">Role</th>
+                  <th className="text-left p-3 text-xs font-semibold text-text-body uppercase">Age</th>
+                  <th className="text-left p-3 text-xs font-semibold text-text-body uppercase">Team</th>
+                  <th className="text-left p-3 text-xs font-semibold text-text-body uppercase">League</th>
+                  <th className="text-left p-3 text-xs font-semibold text-text-body uppercase">Score</th>
+                  <th className="text-left p-3 text-xs font-semibold text-text-body uppercase">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.map((player) => (
                   <tr
                     key={player.id}
-                    className="border-b border-[#E9ECEF] dark:border-gray-700 hover:bg-[#F8F9FA] dark:hover:bg-[#1e293b]"
+                    className="border-b border-border hover:bg-card"
                   >
                     <td className="p-3">
-                      <span className="text-sm font-bold text-[#1A1A2E] dark:text-white">
+                      <span className="text-sm font-bold text-text-heading">
                         #{player.prospectRank || "—"}
                       </span>
                     </td>
@@ -321,7 +330,7 @@ export default function ProspectsTab() {
                         </span>
                       )}
                       {player.prospectTrend === "stable" && (
-                        <span className="flex items-center gap-1 text-gray-400 text-xs">
+                        <span className="flex items-center gap-1 text-text-body text-xs">
                           <Minus className="h-3.5 w-3.5" /> Stable
                         </span>
                       )}
@@ -342,16 +351,16 @@ export default function ProspectsTab() {
                             className="rounded-full object-cover"
                           />
                         ) : (
-                          <div className="w-9 h-9 rounded-full bg-[#1A1A2E] flex items-center justify-center text-xs font-bold text-white">
+                          <div className="w-9 h-9 rounded-full bg-surface-elevated flex items-center justify-center text-xs font-bold text-text-heading">
                             {(player.pseudo?.[0] ?? "?").toUpperCase()}
                           </div>
                         )}
                         <div>
-                          <p className="font-medium text-[#1A1A2E] dark:text-white text-sm">
+                          <p className="font-medium text-text-heading text-sm">
                             {player.pseudo}
                           </p>
                           {player.realName && (
-                            <p className="text-xs text-[#6C757D] dark:text-gray-400">
+                            <p className="text-xs text-text-body">
                               {player.realName}
                             </p>
                           )}
@@ -363,20 +372,20 @@ export default function ProspectsTab() {
                         {player.role}
                       </Badge>
                     </td>
-                    <td className="p-3 text-sm text-[#6C757D] dark:text-gray-400">
+                    <td className="p-3 text-sm text-text-body">
                       {player.age || "—"}
                     </td>
-                    <td className="p-3 text-sm text-[#6C757D] dark:text-gray-400">
+                    <td className="p-3 text-sm text-text-body">
                       {player.currentTeam || "—"}
                     </td>
-                    <td className="p-3 text-sm text-[#6C757D] dark:text-gray-400">
+                    <td className="p-3 text-sm text-text-body">
                       {player.league}
                     </td>
                     <td className="p-3">
                       <span className="text-sm font-bold text-yellow-500">
                         {player.prospectScore?.toFixed(0) || "—"}
                       </span>
-                      <span className="text-xs text-gray-400">/100</span>
+                      <span className="text-xs text-text-body">/100</span>
                     </td>
                     <td className="p-3">
                       <div className="flex gap-1">
@@ -388,10 +397,10 @@ export default function ProspectsTab() {
                         >
                           <DialogTrigger>
                             <div
-                              className="inline-flex items-center justify-center h-8 w-8 rounded-md hover:bg-accent cursor-pointer"
+                              className="inline-flex items-center justify-center h-8 w-8 rounded-md hover:bg-surface-hover cursor-pointer"
                               onClick={() => startEdit(player)}
                             >
-                              <Edit className="h-4 w-4 text-[#0F3460]" />
+                              <Edit className="h-4 w-4 text-accent" />
                             </div>
                           </DialogTrigger>
                           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -412,7 +421,7 @@ export default function ProspectsTab() {
                           className="h-8 w-8"
                           onClick={() => deleteProspect(player.id)}
                         >
-                          <Trash2 className="h-4 w-4 text-[#E94560]" />
+                          <Trash2 className="h-4 w-4 text-primary-accent" />
                         </Button>
                       </div>
                     </td>
@@ -551,6 +560,48 @@ function ProspectForm({
           </Select>
         </div>
         <div className="space-y-2">
+          <Label htmlFor="peakElo2Years">Peak ELO (2 years)</Label>
+          <Input
+            id="peakElo2Years"
+            type="number"
+            value={formData.peakElo2Years || ""}
+            onChange={(e) => setFormData({ ...formData, peakElo2Years: parseInt(e.target.value) || null })}
+            placeholder="e.g. 1200"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="bestProResult">Best Pro Result</Label>
+          <Input
+            id="bestProResult"
+            value={formData.bestProResult || ""}
+            onChange={(e) => setFormData({ ...formData, bestProResult: e.target.value })}
+            placeholder="Winner, Final, Semi..."
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="eyeTestRating">Eye Test (0-5)</Label>
+          <Input
+            id="eyeTestRating"
+            type="number"
+            min={0}
+            max={5}
+            step={0.1}
+            value={formData.eyeTestRating || ""}
+            onChange={(e) => setFormData({ ...formData, eyeTestRating: parseFloat(e.target.value) || null })}
+            placeholder="0 to 5"
+          />
+        </div>
+        <div className="flex items-center gap-2 pt-6">
+          <Checkbox
+            id="hasPlayedInMajorLeague"
+            checked={formData.hasPlayedInMajorLeague || false}
+            onCheckedChange={(checked) => setFormData({ ...formData, hasPlayedInMajorLeague: checked === true })}
+          />
+          <Label htmlFor="hasPlayedInMajorLeague" className="cursor-pointer text-xs text-text-muted">
+            Has played in T1/T2 major league
+          </Label>
+        </div>
+        <div className="space-y-2">
           <Label htmlFor="prospectRank">Rank</Label>
           <Input
             id="prospectRank"
@@ -588,7 +639,7 @@ function ProspectForm({
       </div>
 
       <div className="flex gap-2 pt-4">
-        <Button className="bg-[#1A1A2E] text-white hover:bg-[#16213E]" onClick={onSave}>
+        <Button className="bg-surface-elevated text-text-heading hover:bg-secondary" onClick={onSave}>
           <Save className="h-4 w-4 mr-2" />
           Save
         </Button>

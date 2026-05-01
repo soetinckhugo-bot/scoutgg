@@ -81,8 +81,8 @@ export default function BehaviorTagsForm({ playerId }: BehaviorTagsFormProps) {
   if (loading) {
     return (
       <div className="py-8 text-center">
-        <Loader2 className="h-6 w-6 animate-spin mx-auto text-[#6C757D]" />
-        <p className="text-sm text-[#6C757D] mt-2">Loading tags...</p>
+        <Loader2 className="h-6 w-6 animate-spin mx-auto text-text-muted" />
+        <p className="text-sm text-text-muted mt-2">Loading tags...</p>
       </div>
     );
   }
@@ -91,7 +91,7 @@ export default function BehaviorTagsForm({ playerId }: BehaviorTagsFormProps) {
     <div className="space-y-4 py-4">
       {/* Selected Tags */}
       <div>
-        <h4 className="text-sm font-semibold text-[#1A1A2E] dark:text-white mb-2">
+        <h4 className="text-sm font-semibold text-text-heading mb-2">
           Selected Tags ({selectedTags.length})
         </h4>
         {selectedTags.length > 0 ? (
@@ -100,7 +100,7 @@ export default function BehaviorTagsForm({ playerId }: BehaviorTagsFormProps) {
               <Badge
                 key={tag}
                 variant="outline"
-                className={`cursor-pointer ${BEHAVIOR_TAG_COLORS[tag] || "bg-gray-100 text-gray-800 border-gray-200"}`}
+                className={`cursor-pointer ${BEHAVIOR_TAG_COLORS[tag] || "bg-surface-hover text-text-heading border-border"}`}
                 onClick={() => removeTag(tag)}
               >
                 {tag}
@@ -109,13 +109,13 @@ export default function BehaviorTagsForm({ playerId }: BehaviorTagsFormProps) {
             ))}
           </div>
         ) : (
-          <p className="text-sm text-[#6C757D] dark:text-gray-400">No tags selected</p>
+          <p className="text-sm text-text-body">No tags selected</p>
         )}
       </div>
 
       {/* Available Tags */}
       <div>
-        <h4 className="text-sm font-semibold text-[#1A1A2E] dark:text-white mb-2">
+        <h4 className="text-sm font-semibold text-text-heading mb-2">
           Available Tags
         </h4>
         <div className="flex flex-wrap gap-2">
@@ -127,8 +127,8 @@ export default function BehaviorTagsForm({ playerId }: BehaviorTagsFormProps) {
                 variant={isSelected ? "default" : "outline"}
                 className={`cursor-pointer transition-all ${
                   isSelected
-                    ? "bg-[#1A1A2E] text-white hover:bg-[#16213E]"
-                    : BEHAVIOR_TAG_COLORS[tag] || "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100"
+                    ? "bg-surface-elevated text-text-heading hover:bg-secondary"
+                    : BEHAVIOR_TAG_COLORS[tag] || "bg-gray-50 text-text-muted border-border hover:bg-surface-hover"
                 }`}
                 onClick={() => toggleTag(tag)}
               >
@@ -140,7 +140,7 @@ export default function BehaviorTagsForm({ playerId }: BehaviorTagsFormProps) {
       </div>
 
       <Button
-        className="bg-[#1A1A2E] text-white hover:bg-[#16213E]"
+        className="bg-surface-elevated text-text-heading hover:bg-secondary"
         onClick={saveTags}
         disabled={saving}
       >

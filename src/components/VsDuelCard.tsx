@@ -122,10 +122,10 @@ export default function VsDuelCard({ player1, player2, allPlayers, datasetName }
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Swords className="h-5 w-5 text-[#E94560]" />
-          <h2 className="text-lg font-bold text-[#E9ECEF] dark:text-white">VS Duel Mode</h2>
+          <Swords className="h-5 w-5 text-primary-accent" />
+          <h2 className="text-lg font-bold text-text-heading">VS Duel Mode</h2>
         </div>
-        <div className="text-sm text-[#6C757D] dark:text-gray-400">
+        <div className="text-sm text-text-body">
           <span className="tabular-nums">{score.p1Wins} — {score.p2Wins}</span>
         </div>
       </div>
@@ -136,27 +136,27 @@ export default function VsDuelCard({ player1, player2, allPlayers, datasetName }
           {player1.photoUrl ? (
             <Image src={player1.photoUrl} alt={player1.pseudo} width={48} height={48} className="w-12 h-12 rounded-full object-cover" />
           ) : (
-            <div className="w-12 h-12 rounded-full bg-[#E94560]/20 flex items-center justify-center text-[#E94560] font-bold">
+            <div className="w-12 h-12 rounded-full bg-card flex items-center justify-center text-text-heading font-bold">
               {player1.pseudo.charAt(0)}
             </div>
           )}
           <div>
-            <div className="font-bold text-[#E9ECEF] dark:text-white">{player1.pseudo}</div>
-            <div className="text-xs text-[#6C757D] dark:text-gray-400">{player1.role}</div>
+            <div className="font-bold text-text-heading">{player1.pseudo}</div>
+            <div className="text-xs text-text-body">{player1.role}</div>
           </div>
         </div>
 
-        <div className="text-2xl font-black text-[#E94560]">VS</div>
+        <div className="text-2xl font-black text-primary-accent">VS</div>
 
         <div className="flex items-center gap-3 flex-1 justify-end">
           <div className="text-right">
-            <div className="font-bold text-[#E9ECEF] dark:text-white">{player2.pseudo}</div>
-            <div className="text-xs text-[#6C757D] dark:text-gray-400">{player2.role}</div>
+            <div className="font-bold text-text-heading">{player2.pseudo}</div>
+            <div className="text-xs text-text-body">{player2.role}</div>
           </div>
           {player2.photoUrl ? (
             <Image src={player2.photoUrl} alt={player2.pseudo} width={48} height={48} className="w-12 h-12 rounded-full object-cover" />
           ) : (
-            <div className="w-12 h-12 rounded-full bg-[#0F3460]/20 flex items-center justify-center text-[#0F3460] font-bold">
+            <div className="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center text-accent font-bold">
               {player2.pseudo.charAt(0)}
             </div>
           )}
@@ -164,21 +164,21 @@ export default function VsDuelCard({ player1, player2, allPlayers, datasetName }
       </div>
 
       {/* Win probability */}
-      <div className="bg-white/5 rounded-xl p-4">
-        <div className="text-xs text-[#6C757D] dark:text-gray-400 uppercase tracking-wider mb-2">
+      <div className="bg-card/5 rounded-xl p-4">
+        <div className="text-xs text-text-body uppercase tracking-wider mb-2">
           Win Probability
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-sm font-bold text-[#E94560] tabular-nums">{winProbability}%</span>
-          <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
+          <span className="text-sm font-bold text-primary-accent tabular-nums">{winProbability}%</span>
+          <div className="flex-1 h-2 bg-card/10 rounded-full overflow-hidden">
             <div
-              className="h-full bg-[#E94560] rounded-full transition-all duration-700"
+              className="h-full bg-primary-accent rounded-full transition-all duration-300"
               style={{ width: `${winProbability}%` }}
             />
           </div>
-          <span className="text-sm font-bold text-[#0F3460] tabular-nums">{100 - winProbability}%</span>
+          <span className="text-sm font-bold text-accent tabular-nums">{100 - winProbability}%</span>
         </div>
-        <div className="text-xs text-[#ADB5BD] dark:text-gray-300 mt-1 text-center">{advantageText}</div>
+        <div className="text-xs text-text-subtle text-text-subtle mt-1 text-center">{advantageText}</div>
       </div>
 
       {/* Radar comparison */}
@@ -211,7 +211,7 @@ export default function VsDuelCard({ player1, player2, allPlayers, datasetName }
 
       {/* Stats comparison table */}
       <div className="space-y-1">
-        <div className="flex items-center gap-3 py-1 px-3 text-xs text-[#6C757D] dark:text-gray-500 uppercase tracking-wider border-b border-white/5">
+        <div className="flex items-center gap-3 py-1 px-3 text-xs text-text-muted text-text-muted uppercase tracking-wider border-b border-white/5">
           <div className="w-24">Metric</div>
           <div className="flex-1 text-right">{player1.pseudo}</div>
           <div className="w-16 text-center">Diff</div>
@@ -227,13 +227,13 @@ export default function VsDuelCard({ player1, player2, allPlayers, datasetName }
               key={c.metric.key}
               className={`flex items-center gap-3 py-2 px-3 rounded-lg transition-colors ${
                 c.winner === 1
-                  ? "bg-[#E94560]/5"
+                  ? "bg-primary-accent/5"
                   : c.winner === 2
-                  ? "bg-[#0F3460]/5"
+                  ? "bg-accent/5"
                   : ""
               }`}
             >
-              <div className="w-24 text-sm text-[#ADB5BD] dark:text-gray-300 truncate">{c.metric.label}</div>
+              <div className="w-24 text-sm text-text-subtle text-text-subtle truncate">{c.metric.label}</div>
 
               <div className="flex-1 text-right">
                 <span
@@ -243,7 +243,7 @@ export default function VsDuelCard({ player1, player2, allPlayers, datasetName }
                   <span className="tabular-nums">{c.val1 !== null ? String(c.val1) : "—"}</span>
                 </span>
                 {c.pct1 !== null && (
-                  <span className="text-xs text-[#6C757D] ml-1">({c.pct1}th)</span>
+                  <span className="text-xs text-text-muted ml-1">({c.pct1}th)</span>
                 )}
               </div>
 
@@ -251,10 +251,10 @@ export default function VsDuelCard({ player1, player2, allPlayers, datasetName }
                 <span
                   className={`text-xs font-bold ${
                     c.winner === 1
-                      ? "text-[#E94560]"
+                      ? "text-primary-accent"
                       : c.winner === 2
-                      ? "text-[#0F3460]"
-                      : "text-gray-500"
+                      ? "text-accent"
+                      : "text-text-muted"
                   }`}
                 >
                   {c.better}
@@ -269,7 +269,7 @@ export default function VsDuelCard({ player1, player2, allPlayers, datasetName }
                   <span className="tabular-nums">{c.val2 !== null ? String(c.val2) : "—"}</span>
                 </span>
                 {c.pct2 !== null && (
-                  <span className="text-xs text-[#6C757D] ml-1">({c.pct2}th)</span>
+                  <span className="text-xs text-text-muted ml-1">({c.pct2}th)</span>
                 )}
               </div>
             </div>

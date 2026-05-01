@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/server/db";
+import { logger } from "@/lib/logger";
 import {
   getSummonerByPuuid,
   getLeagueEntries,
@@ -118,7 +119,7 @@ async function syncPlayer(player: {
       success: true,
     };
   } catch (err: any) {
-    console.error(`[Cron] Failed to sync ${player.pseudo}:`, err.message);
+    logger.error(`[Cron] Failed to sync ${player.pseudo}:`, { message: err.message });
     return {
       playerId: player.id,
       pseudo: player.pseudo,
@@ -165,11 +166,13 @@ export async function POST(request: NextRequest) {
     console.log(`[Cron] Starting sync for ${players.length} players`);
     const startedAt = new Date().toISOString();
 
-    // Sync all players
+    // Sync all players with limited concurrency (respect Riot API rate limit)
+    const CONCURRENCY = 5;
     const results: SyncResult[] = [];
-    for (const player of players) {
-      const result = await syncPlayer(player);
-      results.push(result);
+    for (let i = 0; i < players.length; i += CONCURRENCY) {
+      const batch = players.slice(i, i + CONCURRENCY);
+      const batchResults = await Promise.all(batch.map((p) => syncPlayer(p)));
+      results.push(...batchResults);
     }
 
     const successCount = results.filter((r) => r.success).length;
@@ -192,7 +195,7 @@ export async function POST(request: NextRequest) {
       results,
     });
   } catch (error: any) {
-    console.error("[Cron] Sync error:", error);
+    logger.error("[Cron] Sync error:", { error });
     return NextResponse.json(
       { error: error.message || "Cron sync failed" },
       { status: 500 }

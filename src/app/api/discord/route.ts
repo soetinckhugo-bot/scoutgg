@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/server/db";
+import { logger } from "@/lib/logger";
 
 /**
  * POST /api/discord
@@ -179,7 +180,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ type: 1 });
   } catch (error) {
-    console.error("Discord webhook error:", error);
+    logger.error("Discord webhook error:", { error });
     return NextResponse.json(
       { type: 4, data: { content: "An error occurred." } },
       { status: 500 }

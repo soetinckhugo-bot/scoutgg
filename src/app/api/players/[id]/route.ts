@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/server/db";
 import { PlayerUpdateSchema } from "@/lib/schemas";
 import { requireAdmin } from "@/lib/server/auth";
+import { logger } from "@/lib/logger";
 
 export async function GET(
   request: Request,
@@ -23,7 +24,7 @@ export async function GET(
     }
     return NextResponse.json(player);
   } catch (error) {
-    console.error("Error fetching player:", error);
+    logger.error("Error fetching player:", { error });
     return NextResponse.json(
       { error: "Failed to fetch player" },
       { status: 500 }
@@ -71,18 +72,24 @@ export async function PUT(
           leaguepediaUrl: body.leaguepediaUrl,
         }),
         ...(body.twitterUrl !== undefined && { twitterUrl: body.twitterUrl }),
+        ...(body.agentTwitterUrl !== undefined && { agentTwitterUrl: body.agentTwitterUrl }),
         ...(body.twitchUrl !== undefined && { twitchUrl: body.twitchUrl }),
         ...(body.riotId !== undefined && { riotId: body.riotId }),
         ...(body.photoUrl !== undefined && { photoUrl: body.photoUrl }),
         ...(body.bio !== undefined && { bio: body.bio }),
+        ...(body.hasPlayedInMajorLeague !== undefined && { hasPlayedInMajorLeague: body.hasPlayedInMajorLeague }),
+        ...(body.peakElo2Years !== undefined && { peakElo2Years: body.peakElo2Years }),
+        ...(body.bestProResult !== undefined && { bestProResult: body.bestProResult }),
+        ...(body.eyeTestRating !== undefined && { eyeTestRating: body.eyeTestRating }),
         ...(body.behaviorTags !== undefined && { behaviorTags: body.behaviorTags }),
+        ...(body.signatureChampion !== undefined && { signatureChampion: body.signatureChampion }),
         ...(body.isFeatured !== undefined && { isFeatured: body.isFeatured }),
       },
     });
 
     return NextResponse.json(player);
   } catch (error) {
-    console.error("Error updating player:", error);
+    logger.error("Error updating player:", { error });
     return NextResponse.json(
       { error: "Failed to update player" },
       { status: 500 }
@@ -106,7 +113,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error deleting player:", error);
+    logger.error("Error deleting player:", { error });
     return NextResponse.json(
       { error: "Failed to delete player" },
       { status: 500 }

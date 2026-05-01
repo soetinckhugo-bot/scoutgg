@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 // Card kept only for podium cards (featured/clickable)
-import { unstable_cache } from "next/cache";
+import { cache } from "react";
 import type { Metadata } from "next";
 import {
   Star,
@@ -16,7 +16,9 @@ import {
   Medal,
   Award,
 } from "lucide-react";
+import ScoutIcon from "@/components/ScoutIcon";
 import { ROLES } from "@/lib/constants";
+import Flag from "@/components/Flag";
 
 export const metadata: Metadata = {
   title: "Prospects",
@@ -29,7 +31,7 @@ export const metadata: Metadata = {
 };
 
 const MAJOR_LEAGUES = ["LEC", "LCS", "LCK", "LPL"];
-const MAX_AGE = 20;
+const MAX_AGE = 25;
 const PROSPECT_LIMIT = 30;
 
 const REGIONS = [
@@ -48,18 +50,13 @@ const REGIONS = [
   { value: "BG", label: "Bulgaria", flag: "🇧🇬" },
 ];
 
-function getFlag(nationality: string): string {
-  const region = REGIONS.find((r) => r.value === nationality);
-  return region?.flag || "🏳️";
-}
-
-const getProspects = unstable_cache(
-  async (searchParams: {
+const getProspects = cache(async (searchParams: {
     role?: string;
     region?: string;
   }) => {
     const where: any = {
       isProspect: true,
+      hasPlayedInMajorLeague: false,
       age: { lte: MAX_AGE },
       NOT: { league: { in: MAJOR_LEAGUES } },
     };
@@ -84,32 +81,30 @@ const getProspects = unstable_cache(
     }));
 
     return ranked;
-  },
-  ["prospects"],
-  { revalidate: 300 }
+  }
 );
 
 function TrendIndicator({ trend }: { trend: string | null }) {
   if (trend === "up")
     return (
-      <span className="inline-flex items-center gap-0.5 text-green-600 text-xs font-bold bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded">
+      <span className="inline-flex items-center gap-0.5 text-emerald-400 text-xs font-bold bg-emerald-500/10 px-2 py-1 rounded">
         <TrendingUp className="h-3 w-3" />
       </span>
     );
   if (trend === "down")
     return (
-      <span className="inline-flex items-center gap-0.5 text-red-500 text-xs font-bold bg-red-50 dark:bg-red-900/20 px-2 py-1 rounded">
+      <span className="inline-flex items-center gap-0.5 text-red-400 text-xs font-bold bg-red-500/10 px-2 py-1 rounded">
         <TrendingDown className="h-3 w-3" />
       </span>
     );
   if (trend === "new")
     return (
-      <span className="inline-flex items-center gap-0.5 text-blue-600 text-xs font-bold bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded">
+      <span className="inline-flex items-center gap-0.5 text-blue-400 text-xs font-bold bg-blue-500/10 px-2 py-1 rounded">
         <Sparkles className="h-3 w-3" /> NEW
       </span>
     );
   return (
-    <span className="inline-flex items-center gap-0.5 text-gray-400 text-xs bg-gray-50 dark:bg-gray-800 px-2 py-1 rounded">
+    <span className="inline-flex items-center gap-0.5 text-text-body text-xs bg-surface-hover px-2 py-1 rounded">
       <Minus className="h-3 w-3" />
     </span>
   );
@@ -126,17 +121,12 @@ function PodiumCard({
   const isSecond = rank === 2;
   const isThird = rank === 3;
 
-  const RankIcon = isFirst ? Trophy : isSecond ? Medal : Award;
-  const rankColor = isFirst
-    ? "text-yellow-500"
-    : isSecond
-    ? "text-gray-400"
-    : "text-amber-600";
+  const rankVariant = isFirst ? "gold" : isSecond ? "default" : "warning" as const;
   const rankBg = isFirst
-    ? "bg-yellow-50 dark:bg-yellow-900/10 border-yellow-200 dark:border-yellow-800"
+    ? "bg-yellow-500/10 border-yellow-500/30"
     : isSecond
-    ? "bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700"
-    : "bg-amber-50 dark:bg-amber-900/10 border-amber-200 dark:border-amber-800";
+    ? "bg-surface-hover/50 border-border"
+    : "bg-amber-500/10 border-amber-500/30";
 
   return (
     <Link href={`/players/${player.id}`} className="group block">
@@ -145,8 +135,8 @@ function PodiumCard({
       >
         <CardContent className="p-5 flex flex-col items-center text-center">
           {/* Rank */}
-          <div className={`mb-3 ${rankColor}`}>
-            <RankIcon className="h-8 w-8" />
+          <div className="mb-3">
+            <ScoutIcon icon={isFirst ? Trophy : isSecond ? Medal : Award} size="xl" variant={rankVariant} />
           </div>
 
           {/* Photo */}
@@ -157,10 +147,10 @@ function PodiumCard({
                 alt={player.pseudo}
                 width={80}
                 height={80}
-                className="rounded-full object-cover border-2 border-[#E9ECEF] dark:border-gray-700"
+                className="rounded-full object-cover border-2 border-border"
               />
             ) : (
-              <div className="w-20 h-20 rounded-full bg-[#1A1A2E] flex items-center justify-center text-2xl font-bold text-white border-2 border-[#E9ECEF] dark:border-gray-700">
+              <div className="w-20 h-20 rounded-full bg-surface-elevated flex items-center justify-center text-2xl font-bold text-text-heading border-2 border-border">
                 {(player.pseudo?.[0] ?? "?").toUpperCase()}
               </div>
             )}
@@ -168,13 +158,13 @@ function PodiumCard({
 
           {/* Flag + Name */}
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-lg">{getFlag(player.nationality)}</span>
-            <h3 className="font-bold text-[#1A1A2E] dark:text-white text-base">
+            <Flag code={player.nationality?.toLowerCase()} />
+            <h3 className="font-bold text-text-heading text-base">
               {player.pseudo}
             </h3>
           </div>
 
-          <p className="text-xs text-[#6C757D] dark:text-gray-400 mb-2">
+          <p className="text-xs text-text-body mb-2">
             {player.realName || "—"}
           </p>
 
@@ -182,11 +172,11 @@ function PodiumCard({
           <div className="flex items-center gap-2 mb-2">
             <Badge
               variant="secondary"
-              className="text-xs bg-[#F8F9FA] dark:bg-[#1e293b] text-[#6C757D] dark:text-gray-400"
+              className="text-xs bg-surface-hover text-text-body"
             >
               {player.role}
             </Badge>
-            <span className="text-xs font-bold text-[#E94560] tabular-nums">
+            <span className="text-xs font-bold text-primary-accent tabular-nums">
               {player.prospectScore?.toFixed(0)}/100
             </span>
           </div>
@@ -211,8 +201,8 @@ function ProspectRow({
   return (
     <Link href={`/players/${player.id}`}>
       <div
-        className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors hover:bg-[#F8F9FA] dark:hover:bg-[#1e293b] ${
-          index % 2 === 0 ? "bg-white dark:bg-[#0f172a]/50" : ""
+        className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors hover:bg-surface-hover ${
+          index % 2 === 0 ? "bg-background/50" : ""
         }`}
       >
         {/* Rank */}
@@ -223,14 +213,14 @@ function ProspectRow({
                 rank === 1
                   ? "text-yellow-500"
                   : rank === 2
-                  ? "text-gray-400"
-                  : "text-amber-600"
+                  ? "text-text-body"
+                  : "text-amber-400"
               }`}
             >
               {rank}
             </span>
           ) : (
-            <span className="text-sm font-bold text-[#6C757D] dark:text-gray-400 tabular-nums">
+            <span className="text-sm font-bold text-text-body tabular-nums">
               {rank}
             </span>
           )}
@@ -242,8 +232,8 @@ function ProspectRow({
         </div>
 
         {/* Flag */}
-        <span className="text-base w-6 text-center shrink-0">
-          {getFlag(player.nationality)}
+        <span className="w-6 text-center shrink-0">
+          <Flag code={player.nationality?.toLowerCase()} />
         </span>
 
         {/* Photo */}
@@ -257,7 +247,7 @@ function ProspectRow({
               className="rounded-full object-cover"
             />
           ) : (
-            <div className="w-9 h-9 rounded-full bg-[#F8F9FA] dark:bg-[#1e293b] flex items-center justify-center text-xs font-bold text-[#1A1A2E] dark:text-white">
+            <div className="w-9 h-9 rounded-full bg-surface-hover flex items-center justify-center text-xs font-bold text-text-heading">
               {(player.pseudo?.[0] ?? "?").toUpperCase()}
             </div>
           )}
@@ -266,17 +256,17 @@ function ProspectRow({
         {/* Name */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-[#1A1A2E] dark:text-white text-sm truncate">
+            <span className="font-semibold text-text-heading text-sm truncate">
               {player.pseudo}
             </span>
             <Badge
               variant="secondary"
-              className="text-xs h-4 px-1 bg-[#F8F9FA] dark:bg-[#1e293b] text-[#6C757D] dark:text-gray-400 border-0"
+              className="text-xs h-4 px-1 bg-surface-hover text-text-body border-0"
             >
               {player.role}
             </Badge>
           </div>
-          <p className="text-xs text-[#6C757D] dark:text-gray-400 truncate">
+          <p className="text-xs text-text-body truncate">
             {player.realName || "—"} • {player.currentTeam || "No team"} •{" "}
             {player.league}
           </p>
@@ -284,10 +274,10 @@ function ProspectRow({
 
         {/* Score */}
         <div className="text-right shrink-0">
-          <span className="text-sm font-bold text-[#E94560] tabular-nums">
+          <span className="text-sm font-bold text-primary-accent tabular-nums">
             {player.prospectScore?.toFixed(0)}
           </span>
-          <span className="text-xs text-[#6C757D] dark:text-gray-500 ml-0.5">
+          <span className="text-xs text-text-muted ml-0.5">
             /100
           </span>
         </div>
@@ -309,25 +299,29 @@ export default async function ProspectsPage(props: {
   const rest = players.slice(3);
 
   return (
+    <div className="min-h-screen bg-background">
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       {/* Header */}
       <div className="text-center mb-8">
         <div className="flex items-center justify-center gap-2 mb-3">
-          <Star className="h-6 w-6 text-[#E94560] fill-[#E94560]" />
-          <h1 className="text-3xl font-bold text-[#1A1A2E] dark:text-white tracking-tight">
+          <ScoutIcon icon={Star} size="xl" variant="accent" glow />
+          <h1 className="text-3xl font-bold text-text-heading tracking-tight">
             Top 30 Prospects
           </h1>
         </div>
-        <p className="text-[#6C757D] dark:text-gray-400 text-sm">
+        <p className="text-text-body text-sm">
           Season 1:{" "}
           {new Date().toLocaleDateString("en-US", {
             month: "long",
             year: "numeric",
           })}
         </p>
-        <p className="text-[#6C757D] dark:text-gray-500 text-xs mt-1 max-w-md mx-auto">
-          The most promising players under 20 who have never played in a major
-          league. Scored out of 100 by the LeagueScout team.
+        <p className="text-text-muted text-xs mt-1 max-w-md mx-auto">
+          Top prospects from regional leagues who haven't played in a major
+          league yet, ranked by our scouting algorithm. Youth is a major force
+          multiplier — the younger and more performant a player is, the higher
+          their potential coefficient. Combined with SoloQ peak, pro results,
+          competitive level, and scout eye test.
         </p>
       </div>
 
@@ -340,8 +334,8 @@ export default async function ProspectsPage(props: {
             }
             className={`cursor-pointer text-xs ${
               !searchParams.role && !searchParams.region
-                ? "bg-[#E94560] text-white border-0"
-                : "border-[#E9ECEF] dark:border-gray-700 text-[#6C757D] dark:text-gray-400 hover:bg-[#F8F9FA] dark:hover:bg-[#1e293b]"
+                ? "bg-primary-accent text-text-heading border-0"
+                : "border-border text-text-body hover:bg-surface-hover"
             }`}
           >
             All
@@ -353,8 +347,8 @@ export default async function ProspectsPage(props: {
               variant={searchParams.role === role ? "default" : "outline"}
               className={`cursor-pointer text-xs ${
                 searchParams.role === role
-                  ? "bg-[#E94560] text-white border-0"
-                  : "border-[#E9ECEF] dark:border-gray-700 text-[#6C757D] dark:text-gray-400 hover:bg-[#F8F9FA] dark:hover:bg-[#1e293b]"
+                  ? "bg-primary-accent text-text-heading border-0"
+                  : "border-border text-text-body hover:bg-surface-hover"
               }`}
             >
               {role}
@@ -373,9 +367,9 @@ export default async function ProspectsPage(props: {
       )}
 
       {/* List */}
-      <div className="rounded-lg border border-[#E9ECEF] dark:border-gray-700 overflow-hidden">
+      <div className="rounded-lg border border-border overflow-hidden">
         {/* Header row */}
-        <div className="flex items-center gap-3 px-4 py-3 bg-[#F8F9FA] dark:bg-[#1e293b] border-b border-[#E9ECEF] dark:border-gray-700 text-xs font-semibold text-[#6C757D] dark:text-gray-400 uppercase">
+        <div className="flex items-center gap-3 px-4 py-3 bg-surface-hover border-b border-border text-xs font-semibold text-text-body uppercase">
           <div className="w-8 text-center">#</div>
           <div className="w-12"></div>
           <div className="w-6"></div>
@@ -385,7 +379,7 @@ export default async function ProspectsPage(props: {
         </div>
 
         {/* Rows */}
-        <div className="divide-y divide-[#E9ECEF] dark:divide-gray-800">
+        <div className="divide-y divide-border">
           {rest.map((player, i) => (
             <ProspectRow key={player.id} player={player} index={i} />
           ))}
@@ -394,12 +388,13 @@ export default async function ProspectsPage(props: {
 
       {players.length === 0 && (
         <div className="text-center py-16">
-          <Star className="h-12 w-12 text-[#E9ECEF] dark:text-gray-700 mx-auto mb-4" />
-          <p className="text-[#6C757D] dark:text-gray-400 text-lg">
+          <ScoutIcon icon={Star} size="xl" variant="muted" />
+          <p className="text-text-body text-lg">
             No prospects found.
           </p>
         </div>
       )}
+    </div>
     </div>
   );
 }

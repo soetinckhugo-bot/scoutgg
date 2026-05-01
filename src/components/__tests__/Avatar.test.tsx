@@ -30,6 +30,6 @@ describe("Avatar", () => {
 
   it("has aria-label for accessibility", () => {
     render(<Avatar src={null} alt="Zeka" fallback="Zeka" />);
-    expect(screen.getByLabelText("Avatar de Zeka")).toBeInTheDocument();
+    expect(screen.getByLabelText("Zeka avatar")).toBeInTheDocument();
   });
 });

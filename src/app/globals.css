@@ -39,12 +39,27 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --color-scout-primary: #1A1A2E;
-  --color-scout-secondary: #16213E;
-  --color-scout-accent: #0F3460;
-  --color-scout-highlight: #E94560;
-  --color-scout-success: #1E7E34;
-  --color-scout-warning: #FFC107;
+
+  /* ── ScoutGG Design System Tokens ── */
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-surface-header: var(--surface-header);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-text-heading: var(--text-heading);
+  --color-text-body: var(--text-body);
+  --color-text-muted: var(--text-muted);
+  --color-text-subtle: var(--text-subtle);
+  --color-primary-accent: var(--primary-accent);
+  --color-border-default: var(--border-default);
+  --color-border-hover: var(--border-hover);
+
+  /* ── LeagueScout Tier Tokens (percentile system) ── */
+  --color-tier-s: #3B82F6;
+  --color-tier-a: #22C55E;
+  --color-tier-b: #EAB308;
+  --color-tier-c: #F97316;
+  --color-tier-d: #EF4444;
+
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -52,13 +67,6 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
-
-  /* ── LeagueScout Professional Tier Tokens ── */
-  --color-tier-s: #F59E0B;
-  --color-tier-a: #EAB308;
-  --color-tier-b: #F97316;
-  --color-tier-c: #EF4444;
-  --color-tier-d: #6B7280;
 }
 
 :root {
@@ -94,17 +102,30 @@
   --sidebar-accent-foreground: #1A1A2E;
   --sidebar-border: #E9ECEF;
   --sidebar-ring: #0F3460;
+
+  /* Light mode surface aliases (fallback) */
+  --surface: #F8F9FA;
+  --surface-hover: #E9ECEF;
+  --surface-header: #E9ECEF;
+  --surface-elevated: #FFFFFF;
+  --text-heading: #1A1A2E;
+  --text-body: #5A6268;
+  --text-muted: #8C949D;
+  --text-subtle: #ADB5BD;
+  --primary-accent: #E94560;
+  --border-default: #E9ECEF;
+  --border-hover: #D1D5DB;
 }
 
 .dark {
   --background: #0F0F1A;
   --foreground: #F8F9FA;
-  --card: #1A1A2E;
-  --card-foreground: #F8F9FA;
-  --popover: #1A1A2E;
-  --popover-foreground: #F8F9FA;
-  --primary: #F8F9FA;
-  --primary-foreground: #1A1A2E;
+  --card: #141621;
+  --card-foreground: #E9ECEF;
+  --popover: #141621;
+  --popover-foreground: #E9ECEF;
+  --primary: #E94560;
+  --primary-foreground: #FFFFFF;
   --secondary: #16213E;
   --secondary-foreground: #F8F9FA;
   --muted: #16213E;
@@ -112,22 +133,35 @@
   --accent: #0F3460;
   --accent-foreground: #F8F9FA;
   --destructive: #E94560;
-  --border: rgba(255, 255, 255, 0.1);
-  --input: rgba(255, 255, 255, 0.15);
-  --ring: #0F3460;
+  --border: #2A2D3A;
+  --input: #2A2D3A;
+  --ring: #E94560;
   --chart-1: #F8F9FA;
   --chart-2: #A0AEC0;
   --chart-3: #0F3460;
   --chart-4: #E94560;
   --chart-5: #28A745;
-  --sidebar: #1A1A2E;
+  --sidebar: #141621;
   --sidebar-foreground: #F8F9FA;
   --sidebar-primary: #0F3460;
   --sidebar-primary-foreground: #F8F9FA;
   --sidebar-accent: #16213E;
   --sidebar-accent-foreground: #F8F9FA;
-  --sidebar-border: rgba(255, 255, 255, 0.1);
-  --sidebar-ring: #0F3460;
+  --sidebar-border: #2A2D3A;
+  --sidebar-ring: #E94560;
+
+  /* Dark mode surface aliases */
+  --surface: #141621;
+  --surface-hover: #1A1D29;
+  --surface-header: #1A1D29;
+  --surface-elevated: #1A1A2E;
+  --text-heading: #E9ECEF;
+  --text-body: #A0AEC0;
+  --text-muted: #8C949D;
+  --text-subtle: #ADB5BD;
+  --primary-accent: #E94560;
+  --border-default: #2A2D3A;
+  --border-hover: #3A3D4A;
 }
 
 @layer base {
@@ -219,6 +253,8 @@
   .stagger-3 { animation-delay: 0.15s; }
   .stagger-4 { animation-delay: 0.2s; }
   .stagger-5 { animation-delay: 0.25s; }
+
+  /* ── Elevation Shadows ── */
   .shadow-elevation-1 {
     box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   }
@@ -231,6 +267,63 @@
   .shadow-elevation-4 {
     box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   }
+
+  /* ── Surface Utilities ── */
+  .surface-card {
+    background-color: var(--surface);
+    border: 1px solid var(--border-default);
+    border-radius: 0.75rem;
+  }
+  .surface-card-hover {
+    transition: all 200ms;
+  }
+  .surface-card-hover:hover {
+    background-color: var(--surface-hover);
+    border-color: var(--border-hover);
+  }
+  .surface-card-interactive {
+    background-color: var(--surface);
+    border: 1px solid var(--border-default);
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: all 200ms;
+  }
+  .surface-card-interactive:hover {
+    background-color: var(--surface-hover);
+    border-color: var(--border-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  }
+  .surface-header {
+    background-color: var(--surface-header);
+    border-bottom: 1px solid var(--border-default);
+  }
+  .surface-elevated {
+    background-color: var(--surface-elevated);
+    border: 1px solid var(--border-default);
+    border-radius: 0.75rem;
+  }
+  .surface-input {
+    background-color: var(--surface);
+    border: 1px solid var(--border-default);
+    border-radius: 0.5rem;
+  }
+
+  /* ── Text Utilities ── */
+  .text-heading {
+    color: var(--text-heading);
+  }
+  .text-body {
+    color: var(--text-body);
+  }
+  .text-muted-label {
+    color: var(--text-muted);
+  }
+  .text-subtle {
+    color: var(--text-subtle);
+  }
+
+  /* ── Z-Index Scale ── */
   .z-dropdown { z-index: 40; }
   .z-sticky { z-index: 30; }
   .z-modal { z-index: 50; }

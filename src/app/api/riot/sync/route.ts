@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/server/db";
 import { rateLimit } from "@/lib/server/rate-limit";
+import { requireAdmin } from "@/lib/server/auth";
 import {
   getAccountByRiotId,
   getSummonerByPuuid,
@@ -11,6 +12,7 @@ import {
   computeSoloqStats,
 } from "@/lib/server/riot-api";
 import { RiotSyncSchema } from "@/lib/schemas";
+import { logger } from "@/lib/logger";
 
 /**
  * POST /api/riot/sync
@@ -18,8 +20,13 @@ import { RiotSyncSchema } from "@/lib/schemas";
  * Body: { playerId: string }
  *
  * Requires the player to have riotPuuid OR we derive it from opggUrl
+ * Admin only to prevent abuse of Riot API quota
  */
 export async function POST(request: NextRequest) {
+  // Admin-only to protect Riot API quota
+  const unauthorized = await requireAdmin();
+  if (unauthorized) return unauthorized;
+
   // Rate limit: 5 requests per minute per IP
   const ip = request.headers.get("x-forwarded-for") || "unknown";
   const limit = rateLimit(`riot-sync:${ip}`, 5, 60 * 1000);
@@ -175,7 +182,7 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error: any) {
-    console.error("Riot sync error:", error);
+    logger.error("Riot sync error:", { error });
     return NextResponse.json(
       { error: error.message || "Failed to sync stats" },
       { status: 500 }

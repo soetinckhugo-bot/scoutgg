@@ -92,10 +92,10 @@ export default function OracleImportTab() {
   return (
     <div className="space-y-6">
       {/* Upload Card */}
-      <Card className="border-[#E9ECEF] dark:border-gray-700">
+      <Card className="border-border">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
-            <FileSpreadsheet className="h-5 w-5 text-[#0F3460]" />
+            <FileSpreadsheet className="h-5 w-5 text-accent" />
             Import Oracle&apos;s Elixir CSV
           </CardTitle>
         </CardHeader>
@@ -106,16 +106,16 @@ export default function OracleImportTab() {
               type="file"
               accept=".csv"
               onChange={handleFileUpload}
-              className="dark:bg-[#1e293b] dark:border-gray-700"
+              className="bg-card border-border"
             />
           </div>
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-[#E9ECEF] dark:border-gray-700" />
+              <div className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white dark:bg-[#0f172a] px-2 text-[#6C757D] dark:text-gray-400">
+              <span className="bg-background px-2 text-text-body">
                 or paste CSV content
               </span>
             </div>
@@ -129,12 +129,12 @@ export default function OracleImportTab() {
               placeholder={`player,team,position,games,kills,deaths,assists,kda,csdAt15,gdAt15,dpm...
 Adam,Team BDS,TOP,15,45,23,89,5.8,12.5,850,720...`}
               rows={8}
-              className="dark:bg-[#1e293b] dark:border-gray-700 font-mono text-xs"
+              className="bg-card border-border font-mono text-xs"
             />
           </div>
 
-          <div className="bg-[#F8F9FA] dark:bg-[#1e293b] p-3 rounded-lg">
-            <p className="text-xs text-[#6C757D] dark:text-gray-400">
+          <div className="bg-card p-3 rounded-lg">
+            <p className="text-xs text-text-body">
               <AlertCircle className="h-3 w-3 inline mr-1" />
               Expected columns: <strong>player, team, position, games, kda, csdAt15, gdAt15, dpm, kpPercent, visionScore</strong>
             </p>
@@ -143,7 +143,7 @@ Adam,Team BDS,TOP,15,45,23,89,5.8,12.5,850,720...`}
           <Button
             onClick={handleImport}
             disabled={importing || !csvContent}
-            className="bg-[#1A1A2E] text-white hover:bg-[#16213E]"
+            className="bg-surface-elevated text-text-heading hover:bg-secondary"
           >
             <Upload className="h-4 w-4 mr-2" />
             {importing ? "Importing..." : "Import Stats"}
@@ -153,7 +153,7 @@ Adam,Team BDS,TOP,15,45,23,89,5.8,12.5,850,720...`}
 
       {/* Preview */}
       {preview.length > 0 && (
-        <Card className="border-[#E9ECEF] dark:border-gray-700">
+        <Card className="border-border">
           <CardHeader>
             <CardTitle className="text-lg">Preview (first 5 rows)</CardTitle>
           </CardHeader>
@@ -161,9 +161,9 @@ Adam,Team BDS,TOP,15,45,23,89,5.8,12.5,850,720...`}
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-[#E9ECEF] dark:border-gray-700">
+                  <tr className="border-b border-border">
                     {Object.keys(preview[0]).map((key) => (
-                      <th key={key} className="text-left p-2 text-xs font-semibold text-[#6C757D] dark:text-gray-400 uppercase">
+                      <th key={key} className="text-left p-2 text-xs font-semibold text-text-body uppercase">
                         {key}
                       </th>
                     ))}
@@ -171,9 +171,9 @@ Adam,Team BDS,TOP,15,45,23,89,5.8,12.5,850,720...`}
                 </thead>
                 <tbody>
                   {preview.map((row, i) => (
-                    <tr key={i} className="border-b border-[#E9ECEF] dark:border-gray-700">
+                    <tr key={i} className="border-b border-border">
                       {Object.values(row).map((val: any, j) => (
-                        <td key={j} className="p-2 text-[#1A1A2E] dark:text-white">
+                        <td key={j} className="p-2 text-text-heading">
                           {val}
                         </td>
                       ))}

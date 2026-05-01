@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/server/db";
+import { logger } from "@/lib/logger";
 
 function normalize(value: number | null, min: number, max: number): number {
   if (value === null || value === undefined) return 0.5;
@@ -121,7 +122,7 @@ export async function GET(
       headers: { "Cache-Control": "public, max-age=300, stale-while-revalidate=86400" }
     });
   } catch (error) {
-    console.error("Similarity search error:", error);
+    logger.error("Similarity search error:", { error });
     return NextResponse.json(
       { error: "Failed to find similar players" },
       { status: 500 }

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/server/db";
 import { Resend } from "resend";
 import he from "he";
+import { logger } from "@/lib/logger";
 
 const resend = process.env.RESEND_API_KEY
   ? new Resend(process.env.RESEND_API_KEY)
@@ -35,75 +36,87 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    // Get all users with favorites
-    const usersWithFavorites = await db.favorite.groupBy({
-      by: ["userId"],
-      _count: { userId: true },
+    // Get top prospects ONCE
+    const prospects = await db.player.findMany({
+      where: { isProspect: true },
+      orderBy: { prospectScore: "desc" },
+      take: 5,
+      select: {
+        pseudo: true,
+        role: true,
+        league: true,
+        prospectScore: true,
+      },
     });
+
+    // Get ALL favorites with players in ONE query
+    const allFavorites = await db.favorite.findMany({
+      include: {
+        player: {
+          include: {
+            soloqStats: true,
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    // Group favorites by user
+    const favoritesByUser = new Map<string, typeof allFavorites>();
+    for (const fav of allFavorites) {
+      if (!favoritesByUser.has(fav.userId)) {
+        favoritesByUser.set(fav.userId, []);
+      }
+      favoritesByUser.get(fav.userId)!.push(fav);
+    }
 
     const fromEmail = process.env.FROM_EMAIL || "digest@LeagueScout.gg";
     const sent: string[] = [];
     const failed: string[] = [];
 
-    for (const { userId } of usersWithFavorites) {
-      // Get user's favorites with latest stats
-      const favorites = await db.favorite.findMany({
-        where: { userId },
-        include: {
-          player: {
-            include: {
-              soloqStats: true,
-              proStats: true,
-            },
-          },
-        },
-        orderBy: { createdAt: "desc" },
-        take: 10,
-      });
+    // Send emails in parallel with limited concurrency
+    const userIds = Array.from(favoritesByUser.keys());
+    const BATCH_SIZE = 5;
 
-      if (favorites.length === 0) continue;
+    for (let i = 0; i < userIds.length; i += BATCH_SIZE) {
+      const batch = userIds.slice(i, i + BATCH_SIZE);
+      await Promise.all(
+        batch.map(async (userId) => {
+          const userFavorites = favoritesByUser.get(userId) || [];
+          if (userFavorites.length === 0) return;
 
-      // Get top prospects
-      const prospects = await db.player.findMany({
-        where: { isProspect: true },
-        orderBy: { prospectScore: "desc" },
-        take: 5,
-        select: {
-          pseudo: true,
-          role: true,
-          league: true,
-          prospectScore: true,
-        },
-      });
+          // Take top 10 favorites
+          const topFavorites = userFavorites.slice(0, 10);
 
-      // Build email HTML
-      const html = buildDigestEmail({
-        favorites: favorites.map((f) => ({
-          pseudo: f.player.pseudo,
-          role: f.player.role,
-          currentRank: f.player.soloqStats?.currentRank || "Unranked",
-          peakLp: f.player.soloqStats?.peakLp || 0,
-        })),
-        prospects: prospects.map((p) => ({
-          pseudo: p.pseudo,
-          role: p.role,
-          league: p.league,
-          score: p.prospectScore || 0,
-        })),
-      });
+          const html = buildDigestEmail({
+            favorites: topFavorites.map((f) => ({
+              pseudo: f.player.pseudo,
+              role: f.player.role,
+              currentRank: f.player.soloqStats?.currentRank || "Unranked",
+              peakLp: f.player.soloqStats?.peakLp || 0,
+            })),
+            prospects: prospects.map((p) => ({
+              pseudo: p.pseudo,
+              role: p.role,
+              league: p.league,
+              score: p.prospectScore || 0,
+            })),
+          });
 
-      try {
-        await resend.emails.send({
-          from: `LeagueScout <${fromEmail}>`,
-          to: userId, // userId is the email
-          subject: "Your Weekly Scouting Digest",
-          html,
-        });
-        sent.push(userId);
-      } catch (err) {
-        console.error(`Failed to send digest to ${userId}:`, err);
-        failed.push(userId);
-      }
+          try {
+            await resend.emails.send({
+              from: `LeagueScout <${fromEmail}>`,
+              to: userId,
+              subject: "Your Weekly Scouting Digest",
+              html,
+            });
+            sent.push(userId);
+          } catch (err) {
+            logger.error(`Failed to send digest to ${userId}:`, { err });
+            failed.push(userId);
+          }
+        })
+      );
     }
 
     return NextResponse.json({
@@ -114,7 +127,7 @@ export async function POST(request: NextRequest) {
       failedFor: failed,
     });
   } catch (error: any) {
-    console.error("[Cron] Weekly digest error:", error);
+    logger.error("[Cron] Weekly digest error:", { error });
     return NextResponse.json(
       { error: error.message || "Digest failed" },
       { status: 500 }

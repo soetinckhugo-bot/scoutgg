@@ -4,7 +4,13 @@ import { useState, useEffect } from "react";
 import { Loader2, Swords, Clock, Filter } from "lucide-react";
 import Image from "next/image";
 import { toast } from "sonner";
-import { getChampionIconUrl } from "@/lib/game-assets";
+import {
+  getChampionIconUrl,
+  getItemIconUrl,
+  getKeystoneRuneIconUrl,
+  getSecondaryRuneIconUrl,
+  getSummonerSpellIconUrlById,
+} from "@/lib/game-assets";
 
 interface Match {
   matchId: string;
@@ -25,6 +31,12 @@ interface Match {
   visionScore: number;
   wardsPlaced: number;
   wardsKilled: number;
+  items: number[];
+  keystoneRune: number | null;
+  secondaryRune: number | null;
+  summoner1Id: number;
+  summoner2Id: number;
+  opponentChampion: string | null;
 }
 
 function formatDuration(seconds: number): string {
@@ -86,7 +98,7 @@ export default function MatchHistory({ playerId }: { playerId: string }) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-[#E94560]" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary-accent" />
       </div>
     );
   }
@@ -94,8 +106,8 @@ export default function MatchHistory({ playerId }: { playerId: string }) {
   if (error) {
     return (
       <div className="text-center py-8">
-        <Swords className="h-10 w-10 text-[#E9ECEF] dark:text-gray-700 mx-auto mb-2" />
-        <p className="text-sm text-[#6C757D] dark:text-gray-400">{error}</p>
+        <Swords className="h-10 w-10 text-text-muted mx-auto mb-2" />
+        <p className="text-sm text-text-body">{error}</p>
       </div>
     );
   }
@@ -103,8 +115,8 @@ export default function MatchHistory({ playerId }: { playerId: string }) {
   if (matches.length === 0) {
     return (
       <div className="text-center py-8">
-        <Swords className="h-10 w-10 text-[#E9ECEF] dark:text-gray-700 mx-auto mb-2" />
-        <p className="text-sm text-[#6C757D] dark:text-gray-400">
+        <Swords className="h-10 w-10 text-text-muted mx-auto mb-2" />
+        <p className="text-sm text-text-body">
           No recent ranked matches found.
         </p>
       </div>
@@ -115,14 +127,14 @@ export default function MatchHistory({ playerId }: { playerId: string }) {
     <div className="space-y-3">
       {/* Header stats */}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2 bg-[#1A1D29] border border-[#2A2D3A] rounded-lg px-3 py-1.5">
-          <span className="text-sm font-bold text-[#E9ECEF] tabular-nums">
+        <div className="flex items-center gap-2 bg-surface-hover border border-border rounded-lg px-3 py-1.5">
+          <span className="text-sm font-bold text-text-heading tabular-nums">
             {wins}W — {matches.length - wins}L
           </span>
-          <span className="text-xs text-[#6C757D] tabular-nums">
+          <span className="text-xs text-text-muted tabular-nums">
             ({Math.round((wins / matches.length) * 100)}% WR)
           </span>
-          <span className="text-xs text-[#6C757D] ml-2">
+          <span className="text-xs text-text-muted ml-2">
             Avg KDA: <span className={`${kdaColor(avgKda)} tabular-nums`}>{avgKda.toFixed(2)}</span>
           </span>
         </div>
@@ -138,8 +150,8 @@ export default function MatchHistory({ playerId }: { playerId: string }) {
                     ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
                     : f === "loss"
                     ? "bg-red-500/20 text-red-400 border border-red-500/30"
-                    : "bg-[#3B82F6]/20 text-[#3B82F6] border border-[#3B82F6]/30"
-                  : "bg-[#1A1D29] text-[#6C757D] border border-[#2A2D3A] hover:text-[#E9ECEF]"
+                    : "bg-tier-s/20 text-tier-s border border-tier-s/30"
+                  : "bg-surface-hover text-text-muted border border-border hover:text-text-heading"
               }`}
             >
               {f === "all" ? "All" : f === "win" ? "Wins" : "Losses"}
@@ -148,111 +160,154 @@ export default function MatchHistory({ playerId }: { playerId: string }) {
         </div>
       </div>
 
-      {/* Matches table — same style as ProMatches */}
-      <div className="overflow-x-auto rounded-lg border border-[#2A2D3A]">
-        <table className="w-full text-xs">
-          <thead>
-            <tr className="bg-[#141621] text-[#6C757D] text-xs uppercase tracking-wider border-b border-[#2A2D3A]">
-              <th className="text-left py-2 px-2 font-semibold">Champion</th>
-              <th className="text-left py-2 px-2 font-semibold">Result</th>
-              <th className="text-left py-2 px-2 font-semibold">Duration</th>
-              <th className="text-left py-2 px-2 font-semibold">KDA</th>
-              <th className="text-left py-2 px-2 font-semibold">CSM</th>
-              <th className="text-left py-2 px-2 font-semibold">Gold</th>
-              <th className="text-left py-2 px-2 font-semibold">DMG</th>
-              <th className="text-left py-2 px-2 font-semibold">Vision</th>
-              <th className="text-left py-2 px-2 font-semibold">Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((match) => {
-              const kdaValue = match.kda;
+      {/* Match Cards — style Tryouts */}
+      <div className="space-y-3">
+        {filtered.map((match) => (
+          <div
+            key={match.matchId}
+            className={`rounded-xl border p-3 transition-colors ${
+              match.win
+                ? "bg-blue-500/5 border-blue-500/20"
+                : "bg-red-500/5 border-red-500/20"
+            }`}
+          >
+            {/* Top row: champion + result + kda + opponent */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                {/* Champion icon */}
+                <div className="relative w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 ring-1 ring-border">
+                  <Image
+                    src={getChampionIconUrl(match.championName)}
+                    alt={match.championName}
+                    fill
+                    className="object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = "none";
+                    }}
+                  />
+                </div>
 
-              return (
-                <tr
-                  key={match.matchId}
-                  className="bg-[#1A1F2E] hover:bg-[#1E2435] transition-colors border-b border-[#232838] last:border-b-0"
-                >
-                  {/* Champion */}
-                  <td className="py-1.5 px-2">
-                    <div className="flex items-center gap-2">
-                      <div className="relative w-8 h-8 rounded overflow-hidden flex-shrink-0 ring-1 ring-[#2A2D3A]">
-                        <Image
-                          src={getChampionIconUrl(match.championName)}
-                          alt={match.championName}
-                          fill
-                          className="object-cover"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).style.display = "none";
-                          }}
-                        />
-                      </div>
-                      <span className="font-semibold text-[#E9ECEF] text-xs whitespace-nowrap">
-                        {match.championName}
-                      </span>
-                    </div>
-                  </td>
-
-                  {/* Result */}
-                  <td className="py-2 px-2">
-                    <span className={`font-bold text-xs ${match.win ? "text-emerald-400" : "text-red-400"}`}>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className={`font-bold text-sm ${match.win ? "text-blue-400" : "text-red-400"}`}>
                       {match.win ? "Victory" : "Defeat"}
                     </span>
-                  </td>
-
-                  {/* Duration */}
-                  <td className="py-2 px-2 text-[#ADB5BD]">
-                    <div className="flex items-center gap-1">
-                      <Clock className="h-2.5 w-2.5 text-[#6C757D]" />
+                    <span className="text-xs text-text-muted">
+                      <Clock className="h-3 w-3 inline mr-0.5" />
                       {formatDuration(match.gameDuration)}
-                    </div>
-                  </td>
-
-                  {/* KDA */}
-                  <td className="py-2 px-2">
-                    <span className={`font-mono font-bold text-xs ${kdaColor(kdaValue)} tabular-nums`}>
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-1 text-xs text-text-body">
+                    <span className={`font-mono font-bold ${kdaColor(match.kda)}`}>
                       {match.kills}/{match.deaths}/{match.assists}
                     </span>
-                    <span className="text-xs text-[#6C757D] ml-1 tabular-nums">
-                      {kdaValue.toFixed(1)}
-                    </span>
-                  </td>
+                    <span className="text-text-muted">({match.kda.toFixed(1)})</span>
+                    <span className="text-text-muted mx-1">·</span>
+                    <span>{match.cs} CS</span>
+                    <span className="text-text-muted">({match.cspm.toFixed(1)}/m)</span>
+                    <span className="text-text-muted mx-1">·</span>
+                    <span>{(match.goldEarned / 1000).toFixed(1)}k gold</span>
+                  </div>
+                </div>
+              </div>
 
-                  {/* CSM */}
-                  <td className="py-2 px-2 text-[#ADB5BD]">
-                    <div className="flex flex-col leading-tight">
-                      <span className="font-medium tabular-nums">{match.cs}</span>
-                      <span className="text-xs text-[#6C757D] tabular-nums">{match.cspm.toFixed(1)}/m</span>
-                    </div>
-                  </td>
+              {/* VS opponent */}
+              {match.opponentChampion && (
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-text-muted">VS</span>
+                  <div className="relative w-8 h-8 rounded overflow-hidden flex-shrink-0 ring-1 ring-border">
+                    <Image
+                      src={getChampionIconUrl(match.opponentChampion)}
+                      alt={match.opponentChampion}
+                      fill
+                      className="object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = "none";
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
 
-                  {/* Gold */}
-                  <td className="py-2 px-2 text-[#ADB5BD]">
-                    <div className="flex flex-col leading-tight">
-                      <span className="font-medium tabular-nums">{(match.goldEarned / 1000).toFixed(1)}k</span>
-                      <span className="text-xs text-[#6C757D] tabular-nums">{match.gpm.toFixed(0)}/m</span>
-                    </div>
-                  </td>
+            {/* Bottom row: runes + summoner spells + items */}
+            <div className="flex items-center gap-3 mt-2 pt-2 border-t border-border/50">
+              {/* Summoner Spells */}
+              <div className="flex items-center gap-0.5">
+                {[match.summoner1Id, match.summoner2Id].map((spellId, i) => (
+                  <div key={i} className="relative w-5 h-5 rounded overflow-hidden flex-shrink-0">
+                    <Image
+                      src={getSummonerSpellIconUrlById(spellId)}
+                      alt={`spell-${i}`}
+                      fill
+                      className="object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = "none";
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
 
-                  {/* DMG */}
-                  <td className="py-2 px-2 text-[#ADB5BD]">
-                    <span className="font-medium tabular-nums">{(match.damageDealt / 1000).toFixed(1)}k</span>
-                  </td>
+              {/* Runes */}
+              <div className="flex items-center gap-1">
+                {match.keystoneRune && (
+                  <div className="relative w-5 h-5">
+                    <Image
+                      src={getKeystoneRuneIconUrl(match.keystoneRune)}
+                      alt="keystone"
+                      fill
+                      className="object-contain"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = "none";
+                      }}
+                    />
+                  </div>
+                )}
+                {match.secondaryRune && (
+                  <div className="relative w-4 h-4 opacity-70">
+                    <Image
+                      src={getSecondaryRuneIconUrl(match.secondaryRune)}
+                      alt="secondary"
+                      fill
+                      className="object-contain"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = "none";
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
 
-                  {/* Vision */}
-                  <td className="py-2 px-2 text-[#ADB5BD]">
-                    <span className="font-medium tabular-nums">{match.visionScore}</span>
-                  </td>
+              {/* Items */}
+              <div className="flex items-center gap-px">
+                {match.items.map((itemId, i) => (
+                  <div
+                    key={i}
+                    className="relative w-6 h-6 rounded overflow-hidden bg-background ring-1 ring-border"
+                  >
+                    {itemId && itemId > 0 ? (
+                      <Image
+                        src={getItemIconUrl(String(itemId))}
+                        alt={`item-${i}`}
+                        fill
+                        className="object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = "none";
+                        }}
+                      />
+                    ) : null}
+                  </div>
+                ))}
+              </div>
 
-                  {/* Date */}
-                  <td className="py-2 px-2 text-[#ADB5BD] whitespace-nowrap">
-                    {formatDateShort(match.gameCreation)}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+              {/* Date */}
+              <span className="text-xs text-text-muted ml-auto">
+                {formatDateShort(match.gameCreation)}
+              </span>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

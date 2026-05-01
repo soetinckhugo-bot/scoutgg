@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
@@ -24,20 +25,26 @@ model Player {
   golggUrl         String?
   lolprosUrl       String?
   twitterUrl       String?
+  agentTwitterUrl  String?
   twitchUrl        String?
   leaguepediaUrl   String?
   discordTag       String?
   photoUrl         String?
   bio              String?
   behaviorTags     String?
+  signatureChampion String?
   isFeatured       Boolean          @default(false)
   featuredAt       DateTime?
   contractEndDate  DateTime?
-  isProspect       Boolean          @default(false)
-  prospectScore    Float?
-  prospectRank     Int?
-  prospectTrend    String?
-  prospectPhotoUrl String?
+  isProspect              Boolean          @default(false)
+  hasPlayedInMajorLeague  Boolean          @default(false)
+  peakElo2Years           Int?
+  bestProResult           String?
+  eyeTestRating           Float?
+  prospectScore           Float?
+  prospectRank            Int?
+  prospectTrend           String?
+  prospectPhotoUrl        String?
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
   favorites        Favorite[]
@@ -45,6 +52,7 @@ model Player {
   ratings          PlayerRating[]
   proMatches       ProMatch[]
   proStats         ProStats?
+  proStatsSplits   ProStatsSplit[]
   prospectMetrics  ProspectMetrics?
   reports          Report[]
   soloqPotw        SoloqPOTW[]
@@ -52,6 +60,7 @@ model Player {
   statHistory      StatHistory[]
   timelineEvents   TimelineEvent[]
   vods             Vod[]
+  scoutingCards    ScoutingCard[]
 
   @@index([role])
   @@index([league])
@@ -76,6 +85,7 @@ model SoloqStats {
   player       Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
 }
 
+// ProStats = stats agrégées importées via CSV (Oracle's Elixir). Source de vérité pour le scoring.
 model ProStats {
   id                String  @id @default(cuid())
   playerId          String  @unique
@@ -144,7 +154,7 @@ model ProStats {
   avgWcpm           Float?
   avgVwpm           Float?
 
-  // === Legacy fields ===
+  // === Legacy fields (kept for backward compat) ===
   championPool      String?
   deathsUnder15     Float?
   otpScore          Float?
@@ -152,6 +162,9 @@ model ProStats {
   proximityJungle   Float?
   winRateByChampion String?
   visionScore       Float?
+
+  // === CSV Import ===
+  winRate           Float?
 
   // === Calculated Scores ===
   rawScore          Float?
@@ -165,6 +178,8 @@ model ProStats {
   @@index([tier])
 }
 
+// ProMatch = historique individuel des matchs pro. Sert UNIQUEMENT à l'affichage (matches + champ pool).
+// NE PAS utiliser pour le scoring. Le scoring utilise ProStats (stats agrégées CSV).
 model ProMatch {
   id            String   @id @default(cuid())
   playerId      String
@@ -205,13 +220,11 @@ model ProspectMetrics {
   id                   String   @id @default(cuid())
   playerId             String   @unique
   peakLpScore          Float    @default(0)
-  proWinrateScore      Float    @default(0)
-  currentLeagueScore   Float    @default(0)
   bestProResultScore   Float    @default(0)
-  soloqGamesScore      Float    @default(0)
   ageScore             Float    @default(0)
-  proChampionPoolScore Float    @default(0)
-  soloqWinrateScore    Float    @default(0)
+  currentLeagueScore   Float    @default(0)
+  proWinrateScore      Float    @default(0)
+  globalYearScore      Float    @default(0)
   eyeTestScore         Float    @default(0)
   lastUpdated          DateTime @updatedAt
   player               Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
@@ -357,6 +370,26 @@ model Notification {
   @@index([userId, read, createdAt])
 }
 
+model ScoutingCard {
+  id        String   @id @default(cuid())
+  userId    String
+  playerId  String
+  status    String   @default("discovery") // discovery | evaluation | shortlist | contacted | signed | rejected
+  notes     String?
+  priority  Int?     // 1-3
+  tags      String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  player    Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, status])
+  @@index([userId, playerId])
+}
+
 model User {
   id                   String        @id @default(cuid())
   email                String        @unique
@@ -372,6 +405,7 @@ model User {
   orgId                String?
   createdAt            DateTime      @default(now())
   org                  Organization? @relation(fields: [orgId], references: [id])
+  scoutingCards        ScoutingCard[]
 
   @@index([orgId])
 }
@@ -403,6 +437,91 @@ model OrgInvite {
 
   @@unique([orgId, email])
   @@index([token])
+}
+
+model ProStatsSplit {
+  id                String  @id @default(cuid())
+  playerId          String
+
+  // === Identification ===
+  gamesPlayed       Int?
+  season            String
+  split             String?
+
+  // === Combat ===
+  k                 Float?
+  d                 Float?
+  a                 Float?
+  kda               Float?
+  kpPercent         Float?
+  ksPercent         Float?
+  dthPercent        Float?
+  fbPercent         Float?
+  fbVictim          Float?
+  soloKills         Float?
+  pentaKills        Float?
+
+  // === Counter Pick ===
+  ctrPercent        Float?
+
+  // === Early Game ===
+  gdAt10            Float?
+  xpdAt10           Float?
+  csdAt10           Float?
+  gdAt15            Float?
+  xpdAt15           Float?
+  csdAt15           Float?
+
+  // === Farming ===
+  cspm              Float?
+  csm               Float?
+  csPercentAt15     Float?
+
+  // === Damage ===
+  dpm               Float?
+  damagePercent     Float?
+  dPercentAt15      Float?
+  tdpg              Float?
+
+  // === Economy ===
+  egpm              Float?
+  gpm               Float?
+  goldPercent       Float?
+
+  // === Vision ===
+  wpm               Float?
+  cwpm              Float?
+  wcpm              Float?
+  vwpm              Float?
+  vsPercent         Float?
+  vspm              Float?
+
+  // === Objectives ===
+  stl               Float?
+
+  // === Averages ===
+  avgKills          Float?
+  avgDeaths         Float?
+  avgAssists        Float?
+  avgWpm            Float?
+  avgWcpm           Float?
+  avgVwpm           Float?
+
+  // === CSV Import ===
+  winRate           Float?
+
+  // === Calculated Scores ===
+  rawScore          Float?
+  globalScore       Float?
+  tierScore         Float?
+  tier              String?
+
+  player            Player  @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@unique([playerId, season, split])
+  @@index([playerId])
+  @@index([season])
+  @@index([split])
 }
 
 model ApiKey {

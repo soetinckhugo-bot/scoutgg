@@ -1,10 +1,20 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/server/db";
+import { logger } from "@/lib/logger";
+import { z } from "zod";
+
+const SearchQuerySchema = z.object({
+  q: z.string().min(2).max(100).optional(),
+});
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const q = searchParams.get("q")?.trim() || "";
+    const parsed = SearchQuerySchema.safeParse(Object.fromEntries(searchParams));
+    if (!parsed.success) {
+      return NextResponse.json({ suggestions: [] });
+    }
+    const q = parsed.data.q?.trim() || "";
 
     if (q.length < 2) {
       return NextResponse.json({ suggestions: [] });
@@ -30,7 +40,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ suggestions: players });
   } catch (error) {
-    console.error("Error fetching search suggestions:", error);
+    logger.error("Error fetching search suggestions:", { error });
     return NextResponse.json(
       { error: "Failed to fetch suggestions" },
       { status: 500 }

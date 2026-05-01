@@ -22,11 +22,11 @@ export function Breadcrumb({ items }: BreadcrumbProps) {
     <>
       <BreadcrumbJsonLd items={jsonLdItems} />
       <nav aria-label="Breadcrumb" className="mb-4">
-        <ol className="flex items-center gap-1 text-sm text-[#6C757D] dark:text-gray-400">
+        <ol className="flex items-center gap-1 text-sm text-text-body">
           <li>
             <Link
               href="/"
-              className="hover:text-[#1A1A2E] dark:hover:text-white transition-colors"
+              className="hover:text-text-heading transition-colors"
             >
               Home
             </Link>
@@ -35,13 +35,13 @@ export function Breadcrumb({ items }: BreadcrumbProps) {
             <li key={item.href} className="flex items-center gap-1">
               <ChevronRight className="h-3.5 w-3.5" />
               {index === items.length - 1 ? (
-                <span className="text-[#1A1A2E] dark:text-white font-medium">
+                <span className="text-text-heading font-medium">
                   {item.name}
                 </span>
               ) : (
                 <Link
                   href={item.href}
-                  className="hover:text-[#1A1A2E] dark:hover:text-white transition-colors"
+                  className="hover:text-text-heading transition-colors"
                 >
                   {item.name}
                 </Link>

@@ -1,5 +1,4 @@
 const RIOT_API_KEY = process.env.RIOT_API_KEY;
-console.log("[Riot API] Key loaded:", RIOT_API_KEY ? RIOT_API_KEY.substring(0, 20) + "..." : "MISSING");
 const RIOT_REGION = "euw1"; // Europe West for LFL/LEC players
 const RIOT_REGIONAL = "europe"; // For account-v1 API
 
@@ -240,6 +239,13 @@ export interface RiotMatchParticipant {
   visionScore: number;
   wardsPlaced: number;
   wardsKilled: number;
+  item0: number;
+  item1: number;
+  item2: number;
+  item3: number;
+  item4: number;
+  item5: number;
+  item6: number;
   summoner1Id: number;
   summoner2Id: number;
   perks: {

@@ -23,7 +23,7 @@ function PercentileBar({
   const tier = getTierFromPercentile(result.percentile);
 
   return (
-    <div className="group flex items-center gap-3 py-2 px-3 rounded-lg hover:bg-white/5 transition-colors">
+    <div className="group flex items-center gap-3 py-2 px-3 rounded-lg hover:bg-card/5 transition-colors">
       {/* Tier badge */}
       <div
         className={`w-8 h-7 rounded-md text-xs font-bold flex items-center justify-center ${getCentileClass(result.percentile)}`}
@@ -34,7 +34,7 @@ function PercentileBar({
       {/* Metric info */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between mb-1">
-          <span className="text-sm text-[#ADB5BD] dark:text-gray-300 truncate">
+          <span className="text-sm text-text-subtle text-text-subtle truncate">
             {label}
           </span>
           <span
@@ -46,9 +46,9 @@ function PercentileBar({
         </div>
 
         {/* Progress bar */}
-        <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+        <div className="h-2 w-full bg-card/5 rounded-full overflow-hidden">
           <div
-            className="h-full rounded-full transition-all duration-500 ease-out"
+            className="h-full rounded-full transition-all duration-300 ease-out"
             style={{
               width: `${result.percentile}%`,
               backgroundColor: tier.color,
@@ -58,10 +58,10 @@ function PercentileBar({
 
         {/* Subtle rank info */}
         <div className="flex items-center justify-between mt-0.5">
-          <span className="text-xs text-[#6C757D] dark:text-gray-500">
+          <span className="text-xs text-text-muted text-text-muted">
             {def?.description}
           </span>
-          <span className="text-xs text-[#6C757D] dark:text-gray-500">
+          <span className="text-xs text-text-muted text-text-muted">
             {result.rank}/{result.total}
           </span>
         </div>
@@ -91,8 +91,8 @@ export default function PercentileBars({
   return (
     <div className="w-full">
       {title && (
-        <h3 className="text-sm font-bold text-[#E9ECEF] dark:text-white uppercase tracking-wider mb-3 flex items-center gap-2">
-          <span className="w-1 h-4 bg-[#E94560] rounded-full" />
+        <h3 className="text-sm font-bold text-text-heading uppercase tracking-wider mb-3 flex items-center gap-2">
+          <span className="w-1 h-4 bg-primary-accent rounded-full" />
           {title}
         </h3>
       )}
@@ -106,7 +106,7 @@ export default function PercentileBars({
       </div>
 
       {entries.length === 0 && showEmpty && (
-        <div className="text-center py-6 text-sm text-[#6C757D] dark:text-gray-500">
+        <div className="text-center py-6 text-sm text-text-muted text-text-muted">
           No percentile data available.
         </div>
       )}

@@ -2,8 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { writeFile } from "fs/promises";
 import { mkdir } from "fs/promises";
 import path from "path";
+import { put } from "@vercel/blob";
 import { requireAdmin } from "@/lib/server/auth";
 import crypto from "crypto";
+import { logger } from "@/lib/logger";
 
 const ALLOWED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 const ALLOWED_EXTS = [".jpg", ".jpeg", ".png", ".webp"];
@@ -71,6 +73,18 @@ export async function POST(request: NextRequest) {
     const randomId = crypto.randomBytes(8).toString("hex");
     const filename = `${timestamp}_${randomId}${ext}`;
 
+    // Use Vercel Blob in production, local filesystem in dev
+    const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
+
+    if (blobToken) {
+      const { url } = await put(`players/${filename}`, buffer, {
+        access: "public",
+        contentType: file.type,
+      });
+      return NextResponse.json({ url });
+    }
+
+    // Fallback to local filesystem for dev
     const uploadDir = path.join(process.cwd(), "public", "uploads", "players");
     await mkdir(uploadDir, { recursive: true });
 
@@ -80,11 +94,10 @@ export async function POST(request: NextRequest) {
     const url = `/uploads/players/${filename}`;
     return NextResponse.json({ url });
   } catch (error) {
-    console.error("Upload error:", error);
+    logger.error("Upload error:", { error });
     return NextResponse.json(
       { error: "Failed to upload file" },
       { status: 500 }
     );
   }
 }
-

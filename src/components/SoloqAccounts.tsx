@@ -41,14 +41,41 @@ export default function SoloqAccounts({ playerId, riotId, soloqStats, isAdmin }:
     }
   }
 
-  function addAccount() {
+  async function addAccount() {
     if (!newRiotId.includes("#")) {
       toast.error("Please use format: GameName#TagLine");
       return;
     }
-    setNewRiotId("");
-    setShowAdd(false);
-    toast.success("Account added (not persisted yet)");
+    try {
+      const res = await fetch(`/api/players/${playerId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ riotId: newRiotId.trim() }),
+      });
+      if (res.ok) {
+        toast.success("Account saved! Syncing from Riot API...");
+        setNewRiotId("");
+        setShowAdd(false);
+        // Auto-sync after saving
+        const syncRes = await fetch(`/api/riot/sync`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ playerId }),
+        });
+        if (syncRes.ok) {
+          toast.success("Stats synced! Refreshing...");
+          window.location.reload();
+        } else {
+          toast.error("Account saved but sync failed. Click Sync to retry.");
+          window.location.reload();
+        }
+      } else {
+        const err = await res.json().catch(() => ({}));
+        toast.error(err.error || "Failed to save account");
+      }
+    } catch {
+      toast.error("Failed to save account");
+    }
   }
 
   const hasData = soloqStats && (soloqStats.currentRank || soloqStats.peakLp > 0);
@@ -56,29 +83,29 @@ export default function SoloqAccounts({ playerId, riotId, soloqStats, isAdmin }:
   return (
     <div className="space-y-3">
       {hasData ? (
-        <div className="rounded-lg border border-[#2A2D3A] overflow-hidden">
-          <div className="bg-[#1A1F2E] p-3">
+        <div className="rounded-lg border border-border overflow-hidden">
+          <div className="bg-surface-elevated p-3">
             <div className="flex items-center gap-3">
               {/* Rank */}
               <div className="text-center min-w-[60px]">
-                <div className="text-xs font-bold text-[#E9ECEF] tabular-nums">
+                <div className="text-xs font-bold text-text-heading tabular-nums">
                   {soloqStats!.currentRank.split(" ")[0]}
                 </div>
-                <div className="text-xs text-[#6C757D] tabular-nums">{soloqStats!.peakLp} LP</div>
+                <div className="text-xs text-text-muted tabular-nums">{soloqStats!.peakLp} LP</div>
               </div>
 
               {/* Account Info */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-[#E9ECEF] text-sm truncate">
+                  <span className="font-bold text-text-heading text-sm truncate">
                     {riotId ? riotId.split("#")[0] : "Main Account"}
                   </span>
                   {riotId && riotId.includes("#") && (
-                    <span className="text-xs text-[#6C757D]">#{riotId.split("#")[1]}</span>
+                    <span className="text-xs text-text-muted">#{riotId.split("#")[1]}</span>
                   )}
                   <Star className="h-3 w-3 text-amber-400 fill-amber-400 shrink-0" />
                 </div>
-                <div className="text-xs text-[#6C757D] tabular-nums">
+                <div className="text-xs text-text-muted tabular-nums">
                   {soloqStats!.totalGames} games • {(soloqStats!.winrate * 100).toFixed(0)}% WR
                 </div>
               </div>
@@ -95,8 +122,8 @@ export default function SoloqAccounts({ playerId, riotId, soloqStats, isAdmin }:
           </div>
         </div>
       ) : (
-        <div className="rounded-lg border border-[#2A2D3A] bg-[#1A1F2E] p-4 text-center">
-          <p className="text-sm text-[#6C757D]">No SoloQ stats available.</p>
+        <div className="rounded-lg border border-border bg-surface-elevated p-4 text-center">
+          <p className="text-sm text-text-muted">No SoloQ stats available.</p>
           {riotId && (
             <button
               onClick={syncAccount}
@@ -118,17 +145,17 @@ export default function SoloqAccounts({ playerId, riotId, soloqStats, isAdmin }:
                 placeholder="GameName#TagLine"
                 value={newRiotId}
                 onChange={(e) => setNewRiotId(e.target.value)}
-                className="flex-1 bg-[#1A1F2E] border border-[#2A2D3A] rounded px-3 py-2 text-sm text-[#E9ECEF] placeholder-[#6C757D]"
+                className="flex-1 bg-surface-elevated border border-border rounded px-3 py-2 text-sm text-text-heading placeholder-[#6C757D]"
               />
               <button
                 onClick={addAccount}
-                className="bg-[#E94560] text-white px-3 py-2 rounded text-sm font-medium hover:bg-[#d63d56] transition-colors"
+                className="bg-primary-accent text-text-heading px-3 py-2 rounded text-sm font-medium hover:bg-primary-accent/90 transition-colors"
               >
                 Add
               </button>
               <button
                 onClick={() => setShowAdd(false)}
-                className="text-[#6C757D] hover:text-[#E9ECEF] px-3 py-2 text-sm transition-colors"
+                className="text-text-muted hover:text-text-heading px-3 py-2 text-sm transition-colors"
               >
                 Cancel
               </button>
@@ -136,7 +163,7 @@ export default function SoloqAccounts({ playerId, riotId, soloqStats, isAdmin }:
           ) : (
             <button
               onClick={() => setShowAdd(true)}
-              className="w-full border border-[#2A2D3A] text-[#6C757D] hover:text-[#E9ECEF] rounded px-3 py-2 text-sm transition-colors flex items-center justify-center gap-2"
+              className="w-full border border-border text-text-muted hover:text-text-heading rounded px-3 py-2 text-sm transition-colors flex items-center justify-center gap-2"
             >
               <Plus className="h-4 w-4" />
               Add Account

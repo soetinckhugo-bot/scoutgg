@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback, memo } from "react";
-import { BarChart3, Loader2, Users, Trophy } from "lucide-react";
+import { BarChart3, Loader2, Users, Trophy, Swords, Eye, Coins } from "lucide-react";
+import ScoutIcon from "@/components/ScoutIcon";
 
 interface PercentileResult {
   percentile: number;
@@ -24,12 +25,13 @@ interface PercentilesData {
   percentiles: Record<string, PercentileResult | null>;
 }
 
+// New colors: Elite=Blue, Excellent=Green, Good=Yellow, Average=Orange, Weak=Red
 const TIER_COLORS = {
-  S: "#F59E0B",
-  A: "#EAB308",
-  B: "#F97316",
-  C: "#EF4444",
-  D: "#6B7280",
+  S: "#3B82F6",
+  A: "#22C55E",
+  B: "#EAB308",
+  C: "#F97316",
+  D: "#EF4444",
 };
 
 const TIER_LABELS = {
@@ -40,21 +42,60 @@ const TIER_LABELS = {
   D: "Weak",
 };
 
+// 3 categories: Fight, Vision, Ressources
 const CATEGORY_MAP: Record<string, string> = {
-  Games: "General", "W%": "General", "Penta Kills": "General",
-  KDA: "Combat", KP: "Combat", "KS%": "Combat", "DTH%": "Combat",
-  "FB%": "Combat", "FB Victim": "Combat", "Solo Kills": "Combat",
-  K: "Combat", D: "Combat", A: "Combat", STL: "Combat", "CTR%": "Combat",
-  GD10: "Early Game", XPD10: "Early Game", CSD10: "Early Game",
-  GD15: "Early Game", XPD15: "Early Game", CSD15: "Early Game",
-  "CS%P15": "Early Game", "D%P15": "Early Game",
-  CSPM: "Farming", CSM: "Farming",
-  DPM: "Damage", "DMG%": "Damage", TDPG: "Damage",
-  EGPM: "Economy", GPM: "Economy", "GOLD%": "Economy",
-  WPM: "Vision", CWPM: "Vision", WCPM: "Vision", VWPM: "Vision",
-  "VS%": "Vision", VSPM: "Vision",
-  "Avg kills": "Averages", "Avg deaths": "Averages", "Avg assists": "Averages",
-  "Avg WPM": "Averages", "Avg WCPM": "Averages", "Avg VWPM": "Averages",
+  // Fight
+  KDA: "Fight",
+  KP: "Fight",
+  "KS%": "Fight",
+  "DTH%": "Fight",
+  "FB%": "Fight",
+  "FB Victim": "Fight",
+  "Solo Kills": "Fight",
+  K: "Fight",
+  D: "Fight",
+  A: "Fight",
+  STL: "Fight",
+  "CTR%": "Fight",
+  // Vision
+  WPM: "Vision",
+  CWPM: "Vision",
+  WCPM: "Vision",
+  VWPM: "Vision",
+  "VS%": "Vision",
+  VSPM: "Vision",
+  "Avg WPM": "Vision",
+  "Avg WCPM": "Vision",
+  "Avg VWPM": "Vision",
+  // Ressources
+  Games: "Ressources",
+  "W%": "Ressources",
+  GD10: "Ressources",
+  XPD10: "Ressources",
+  CSD10: "Ressources",
+  GD15: "Ressources",
+  XPD15: "Ressources",
+  CSD15: "Ressources",
+  "CS%P15": "Ressources",
+  "D%P15": "Ressources",
+  CSPM: "Ressources",
+  CSM: "Ressources",
+  DPM: "Ressources",
+  "DMG%": "Ressources",
+  TDPG: "Ressources",
+  EGPM: "Ressources",
+  GPM: "Ressources",
+  "GOLD%": "Ressources",
+  "Avg kills": "Ressources",
+  "Avg deaths": "Ressources",
+  "Avg assists": "Ressources",
+  "Penta Kills": "Ressources",
+};
+
+const CATEGORY_ICONS: Record<string, React.ElementType> = {
+  Fight: Swords,
+  Vision: Eye,
+  Ressources: Coins,
 };
 
 interface PercentileBarProps {
@@ -69,9 +110,9 @@ const PercentileBar = memo(function PercentileBar({ label, result }: PercentileB
   return (
     <div className="py-1.5">
       <div className="flex items-center justify-between mb-1">
-        <span className="text-xs text-[#ADB5BD] uppercase tracking-wide">{label}</span>
+        <span className="text-xs text-text-subtle uppercase tracking-wide">{label}</span>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-[#6C757D] tabular-nums">
+          <span className="text-xs text-text-muted tabular-nums">
             #{result.rank}/{result.total}
           </span>
           <span
@@ -88,9 +129,9 @@ const PercentileBar = memo(function PercentileBar({ label, result }: PercentileB
           </span>
         </div>
       </div>
-      <div className="h-1.5 bg-[#232838] rounded-full overflow-hidden">
+      <div className="h-1.5 bg-muted rounded-full overflow-hidden">
         <div
-          className="h-full rounded-full transition-all duration-500"
+          className="h-full rounded-full transition-all duration-300"
           style={{ width, backgroundColor: color }}
         />
       </div>
@@ -133,14 +174,9 @@ function RolePercentiles({ playerId }: RolePercentilesProps) {
     if (!data) return {};
 
     const cats: Record<string, { key: string; label: string; result: PercentileResult }[]> = {
-      General: [],
-      Combat: [],
-      "Early Game": [],
-      Farming: [],
-      Damage: [],
-      Economy: [],
+      Fight: [],
       Vision: [],
-      Averages: [],
+      Ressources: [],
     };
 
     for (const [key, result] of Object.entries(data.percentiles)) {
@@ -156,14 +192,14 @@ function RolePercentiles({ playerId }: RolePercentilesProps) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-6 w-6 animate-spin text-[#6C757D]" />
+        <Loader2 className="h-6 w-6 animate-spin text-text-muted" />
       </div>
     );
   }
 
   if (error || !data) {
     return (
-      <div className="text-center py-8 text-sm text-[#6C757D]">
+      <div className="text-center py-8 text-sm text-text-muted">
         {error || "No percentile data available"}
       </div>
     );
@@ -172,40 +208,40 @@ function RolePercentiles({ playerId }: RolePercentilesProps) {
   return (
     <div className="space-y-4">
       {/* Header with toggle */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-2">
-          <BarChart3 className="h-3.5 w-3.5 text-[#6C757D]" />
-          <span className="text-xs font-semibold text-[#6C757D] uppercase tracking-wider">
+          <ScoutIcon icon={BarChart3} size="sm" variant="muted" />
+          <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">
             Percentiles — {data.player.role}
           </span>
         </div>
         <div className="flex items-center gap-2">
           {/* Comparison toggle */}
-          <div className="flex items-center bg-[#141621] rounded-lg border border-[#2A2D3A] overflow-hidden">
+          <div className="flex items-center bg-card rounded-lg border border-border overflow-hidden">
             <button
               onClick={handleLeagueMode}
               className={`flex items-center gap-1 px-2.5 py-1 text-xs font-medium transition-colors ${
                 comparisonMode === "league"
-                  ? "bg-[#2A2D3A] text-white"
-                  : "text-[#6C757D] hover:text-[#ADB5BD]"
+                  ? "bg-border text-text-heading"
+                  : "text-text-muted hover:text-text-subtle"
               }`}
             >
-              <Trophy className="h-3 w-3" />
+              <ScoutIcon icon={Trophy} size="xs" variant="muted" />
               League
             </button>
             <button
               onClick={handleTierMode}
               className={`flex items-center gap-1 px-2.5 py-1 text-xs font-medium transition-colors ${
                 comparisonMode === "tier"
-                  ? "bg-[#2A2D3A] text-white"
-                  : "text-[#6C757D] hover:text-[#ADB5BD]"
+                  ? "bg-border text-text-heading"
+                  : "text-text-muted hover:text-text-subtle"
               }`}
             >
-              <Users className="h-3 w-3" />
+              <ScoutIcon icon={Users} size="xs" variant="muted" />
               Tier
             </button>
           </div>
-          <span className="text-xs text-[#6C757D]">
+          <span className="text-xs text-text-muted">
             vs {data.sampleSize} {data.player.role.toLowerCase()}s in{" "}
             {data.comparisonMode === "tier" ? data.player.tier || "same tier" : data.player.league}
           </span>
@@ -217,7 +253,7 @@ function RolePercentiles({ playerId }: RolePercentilesProps) {
         {Object.entries(TIER_COLORS).map(([tier, color]) => (
           <div key={tier} className="flex items-center gap-1">
             <div className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
-            <span className="text-xs text-[#6C757D]">
+            <span className="text-xs text-text-muted">
               {tier} ({TIER_LABELS[tier as keyof typeof TIER_LABELS]})
             </span>
           </div>
@@ -225,23 +261,32 @@ function RolePercentiles({ playerId }: RolePercentilesProps) {
       </div>
 
       {/* Categories */}
-      {Object.entries(categories).map(([category, items]) => {
-        if (items.length === 0) return null;
-        return (
-          <div key={category} className="rounded-lg border border-[#2A2D3A] overflow-hidden">
-            <div className="bg-[#141621] px-3 py-2 border-b border-[#2A2D3A]">
-              <span className="text-xs font-semibold text-[#6C757D] uppercase tracking-wider">
-                {category}
-              </span>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {Object.entries(categories).map(([category, items]) => {
+          if (items.length === 0) return null;
+          return (
+            <div key={category} className="rounded-lg border border-border overflow-hidden">
+              <div
+                className="px-3 py-2 border-b border-border flex items-center gap-2"
+                style={{ backgroundColor: "#141621" }}
+              >
+                {(() => {
+                  const Icon = CATEGORY_ICONS[category];
+                  return Icon ? <Icon className="h-3.5 w-3.5 text-text-muted" /> : null;
+                })()}
+                <span className="text-xs font-bold text-text-muted uppercase tracking-wider">
+                  {category}
+                </span>
+              </div>
+              <div className="bg-surface-elevated p-3 space-y-1">
+                {items.map(({ key, label, result }) => (
+                  <PercentileBar key={key} label={label} result={result} />
+                ))}
+              </div>
             </div>
-            <div className="bg-[#1A1F2E] p-3 space-y-1">
-              {items.map(({ key, label, result }) => (
-                <PercentileBar key={key} label={label} result={result} />
-              ))}
-            </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }

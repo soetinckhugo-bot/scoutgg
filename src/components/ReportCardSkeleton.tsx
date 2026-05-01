@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export default function ReportCardSkeleton() {
   return (
-    <Card className="border-[#E9ECEF]">
+    <Card className="border-border">
       <CardContent className="p-4 space-y-3">
         <div className="flex items-center gap-2">
           <Skeleton className="h-4 w-4 rounded-full" />
@@ -15,7 +15,7 @@ export default function ReportCardSkeleton() {
           <Skeleton className="h-4 w-full" />
           <Skeleton className="h-4 w-3/4" />
         </div>
-        <div className="pt-3 border-t border-[#E9ECEF] space-y-2">
+        <div className="pt-3 border-t border-border space-y-2">
           <div className="flex flex-wrap gap-2">
             <Skeleton className="h-5 w-16" />
             <Skeleton className="h-5 w-20" />

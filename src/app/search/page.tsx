@@ -104,24 +104,25 @@ export default async function SearchPage(props: {
   };
 
   return (
+    <div className="min-h-screen bg-background">
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      <h1 className="text-3xl font-bold text-[#1A1A2E] dark:text-white mb-2">
+      <h1 className="text-3xl font-bold text-text-heading mb-2">
         Advanced Search
       </h1>
-      <p className="text-[#6C757D] dark:text-gray-400 mb-6">
+      <p className="text-text-body mb-6">
         Search across players, teams, and bios with combined filters
       </p>
 
       {/* Search bar */}
       <form className="mb-6">
         <div className="relative max-w-xl">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#6C757D]" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
           <input
             type="search"
             name="q"
             placeholder="Search by name, team, or keyword..."
             defaultValue={searchParams.q || ""}
-            className="w-full pl-10 pr-4 py-2.5 rounded-md border border-[#E9ECEF] dark:border-gray-700 bg-white dark:bg-[#1e293b] text-[#1A1A2E] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0F3460]"
+            className="w-full pl-10 pr-4 py-2.5 rounded-md border border-border bg-card text-text-heading focus:outline-none focus:ring-2 focus:ring-[#0F3460]"
           />
         </div>
       </form>
@@ -129,12 +130,12 @@ export default async function SearchPage(props: {
       {/* Filters */}
       <div className="mb-6 space-y-3">
         <div className="flex items-center gap-2">
-          <Filter className="h-4 w-4 text-[#6C757D]" />
-          <span className="text-sm font-medium text-[#1A1A2E] dark:text-white">Filters:</span>
+          <Filter className="h-4 w-4 text-text-muted" />
+          <span className="text-sm font-medium text-text-heading">Filters:</span>
           {hasFilters && (
             <Link
               href={`/search?q=${searchParams.q || ""}`}
-              className="text-xs text-[#E94560] hover:underline flex items-center gap-1"
+              className="text-xs text-primary-accent hover:underline flex items-center gap-1"
             >
               <X className="h-3 w-3" />
               Clear all
@@ -144,7 +145,7 @@ export default async function SearchPage(props: {
 
         {/* Role */}
         <div className="flex flex-wrap gap-2 items-center">
-          <span className="text-xs text-[#6C757D] dark:text-gray-400 uppercase font-medium">Role:</span>
+          <span className="text-xs text-text-body uppercase font-medium">Role:</span>
           {ROLES.map((role) => (
             <Link
               key={role}
@@ -156,8 +157,8 @@ export default async function SearchPage(props: {
                 variant={searchParams.role === role ? "default" : "outline"}
                 className={`cursor-pointer text-xs ${
                   searchParams.role === role
-                    ? "bg-[#1A1A2E] text-white"
-                    : "border-[#E9ECEF] dark:border-gray-700 text-[#6C757D] dark:text-gray-400 hover:bg-[#F8F9FA] dark:hover:bg-[#1e293b]"
+                    ? "bg-surface-elevated text-text-heading"
+                    : "border-border text-text-body hover:bg-surface-hover"
                 }`}
               >
                 {role}
@@ -168,7 +169,7 @@ export default async function SearchPage(props: {
 
         {/* League */}
         <div className="flex flex-wrap gap-2 items-center">
-          <span className="text-xs text-[#6C757D] dark:text-gray-400 uppercase font-medium">League:</span>
+          <span className="text-xs text-text-body uppercase font-medium">League:</span>
           {LEAGUES.map((league) => (
             <Link
               key={league}
@@ -180,8 +181,8 @@ export default async function SearchPage(props: {
                 variant={searchParams.league === league ? "default" : "outline"}
                 className={`cursor-pointer text-xs ${
                   searchParams.league === league
-                    ? "bg-[#0F3460] text-white"
-                    : "border-[#E9ECEF] dark:border-gray-700 text-[#6C757D] dark:text-gray-400 hover:bg-[#F8F9FA] dark:hover:bg-[#1e293b]"
+                    ? "bg-accent text-text-heading"
+                    : "border-border text-text-body hover:bg-surface-hover"
                 }`}
               >
                 {league}
@@ -192,7 +193,7 @@ export default async function SearchPage(props: {
 
         {/* Status */}
         <div className="flex flex-wrap gap-2 items-center">
-          <span className="text-xs text-[#6C757D] dark:text-gray-400 uppercase font-medium">Status:</span>
+          <span className="text-xs text-text-body uppercase font-medium">Status:</span>
           {STATUSES.map((status) => (
             <Link
               key={status.value}
@@ -204,8 +205,8 @@ export default async function SearchPage(props: {
                 variant={searchParams.status === status.value ? "default" : "outline"}
                 className={`cursor-pointer text-xs ${
                   searchParams.status === status.value
-                    ? "bg-[#E94560] text-white"
-                    : "border-[#E9ECEF] dark:border-gray-700 text-[#6C757D] dark:text-gray-400 hover:bg-[#F8F9FA] dark:hover:bg-[#1e293b]"
+                    ? "bg-primary-accent text-text-heading"
+                    : "border-border text-text-body hover:bg-surface-hover"
                 }`}
               >
                 {status.label}
@@ -216,7 +217,7 @@ export default async function SearchPage(props: {
 
         {/* Min LP */}
         <div className="flex flex-wrap gap-2 items-center">
-          <span className="text-xs text-[#6C757D] dark:text-gray-400 uppercase font-medium">Min Peak LP:</span>
+          <span className="text-xs text-text-body uppercase font-medium">Min Peak LP:</span>
           {["500", "800", "1000", "1200"].map((lp) => (
             <Link
               key={lp}
@@ -228,8 +229,8 @@ export default async function SearchPage(props: {
                 variant={searchParams.minLp === lp ? "default" : "outline"}
                 className={`cursor-pointer text-xs ${
                   searchParams.minLp === lp
-                    ? "bg-yellow-500 text-white"
-                    : "border-[#E9ECEF] dark:border-gray-700 text-[#6C757D] dark:text-gray-400 hover:bg-[#F8F9FA] dark:hover:bg-[#1e293b]"
+                    ? "bg-yellow-500 text-text-heading"
+                    : "border-border text-text-body hover:bg-surface-hover"
                 }`}
               >
                 {lp}+
@@ -240,7 +241,7 @@ export default async function SearchPage(props: {
 
         {/* Max Age */}
         <div className="flex flex-wrap gap-2 items-center">
-          <span className="text-xs text-[#6C757D] dark:text-gray-400 uppercase font-medium">Max Age:</span>
+          <span className="text-xs text-text-body uppercase font-medium">Max Age:</span>
           {["18", "20", "22", "25"].map((age) => (
             <Link
               key={age}
@@ -252,8 +253,8 @@ export default async function SearchPage(props: {
                 variant={searchParams.maxAge === age ? "default" : "outline"}
                 className={`cursor-pointer text-xs ${
                   searchParams.maxAge === age
-                    ? "bg-green-500 text-white"
-                    : "border-[#E9ECEF] dark:border-gray-700 text-[#6C757D] dark:text-gray-400 hover:bg-[#F8F9FA] dark:hover:bg-[#1e293b]"
+                    ? "bg-green-500 text-text-heading"
+                    : "border-border text-text-body hover:bg-surface-hover"
                 }`}
               >
                 ≤ {age}
@@ -265,7 +266,7 @@ export default async function SearchPage(props: {
 
       {/* Results */}
       {searchParams.q && (
-        <p className="text-[#6C757D] dark:text-gray-400 mb-4">
+        <p className="text-text-body mb-4">
           {players.length} result{players.length !== 1 ? "s" : ""} for &quot;{searchParams.q}&quot;
         </p>
       )}
@@ -284,8 +285,8 @@ export default async function SearchPage(props: {
 
       {players.length === 0 && (searchParams.q || hasFilters) && (
         <div className="text-center py-12">
-          <Search className="h-12 w-12 text-[#E9ECEF] dark:text-gray-700 mx-auto mb-4" />
-          <p className="text-[#6C757D] dark:text-gray-400">
+          <Search className="h-12 w-12 text-text-muted mx-auto mb-4" />
+          <p className="text-text-body">
             No players found matching your criteria
           </p>
         </div>
@@ -293,12 +294,13 @@ export default async function SearchPage(props: {
 
       {!searchParams.q && !hasFilters && (
         <div className="text-center py-12">
-          <Search className="h-12 w-12 text-[#E9ECEF] dark:text-gray-700 mx-auto mb-4" />
-          <p className="text-[#6C757D] dark:text-gray-400">
+          <Search className="h-12 w-12 text-text-muted mx-auto mb-4" />
+          <p className="text-text-body">
             Use the search bar and filters to find players
           </p>
         </div>
       )}
+    </div>
     </div>
   );
 }

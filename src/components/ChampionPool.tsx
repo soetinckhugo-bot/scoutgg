@@ -60,7 +60,7 @@ export default function ChampionPool({ championPool }: ChampionPoolProps) {
           return (
             <div
               key={champ.name}
-              className="flex items-center gap-2 bg-[#1e293b] rounded-lg px-3 py-2"
+              className="flex items-center gap-2 bg-card rounded-lg px-3 py-2"
               title={`${champ.name}: ${champ.games} games (${winrate}% pick rate)`}
             >
               <Image
@@ -74,8 +74,8 @@ export default function ChampionPool({ championPool }: ChampionPoolProps) {
                 }}
               />
               <div className="flex flex-col">
-                <span className="text-xs font-medium text-white">{champ.name}</span>
-                <span className="text-xs text-gray-400">{champ.games} games</span>
+                <span className="text-xs font-medium text-text-heading">{champ.name}</span>
+                <span className="text-xs text-text-body">{champ.games} games</span>
               </div>
             </div>
           );

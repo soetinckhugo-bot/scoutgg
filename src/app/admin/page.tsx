@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, memo, Suspense, useMemo } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -48,6 +49,7 @@ import {
   BarChart3,
   Tag,
   RefreshCw,
+  Calendar,
   Loader2,
   Bell,
   Upload,
@@ -62,6 +64,7 @@ import SoloqPotwTab from "./SoloqPotwTab";
 import OracleImportTab from "./OracleImportTab";
 import ProStatsForm from "./ProStatsForm";
 import BehaviorTagsForm from "./BehaviorTagsForm";
+import ReportForm from "./ReportForm";
 import { PageTitle, SectionHeader, DataLabel, DataValue } from "@/components/ui/typography";
 
 interface Player {
@@ -80,12 +83,17 @@ interface Player {
   lolprosUrl: string | null;
   leaguepediaUrl: string | null;
   twitterUrl: string | null;
+  agentTwitterUrl: string | null;
   twitchUrl: string | null;
   riotId: string | null;
   riotPuuid: string | null;
   photoUrl: string | null;
   bio: string | null;
   contractEndDate: string | null;
+  hasPlayedInMajorLeague: boolean;
+  peakElo2Years: number | null;
+  bestProResult: string | null;
+  eyeTestRating: number | null;
   isFeatured: boolean;
   soloqStats?: {
     currentRank: string;
@@ -110,12 +118,6 @@ interface Report {
     pseudo: string;
   };
 }
-
-const VERDICT_OPTIONS = [
-  { value: "Must Sign", label: "Must Sign" },
-  { value: "Monitor", label: "Monitor" },
-  { value: "Pass", label: "Pass" },
-];
 
 const VERDICT_COLORS: Record<string, string> = {
   "Must Sign": "bg-green-100 text-green-800 border-green-200",
@@ -212,10 +214,15 @@ export default function AdminPage() {
       lolprosUrl: "",
       leaguepediaUrl: "",
       twitterUrl: "",
+      agentTwitterUrl: "",
       twitchUrl: "",
       riotId: "",
       photoUrl: "",
       bio: "",
+      hasPlayedInMajorLeague: false,
+      peakElo2Years: null,
+      bestProResult: "",
+      eyeTestRating: null,
       isFeatured: false,
     });
     setIsAddDialogOpen(true);
@@ -240,11 +247,14 @@ export default function AdminPage() {
         lolprosUrl: formData.lolprosUrl || null,
         leaguepediaUrl: formData.leaguepediaUrl || null,
         twitterUrl: formData.twitterUrl || null,
+        agentTwitterUrl: formData.agentTwitterUrl || null,
         twitchUrl: formData.twitchUrl || null,
         photoUrl: formData.photoUrl || null,
+        hasPlayedInMajorLeague: formData.hasPlayedInMajorLeague ?? false,
+        peakElo2Years: formData.peakElo2Years ?? null,
+        bestProResult: formData.bestProResult || null,
+        eyeTestRating: formData.eyeTestRating ?? null,
       };
-      console.log("Sending payload:", JSON.stringify(payload, null, 2));
-
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
@@ -392,12 +402,13 @@ export default function AdminPage() {
 
   if (loading) {
     return (
+      <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-8">
           <Skeleton className="h-9 w-40 mb-2" />
           <Skeleton className="h-5 w-64" />
         </div>
-        <div className="flex flex-wrap gap-0 mb-8 bg-muted/50 rounded-lg border border-border overflow-hidden">
+        <div className="flex flex-wrap gap-0 mb-8 bg-card rounded-lg border border-border overflow-hidden">
           {Array.from({ length: 5 }).map((_, i) => (
             <div key={i} className="flex-1 min-w-[120px] p-4">
               <Skeleton className="h-8 w-12 mb-1" />
@@ -411,7 +422,7 @@ export default function AdminPage() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-border bg-muted">
+                  <tr className="border-b border-border bg-card">
                     {Array.from({ length: 8 }).map((_, i) => (
                       <th key={i} className="text-left p-3">
                         <Skeleton className="h-3 w-16" />
@@ -444,18 +455,30 @@ export default function AdminPage() {
           </div>
         </div>
       </div>
+      </div>
     );
   }
 
   return (
+    <div className="min-h-screen bg-background">
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-8">
-        <PageTitle className="text-[#1A1A2E] dark:text-white mb-2">Admin Dashboard</PageTitle>
-        <p className="text-[#6C757D] dark:text-gray-400">Manage players, reports, edit profiles, upload photos</p>
+        <div className="flex items-start justify-between">
+          <div>
+            <PageTitle className="text-text-heading mb-2">Admin Dashboard</PageTitle>
+            <p className="text-text-body">Manage players, reports, edit profiles, upload photos</p>
+          </div>
+          <Link href="/admin/data-completeness">
+            <Button variant="outline" size="sm" className="gap-1.5">
+              <BarChart3 className="size-4" />
+              Data Completeness
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Stats */}
-      <div className="flex flex-wrap gap-0 mb-8 bg-muted/50 rounded-lg border border-border overflow-hidden">
+      <div className="flex flex-wrap gap-0 mb-8 bg-card rounded-lg border border-border overflow-hidden">
         {[
           { value: stats.totalPlayers, label: "Total Players" },
           { value: stats.freeAgents, label: "Free Agents" },
@@ -465,18 +488,18 @@ export default function AdminPage() {
         ].map((stat, i, arr) => (
           <div
             key={stat.label}
-            className={`flex-1 min-w-[120px] p-4 ${
+            className={`flex-1 min-w-[120px] p-4 flex flex-col gap-1 ${
               i < arr.length - 1 ? "border-r border-border" : ""
             }`}
           >
-            <DataValue highlight className="text-foreground">{stat.value}</DataValue>
+            <DataValue highlight className="text-text-heading">{stat.value}</DataValue>
             <DataLabel className="normal-case">{stat.label}</DataLabel>
           </div>
         ))}
       </div>
 
       <Tabs defaultValue="players" className="w-full">
-        <TabsList className="mb-6">
+        <TabsList className="mb-6 overflow-x-auto scrollbar-hide w-full flex-nowrap">
           <TabsTrigger value="players">Players</TabsTrigger>
           <TabsTrigger value="prospects">
             <TrendingUp className="h-3.5 w-3.5 mr-1" />
@@ -505,11 +528,11 @@ export default function AdminPage() {
           {/* Actions bar */}
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#6C757D]" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
               <Input
                 type="search"
                 placeholder="Search players..."
-                className="pl-10 dark:bg-[#1e293b] dark:border-gray-700 dark:text-white"
+                className="pl-10 bg-card border-border text-text-heading"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -517,14 +540,14 @@ export default function AdminPage() {
             <div className="flex gap-2">
               <Button
                 variant="outline"
-                className="border-[#E9ECEF] dark:border-gray-700 text-[#6C757D] dark:text-gray-400 hover:bg-[#F8F9FA] dark:hover:bg-[#1e293b]"
+                className="border-border text-text-body hover:bg-surface-hover"
                 onClick={() => window.location.href = "/admin/import"}
               >
                 <Upload className="h-4 w-4 mr-2" />
                 Import CSV
               </Button>
               <Button
-                className="bg-[#1A1A2E] text-white hover:bg-[#16213E]"
+                className="bg-surface-elevated text-text-heading hover:bg-secondary"
                 onClick={startAdd}
               >
                 <Plus className="h-4 w-4 mr-2" />
@@ -534,12 +557,12 @@ export default function AdminPage() {
           </div>
 
           {/* Players Table */}
-          <div className="rounded-lg border border-[#E9ECEF] dark:border-gray-700 overflow-hidden">
+          <div className="rounded-lg border border-border overflow-hidden">
             <div className="p-0">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-[#E9ECEF] dark:border-gray-700 bg-[#F8F9FA] dark:bg-[#1e293b]">
+                    <tr className="border-b border-border bg-surface-hover">
                       <th className="text-left p-3"><DataLabel>Player</DataLabel></th>
                       <th className="text-left p-3"><DataLabel>Role</DataLabel></th>
                       <th className="text-left p-3"><DataLabel>Team</DataLabel></th>
@@ -552,7 +575,7 @@ export default function AdminPage() {
                   </thead>
                   <tbody>
                     {filteredPlayers.map((player) => (
-                      <tr key={player.id} className="border-b border-[#E9ECEF] dark:border-gray-700 hover:bg-[#F8F9FA] dark:hover:bg-[#1e293b]">
+                      <tr key={player.id} className="border-b border-border hover:bg-surface-hover">
                         <td className="p-3">
                           <div className="flex items-center gap-3">
                             {player.photoUrl ? (
@@ -564,14 +587,14 @@ export default function AdminPage() {
                                 className="rounded-full object-cover"
                               />
                             ) : (
-                              <div className="w-10 h-10 rounded-full bg-[#1A1A2E] flex items-center justify-center text-sm font-bold text-white">
+                              <div className="w-10 h-10 rounded-full bg-surface-elevated flex items-center justify-center text-sm font-bold text-text-heading">
                                 {(player.pseudo?.[0] ?? "?").toUpperCase()}
                               </div>
                             )}
                             <div>
-                              <p className="font-medium text-[#1A1A2E] dark:text-white">{player.pseudo}</p>
+                              <p className="font-medium text-text-heading">{player.pseudo}</p>
                               {player.realName && (
-                                <p className="text-xs text-[#6C757D] dark:text-gray-400">{player.realName}</p>
+                                <p className="text-xs text-text-body">{player.realName}</p>
                               )}
                             </div>
                           </div>
@@ -579,14 +602,14 @@ export default function AdminPage() {
                         <td className="p-3">
                           <Badge variant="secondary">{player.role}</Badge>
                         </td>
-                        <td className="p-3 text-sm text-[#6C757D] dark:text-gray-400">
+                        <td className="p-3 text-sm text-text-body">
                           {player.currentTeam || "—"}
                         </td>
-                        <td className="p-3 text-sm text-[#6C757D] dark:text-gray-400">{player.league}</td>
+                        <td className="p-3 text-sm text-text-body">{player.league}</td>
                         <td className="p-3">
                           <Badge
                             variant="outline"
-                            className={STATUS_COLORS[player.status] || "border-gray-300 text-gray-600"}
+                            className={STATUS_COLORS[player.status] || "border-border text-text-muted"}
                           >
                             {formatStatus(player.status)}
                           </Badge>
@@ -595,28 +618,28 @@ export default function AdminPage() {
                           <div className="flex gap-1">
                             {player.opggUrl && (
                               <a href={player.opggUrl} target="_blank" rel="noopener noreferrer">
-                                <Badge variant="outline" className="text-xs cursor-pointer hover:bg-[#F8F9FA] dark:hover:bg-[#1e293b]">
+                                <Badge variant="outline" className="text-xs cursor-pointer hover:bg-surface-hover">
                                   op.gg <ExternalLink className="h-3 w-3 ml-1" />
                                 </Badge>
                               </a>
                             )}
                             {player.golggUrl && (
                               <a href={player.golggUrl} target="_blank" rel="noopener noreferrer">
-                                <Badge variant="outline" className="text-xs cursor-pointer hover:bg-[#F8F9FA] dark:hover:bg-[#1e293b]">
+                                <Badge variant="outline" className="text-xs cursor-pointer hover:bg-surface-hover">
                                   Gol <ExternalLink className="h-3 w-3 ml-1" />
                                 </Badge>
                               </a>
                             )}
                             {player.lolprosUrl && (
                               <a href={player.lolprosUrl} target="_blank" rel="noopener noreferrer">
-                                <Badge variant="outline" className="text-xs cursor-pointer hover:bg-[#F8F9FA] dark:hover:bg-[#1e293b]">
+                                <Badge variant="outline" className="text-xs cursor-pointer hover:bg-surface-hover">
                                   Pros <ExternalLink className="h-3 w-3 ml-1" />
                                 </Badge>
                               </a>
                             )}
                             {player.leaguepediaUrl && (
                               <a href={player.leaguepediaUrl} target="_blank" rel="noopener noreferrer">
-                                <Badge variant="outline" className="text-xs cursor-pointer hover:bg-[#F8F9FA] dark:hover:bg-[#1e293b]">
+                                <Badge variant="outline" className="text-xs cursor-pointer hover:bg-surface-hover">
                                   Leaguepedia <ExternalLink className="h-3 w-3 ml-1" />
                                 </Badge>
                               </a>
@@ -628,24 +651,24 @@ export default function AdminPage() {
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-8 w-8"
+                              className="h-10 w-10 min-h-[44px] min-w-[44px]"
                               onClick={() => toggleFeatured(player.id, player.isFeatured)}
                               title="Toggle POTM"
                             >
                               <Star
                                 className={`h-4 w-4 ${
-                                  player.isFeatured ? "text-[#E94560] fill-[#E94560]" : "text-[#6C757D]"
+                                  player.isFeatured ? "text-primary-accent fill-primary-accent" : "text-text-muted"
                                 }`}
                               />
                             </Button>
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-8 w-8"
+                              className="h-10 w-10 min-h-[44px] min-w-[44px]"
                               onClick={() => syncSoloq(player.id)}
                               title="Sync SoloQ from Riot"
                             >
-                              <Zap className="h-4 w-4 text-[#28A745]" />
+                              <Zap className="h-4 w-4 text-success" />
                             </Button>
                           </div>
                         </td>
@@ -659,10 +682,10 @@ export default function AdminPage() {
                             >
                               <DialogTrigger>
                                 <div
-                                  className="inline-flex items-center justify-center h-8 w-8 rounded-md hover:bg-accent cursor-pointer"
+                                  className="inline-flex items-center justify-center h-10 w-10 rounded-md hover:bg-surface-hover cursor-pointer min-h-[44px] min-w-[44px]"
                                   onClick={() => startEdit(player)}
                                 >
-                                  <Edit className="h-4 w-4 text-[#0F3460]" />
+                                  <Edit className="h-4 w-4 text-accent" />
                                 </div>
                               </DialogTrigger>
                               <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
@@ -704,10 +727,10 @@ export default function AdminPage() {
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-8 w-8"
+                              className="h-10 w-10 min-h-[44px] min-w-[44px]"
                               onClick={() => deletePlayer(player.id)}
                             >
-                              <Trash2 className="h-4 w-4 text-[#E94560]" />
+                              <Trash2 className="h-4 w-4 text-primary-accent" />
                             </Button>
                           </div>
                         </td>
@@ -718,8 +741,8 @@ export default function AdminPage() {
               </div>
               {/* Players Pagination */}
               {playersTotalPages > 1 && (
-                <div className="flex items-center justify-between px-4 py-3 border-t border-[#E9ECEF] dark:border-gray-700">
-                  <p className="text-sm text-[#6C757D] dark:text-gray-400">
+                <div className="flex items-center justify-between px-4 py-3 border-t border-border">
+                  <p className="text-sm text-text-body">
                     {playersTotal} players — Page {playersPage} of {playersTotalPages}
                   </p>
                   <div className="flex items-center gap-2">
@@ -747,31 +770,31 @@ export default function AdminPage() {
         </TabsContent>
 
         <TabsContent value="prospects">
-          <Suspense fallback={<div className="py-8 text-center text-[#6C757D]">Loading prospects...</div>}>
+          <Suspense fallback={<div className="py-8 text-center text-text-muted">Loading prospects...</div>}>
             <ProspectsTab />
           </Suspense>
         </TabsContent>
 
         <TabsContent value="soloq-potw">
-          <Suspense fallback={<div className="py-8 text-center text-[#6C757D]">Loading SoloQ POTW...</div>}>
+          <Suspense fallback={<div className="py-8 text-center text-text-muted">Loading SoloQ POTW...</div>}>
             <SoloqPotwTab />
           </Suspense>
         </TabsContent>
 
         <TabsContent value="oracle-import">
-          <Suspense fallback={<div className="py-8 text-center text-[#6C757D]">Loading import...</div>}>
+          <Suspense fallback={<div className="py-8 text-center text-text-muted">Loading import...</div>}>
             <OracleImportTab />
           </Suspense>
         </TabsContent>
 
         <TabsContent value="sync">
-          <Suspense fallback={<div className="py-8 text-center text-[#6C757D]">Loading sync...</div>}>
+          <Suspense fallback={<div className="py-8 text-center text-text-muted">Loading sync...</div>}>
             <SyncTab />
           </Suspense>
         </TabsContent>
 
         <TabsContent value="alerts">
-          <Suspense fallback={<div className="py-8 text-center text-[#6C757D]">Loading alerts...</div>}>
+          <Suspense fallback={<div className="py-8 text-center text-text-muted">Loading alerts...</div>}>
             <AlertsTab />
           </Suspense>
         </TabsContent>
@@ -780,17 +803,17 @@ export default function AdminPage() {
           {/* Reports Actions bar */}
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#6C757D]" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
               <Input
                 type="search"
                 placeholder="Search reports..."
-                className="pl-10 dark:bg-[#1e293b] dark:border-gray-700 dark:text-white"
+                className="pl-10 bg-card border-border text-text-heading"
                 value={reportSearchQuery}
                 onChange={(e) => setReportSearchQuery(e.target.value)}
               />
             </div>
             <Button
-              className="bg-[#1A1A2E] text-white hover:bg-[#16213E]"
+              className="bg-surface-elevated text-text-heading hover:bg-secondary"
               onClick={startAddReport}
             >
               <Plus className="h-4 w-4 mr-2" />
@@ -799,12 +822,12 @@ export default function AdminPage() {
           </div>
 
           {/* Reports Table */}
-          <div className="rounded-lg border border-[#E9ECEF] dark:border-gray-700 overflow-hidden">
+          <div className="rounded-lg border border-border overflow-hidden">
             <div className="p-0">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-[#E9ECEF] dark:border-gray-700 bg-[#F8F9FA] dark:bg-[#1e293b]">
+                    <tr className="border-b border-border bg-surface-hover">
                       <th className="text-left p-3"><DataLabel>Title</DataLabel></th>
                       <th className="text-left p-3"><DataLabel>Player</DataLabel></th>
                       <th className="text-left p-3"><DataLabel>Author</DataLabel></th>
@@ -816,16 +839,16 @@ export default function AdminPage() {
                   </thead>
                   <tbody>
                     {filteredReports.map((report) => (
-                      <tr key={report.id} className="border-b border-[#E9ECEF] dark:border-gray-700 hover:bg-[#F8F9FA] dark:hover:bg-[#1e293b]">
+                      <tr key={report.id} className="border-b border-border hover:bg-surface-hover">
                         <td className="p-3">
-                          <p className="font-medium text-[#1A1A2E] dark:text-white">{report.title}</p>
+                          <p className="font-medium text-text-heading">{report.title}</p>
                         </td>
-                        <td className="p-3 text-sm text-[#6C757D] dark:text-gray-400">{report.player.pseudo}</td>
-                        <td className="p-3 text-sm text-[#6C757D] dark:text-gray-400">{report.author}</td>
+                        <td className="p-3 text-sm text-text-body">{report.player.pseudo}</td>
+                        <td className="p-3 text-sm text-text-body">{report.author}</td>
                         <td className="p-3">
                           <Badge
                             variant="outline"
-                            className={VERDICT_COLORS[report.verdict] || "border-gray-300 text-gray-600"}
+                            className={VERDICT_COLORS[report.verdict] || "border-border text-text-muted"}
                           >
                             {report.verdict}
                           </Badge>
@@ -833,12 +856,12 @@ export default function AdminPage() {
                         <td className="p-3">
                           <Badge
                             variant="outline"
-                            className={report.isPremium ? "bg-purple-100 text-purple-800 border-purple-200" : "bg-gray-100 text-gray-800 border-gray-200"}
+                            className={report.isPremium ? "bg-purple-100 text-purple-800 border-purple-200" : "bg-surface-hover text-text-heading border-border"}
                           >
                             {report.isPremium ? "Premium" : "Free"}
                           </Badge>
                         </td>
-                        <td className="p-3 text-sm text-[#6C757D] dark:text-gray-400">
+                        <td className="p-3 text-sm text-text-body">
                           {new Date(report.publishedAt).toLocaleDateString()}
                         </td>
                         <td className="p-3">
@@ -851,10 +874,10 @@ export default function AdminPage() {
                             >
                               <DialogTrigger>
                                 <div
-                                  className="inline-flex items-center justify-center h-8 w-8 rounded-md hover:bg-accent cursor-pointer"
+                                  className="inline-flex items-center justify-center h-10 w-10 rounded-md hover:bg-surface-hover cursor-pointer min-h-[44px] min-w-[44px]"
                                   onClick={() => startEditReport(report)}
                                 >
-                                  <Edit className="h-4 w-4 text-[#0F3460]" />
+                                  <Edit className="h-4 w-4 text-accent" />
                                 </div>
                               </DialogTrigger>
                               <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -873,10 +896,10 @@ export default function AdminPage() {
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-8 w-8"
+                              className="h-10 w-10 min-h-[44px] min-w-[44px]"
                               onClick={() => deleteReport(report.id)}
                             >
-                              <Trash2 className="h-4 w-4 text-[#E94560]" />
+                              <Trash2 className="h-4 w-4 text-primary-accent" />
                             </Button>
                           </div>
                         </td>
@@ -887,8 +910,8 @@ export default function AdminPage() {
               </div>
               {/* Reports Pagination */}
               {reportsTotalPages > 1 && (
-                <div className="flex items-center justify-between px-4 py-3 border-t border-[#E9ECEF] dark:border-gray-700">
-                  <p className="text-sm text-[#6C757D] dark:text-gray-400">
+                <div className="flex items-center justify-between px-4 py-3 border-t border-border">
+                  <p className="text-sm text-text-body">
                     {reportsTotal} reports — Page {reportsPage} of {reportsTotalPages}
                   </p>
                   <div className="flex items-center gap-2">
@@ -946,6 +969,7 @@ export default function AdminPage() {
           />
         </DialogContent>
       </Dialog>
+    </div>
     </div>
   );
 }
@@ -1086,7 +1110,7 @@ function PlayerForm({
             onChange={(e) => setFormData({ ...formData, riotId: e.target.value })}
             placeholder="Riot ID (e.g. Yoshua Sidestep#KUBI)"
           />
-          <p className="text-xs text-[#6C757D] dark:text-gray-400 self-center">
+          <p className="text-xs text-text-body self-center">
             Used to sync SoloQ stats from Riot API
           </p>
         </div>
@@ -1121,6 +1145,11 @@ function PlayerForm({
             placeholder="Twitter URL"
           />
           <Input
+            value={formData.agentTwitterUrl || ""}
+            onChange={(e) => setFormData({ ...formData, agentTwitterUrl: e.target.value })}
+            placeholder="Agent Twitter URL"
+          />
+          <Input
             value={formData.twitchUrl || ""}
             onChange={(e) => setFormData({ ...formData, twitchUrl: e.target.value })}
             placeholder="Twitch URL"
@@ -1129,6 +1158,55 @@ function PlayerForm({
             value={formData.photoUrl || ""}
             onChange={(url) => setFormData({ ...formData, photoUrl: url })}
           />
+        </div>
+      </div>
+
+      {/* Prospect Scoring Fields */}
+      <div className="space-y-2">
+        <Label>Prospect Scoring</Label>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="peakElo2Years" className="text-xs text-text-muted">Peak ELO (last 2 years)</Label>
+            <Input
+              id="peakElo2Years"
+              type="number"
+              value={formData.peakElo2Years || ""}
+              onChange={(e) => setFormData({ ...formData, peakElo2Years: e.target.value ? parseInt(e.target.value) : null })}
+              placeholder="e.g. 1200"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="bestProResult" className="text-xs text-text-muted">Best Pro Result</Label>
+            <Input
+              id="bestProResult"
+              value={formData.bestProResult || ""}
+              onChange={(e) => setFormData({ ...formData, bestProResult: e.target.value })}
+              placeholder="e.g. Winner, Final, Semi..."
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="eyeTestRating" className="text-xs text-text-muted">Eye Test (0-5)</Label>
+            <Input
+              id="eyeTestRating"
+              type="number"
+              min={0}
+              max={5}
+              step={0.1}
+              value={formData.eyeTestRating || ""}
+              onChange={(e) => setFormData({ ...formData, eyeTestRating: e.target.value ? parseFloat(e.target.value) : null })}
+              placeholder="0 to 5"
+            />
+          </div>
+          <div className="flex items-center gap-2 pt-6">
+            <Checkbox
+              id="hasPlayedInMajorLeague"
+              checked={formData.hasPlayedInMajorLeague || false}
+              onCheckedChange={(checked) => setFormData({ ...formData, hasPlayedInMajorLeague: checked === true })}
+            />
+            <Label htmlFor="hasPlayedInMajorLeague" className="text-xs text-text-muted cursor-pointer">
+              Has played in T1/T2 major league (excludes from prospects)
+            </Label>
+          </div>
         </div>
       </div>
 
@@ -1151,14 +1229,14 @@ function PlayerForm({
             value={formData.contractEndDate || ""}
             onChange={(e) => setFormData({ ...formData, contractEndDate: e.target.value })}
           />
-          <p className="text-xs text-[#6C757D] dark:text-gray-400">
+          <p className="text-xs text-text-body">
             Used for contract expiry alerts
           </p>
         </div>
       </div>
 
       <div className="flex gap-2 pt-4">
-        <Button className="bg-[#1A1A2E] text-white hover:bg-[#16213E]" onClick={onSave}>
+        <Button className="bg-surface-elevated text-text-heading hover:bg-secondary" onClick={onSave}>
           <Save className="h-4 w-4 mr-2" />
           Save
         </Button>
@@ -1174,6 +1252,18 @@ function PlayerForm({
 function AlertsTab() {
   const [checking, setChecking] = useState(false);
   const [lastResult, setLastResult] = useState<any>(null);
+  const [expiringContracts, setExpiringContracts] = useState<any[]>([]);
+  const [loadingContracts, setLoadingContracts] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/admin/contract-expiry")
+      .then((r) => r.json())
+      .then((data) => {
+        setExpiringContracts(data.players || []);
+        setLoadingContracts(false);
+      })
+      .catch(() => setLoadingContracts(false));
+  }, []);
 
   const handleCheck = async () => {
     setChecking(true);
@@ -1197,27 +1287,67 @@ function AlertsTab() {
 
   return (
     <div className="space-y-6">
-      <Card className="border-[#E9ECEF] dark:border-gray-700">
+      {/* Contract Expiry Widget */}
+      <Card className="border-border">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
-            <Bell className="h-5 w-5 text-[#E94560]" />
+            <Calendar className="h-5 w-5 text-primary-accent" />
+            Contract Expiry Tracker
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {loadingContracts ? (
+            <div className="py-4 text-center text-text-muted">Loading...</div>
+          ) : expiringContracts.length === 0 ? (
+            <p className="text-sm text-text-muted">No contracts expiring in the next 90 days.</p>
+          ) : (
+            <div className="space-y-2">
+              {expiringContracts.map((player: any) => (
+                <div key={player.id} className="flex items-center justify-between p-3 bg-surface-hover rounded-lg border border-border">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-surface-elevated flex items-center justify-center text-sm font-bold text-text-heading">
+                      {player.pseudo[0]}
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-text-heading">{player.pseudo}</p>
+                      <p className="text-xs text-text-muted">{player.role} • {player.league} • {player.currentTeam || "No team"}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <Badge className={player.daysUntil <= 30 ? "bg-red-500/20 text-red-400 border-red-500/30" : player.daysUntil <= 60 ? "bg-orange-500/20 text-orange-400 border-orange-500/30" : "bg-yellow-500/20 text-yellow-400 border-yellow-500/30"}>
+                      {player.daysUntil} days
+                    </Badge>
+                    <p className="text-xs text-text-muted mt-1">{new Date(player.contractEndDate).toLocaleDateString()}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card className="border-border">
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Bell className="h-5 w-5 text-primary-accent" />
             Smart Alerts
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-sm text-[#6C757D] dark:text-gray-400">
+          <p className="text-sm text-text-body">
             Checks all watchlisted players for significant changes and creates notifications:
           </p>
-          <ul className="text-sm text-[#6C757D] dark:text-gray-400 space-y-1 list-disc list-inside">
+          <ul className="text-sm text-text-body space-y-1 list-disc list-inside">
             <li>Rank milestones (Challenger, Grandmaster)</li>
             <li>High LP gains (500+ LP)</li>
             <li>Free agent status changes</li>
+            <li>Contract expiry (30, 60, 90 days)</li>
             <li>New scouting reports published</li>
           </ul>
           <Button
             onClick={handleCheck}
             disabled={checking}
-            className="bg-[#1A1A2E] text-white hover:bg-[#16213E]"
+            className="bg-surface-elevated text-text-heading hover:bg-secondary"
           >
             {checking ? (
               <Loader2 className="h-4 w-4 animate-spin mr-2" />
@@ -1230,16 +1360,16 @@ function AlertsTab() {
       </Card>
 
       {lastResult?.alertsCreated !== undefined && (
-        <Card className="border-[#E9ECEF] dark:border-gray-700">
+        <Card className="border-border">
           <CardHeader>
             <CardTitle className="text-lg">Last Check Result</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-              <div className="text-3xl font-bold text-green-600 dark:text-green-400">
+            <div className="text-center p-4 bg-green-900/20 rounded-lg">
+              <div className="text-3xl font-bold text-green-600 text-green-400">
                 {lastResult.alertsCreated}
               </div>
-              <div className="text-sm text-green-700 dark:text-green-400">
+              <div className="text-sm text-green-700 text-green-400">
                 alerts created
               </div>
             </div>
@@ -1276,22 +1406,22 @@ function SyncTab() {
 
   return (
     <div className="space-y-6">
-      <Card className="border-[#E9ECEF] dark:border-gray-700">
+      <Card className="border-border">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
-            <RefreshCw className="h-5 w-5 text-[#E94560]" />
+            <RefreshCw className="h-5 w-5 text-primary-accent" />
             Sync All Player Stats
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-sm text-[#6C757D] dark:text-gray-400">
+          <p className="text-sm text-text-body">
             This will fetch the latest SoloQ stats (rank, LP, winrate, recent matches)
             for all players that have a Riot PUUID configured.
           </p>
           <Button
             onClick={handleSync}
             disabled={syncing}
-            className="bg-[#1A1A2E] text-white hover:bg-[#16213E]"
+            className="bg-surface-elevated text-text-heading hover:bg-secondary"
           >
             {syncing ? (
               <Loader2 className="h-4 w-4 animate-spin mr-2" />
@@ -1304,39 +1434,39 @@ function SyncTab() {
       </Card>
 
       {lastResult?.summary && (
-        <Card className="border-[#E9ECEF] dark:border-gray-700">
+        <Card className="border-border">
           <CardHeader>
             <CardTitle className="text-lg">Last Sync Result</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="text-center p-4 bg-[#F8F9FA] dark:bg-[#1e293b] rounded-lg">
-                <div className="text-2xl font-bold text-[#1A1A2E] dark:text-white">
+              <div className="text-center p-4 bg-surface-hover rounded-lg">
+                <div className="text-2xl font-bold text-text-heading">
                   {lastResult.summary.total}
                 </div>
-                <div className="text-xs text-[#6C757D] dark:text-gray-400">Total Players</div>
+                <div className="text-xs text-text-body">Total Players</div>
               </div>
-              <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+              <div className="text-center p-4 bg-green-900/20 rounded-lg">
+                <div className="text-2xl font-bold text-green-600 text-green-400">
                   {lastResult.summary.success}
                 </div>
-                <div className="text-xs text-green-700 dark:text-green-400">Success</div>
+                <div className="text-xs text-green-700 text-green-400">Success</div>
               </div>
-              <div className="text-center p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
-                <div className="text-2xl font-bold text-red-600 dark:text-red-400">
+              <div className="text-center p-4 bg-red-900/20 rounded-lg">
+                <div className="text-2xl font-bold text-red-600 text-red-400">
                   {lastResult.summary.failed}
                 </div>
-                <div className="text-xs text-red-700 dark:text-red-400">Failed</div>
+                <div className="text-xs text-red-700 text-red-400">Failed</div>
               </div>
-              <div className="text-center p-4 bg-[#F8F9FA] dark:bg-[#1e293b] rounded-lg">
-                <div className="text-2xl font-bold text-[#1A1A2E] dark:text-white">
+              <div className="text-center p-4 bg-surface-hover rounded-lg">
+                <div className="text-2xl font-bold text-text-heading">
                   {lastResult.results?.filter((r: any) => r.error?.includes("No riotPuuid")).length || 0}
                 </div>
-                <div className="text-xs text-[#6C757D] dark:text-gray-400">Missing PUUID</div>
+                <div className="text-xs text-text-body">Missing PUUID</div>
               </div>
             </div>
             {lastResult.summary.startedAt && (
-              <p className="text-xs text-[#6C757D] dark:text-gray-400 mt-4 text-center">
+              <p className="text-xs text-text-body mt-4 text-center">
                 Started: {new Date(lastResult.summary.startedAt).toLocaleString()} ·
                 Completed: {new Date(lastResult.summary.completedAt).toLocaleString()}
               </p>
@@ -1346,18 +1476,18 @@ function SyncTab() {
       )}
 
       {lastResult?.results && lastResult.results.some((r: any) => !r.success) && (
-        <Card className="border-[#E9ECEF] dark:border-gray-700">
+        <Card className="border-border">
           <CardHeader>
-            <CardTitle className="text-lg text-red-600 dark:text-red-400">Failed Syncs</CardTitle>
+            <CardTitle className="text-lg text-red-600 text-red-400">Failed Syncs</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="divide-y divide-[#E9ECEF] dark:divide-gray-700 max-h-64 overflow-y-auto">
+            <div className="divide-y divide-border max-h-64 overflow-y-auto">
               {lastResult.results
                 .filter((r: any) => !r.success)
                 .map((r: any) => (
                   <div key={r.playerId} className="py-2 flex items-center justify-between">
                     <span className="font-medium text-sm">{r.pseudo}</span>
-                    <span className="text-xs text-red-600 dark:text-red-400">{r.error}</span>
+                    <span className="text-xs text-red-600 text-red-400">{r.error}</span>
                   </div>
                 ))}
             </div>
@@ -1368,133 +1498,4 @@ function SyncTab() {
   );
 }
 
-// Report Form Component
-function ReportForm({
-  players,
-  formData,
-  setFormData,
-  onSave,
-  onCancel,
-}: {
-  players: Player[];
-  formData: Partial<Report>;
-  setFormData: (data: Partial<Report>) => void;
-  onSave: () => void;
-  onCancel: () => void;
-}) {
-  return (
-    <div className="space-y-4 py-4">
-      <div className="space-y-2">
-        <Label htmlFor="reportPlayer">Player *</Label>
-        <Select
-          value={formData.playerId || ""}
-          onValueChange={(v: string | null) => setFormData({ ...formData, playerId: v || "" })}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select a player" />
-          </SelectTrigger>
-          <SelectContent>
-            {players.map((p) => (
-              <SelectItem key={p.id} value={p.id}>{p.pseudo}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="reportTitle">Title *</Label>
-        <Input
-          id="reportTitle"
-          value={formData.title || ""}
-          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-          placeholder="Scouting Report: Adam"
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="reportContent">Content</Label>
-        <Textarea
-          id="reportContent"
-          value={formData.content || ""}
-          onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-          placeholder="Detailed analysis..."
-          rows={4}
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="reportStrengths">Strengths (comma-separated)</Label>
-        <Textarea
-          id="reportStrengths"
-          value={formData.strengths || ""}
-          onChange={(e) => setFormData({ ...formData, strengths: e.target.value })}
-          placeholder="Strong laning, Good macro, ..."
-          rows={2}
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="reportWeaknesses">Weaknesses (comma-separated)</Label>
-        <Textarea
-          id="reportWeaknesses"
-          value={formData.weaknesses || ""}
-          onChange={(e) => setFormData({ ...formData, weaknesses: e.target.value })}
-          placeholder="Champion pool, Roaming, ..."
-          rows={2}
-        />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="reportVerdict">Verdict *</Label>
-          <Select
-            value={formData.verdict || "Monitor"}
-            onValueChange={(v: string | null) => setFormData({ ...formData, verdict: v || "Monitor" })}
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {VERDICT_OPTIONS.map((opt) => (
-                <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="reportAuthor">Author *</Label>
-          <Input
-            id="reportAuthor"
-            value={formData.author || ""}
-            onChange={(e) => setFormData({ ...formData, author: e.target.value })}
-            placeholder="Scout Name"
-          />
-        </div>
-      </div>
-
-      <div className="flex items-center gap-2 pt-2">
-        <Checkbox
-          id="reportIsPremium"
-          checked={formData.isPremium || false}
-          onCheckedChange={(checked) => setFormData({ ...formData, isPremium: checked === true })}
-        />
-        <Label htmlFor="reportIsPremium" className="cursor-pointer">
-          Premium Report
-        </Label>
-      </div>
-
-      <div className="flex gap-2 pt-4">
-        <Button className="bg-[#1A1A2E] text-white hover:bg-[#16213E]" onClick={onSave}>
-          <Save className="h-4 w-4 mr-2" />
-          Save
-        </Button>
-        <Button variant="outline" onClick={onCancel}>
-          <X className="h-4 w-4 mr-2" />
-          Cancel
-        </Button>
-      </div>
-    </div>
-  );
-}
 

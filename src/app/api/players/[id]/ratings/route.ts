@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { db } from "@/lib/server/db";
 import { authOptions } from "@/lib/server/auth-options";
+import { logger } from "@/lib/logger";
 
 function getUserId(session: any): string | null {
   return session?.user?.email || null;
@@ -54,7 +55,7 @@ export async function GET(
 
     return NextResponse.json({ ratings, count, average: avg });
   } catch (error) {
-    console.error("Error fetching ratings:", error);
+    logger.error("Error fetching ratings:", { error });
     return NextResponse.json(
       { error: "Failed to fetch ratings" },
       { status: 500 }
@@ -111,7 +112,7 @@ export async function POST(
 
     return NextResponse.json(rating);
   } catch (error) {
-    console.error("Error saving rating:", error);
+    logger.error("Error saving rating:", { error });
     return NextResponse.json(
       { error: "Failed to save rating" },
       { status: 500 }

@@ -4,6 +4,13 @@ import { withSentryConfig } from "@sentry/nextjs";
 const nextConfig: NextConfig = {
   outputFileTracingRoot: process.cwd(),
   allowedDevOrigins: ["192.168.1.28", "localhost", "127.0.0.1"],
+  webpack: (config) => {
+    config.ignoreWarnings = [
+      { module: /opentelemetry\/instrumentation/ },
+      { module: /@prisma\/instrumentation/ },
+    ];
+    return config;
+  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "cdn.discordapp.com" },
@@ -19,6 +26,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "ddragon.leagueoflegends.com" },
       { protocol: "https", hostname: "**.op.gg" },
       { protocol: "http", hostname: "localhost" },
+      { protocol: "https", hostname: "flagcdn.com" },
     ],
   },
   experimental: {

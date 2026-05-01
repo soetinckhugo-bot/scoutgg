@@ -71,8 +71,8 @@ export default function PlayerSelector() {
   return (
     <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6 lg:px-8">
       <div className="text-center mb-8">
-        <h1 className="text-2xl font-bold text-[#E9ECEF] mb-2">Compare Players</h1>
-        <p className="text-[#6C757D]">Select 2 players to compare them head-to-head</p>
+        <h1 className="text-2xl font-bold text-text-heading mb-2">Compare Players</h1>
+        <p className="text-text-muted">Select 2 players to compare them head-to-head</p>
       </div>
 
       {/* Selected Players */}
@@ -82,15 +82,15 @@ export default function PlayerSelector() {
           return (
             <div
               key={idx}
-              className={`rounded-xl border border-[#2A2D3A] p-4 text-center ${
-                player ? "bg-[#141621]" : "bg-[#0f1117] border-dashed"
+              className={`rounded-xl border border-border p-4 text-center ${
+                player ? "bg-card" : "bg-background border-dashed"
               }`}
             >
               {player ? (
                 <div className="relative">
                   <button
                     onClick={() => removePlayer(player.id)}
-                    className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-[#2A2D3A] text-[#6C757D] hover:text-white flex items-center justify-center transition-colors"
+                    className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-border text-text-muted hover:text-text-heading flex items-center justify-center transition-colors"
                   >
                     <X className="h-3 w-3" />
                   </button>
@@ -103,24 +103,24 @@ export default function PlayerSelector() {
                       className="rounded-full object-cover mx-auto mb-2"
                     />
                   ) : (
-                    <div className="w-12 h-12 rounded-full bg-[#232838] flex items-center justify-center text-lg font-bold text-[#ADB5BD] mx-auto mb-2">
+                    <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center text-lg font-bold text-text-subtle mx-auto mb-2">
                       {(player.pseudo?.[0] ?? "?").toUpperCase()}
                     </div>
                   )}
-                  <h3 className="font-semibold text-[#E9ECEF] text-sm">{player.pseudo}</h3>
+                  <h3 className="font-semibold text-text-heading text-sm">{player.pseudo}</h3>
                   <div className="flex items-center justify-center gap-1 mt-1">
                     <Badge className={`text-xs h-4 px-1 ${ROLE_COLORS[player.role] || ""}`}>
                       {player.role}
                     </Badge>
-                    <span className="text-xs text-[#6C757D]">{player.league}</span>
+                    <span className="text-xs text-text-muted">{player.league}</span>
                   </div>
                 </div>
               ) : (
                 <div className="py-4">
-                  <div className="w-12 h-12 rounded-full bg-[#1A1D29] border border-[#2A2D3A] flex items-center justify-center mx-auto mb-2">
-                    <span className="text-lg text-[#6C757D]">?</span>
+                  <div className="w-12 h-12 rounded-full bg-surface-hover border border-border flex items-center justify-center mx-auto mb-2">
+                    <span className="text-lg text-text-muted">?</span>
                   </div>
-                  <p className="text-sm text-[#6C757D]">Player {idx + 1}</p>
+                  <p className="text-sm text-text-muted">Player {idx + 1}</p>
                 </div>
               )}
             </div>
@@ -131,27 +131,27 @@ export default function PlayerSelector() {
       {/* Search */}
       {selected.length < 2 && (
         <div className="relative mb-4">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#6C757D]" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
           <Input
             type="search"
             placeholder="Search player to add..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="pl-10 bg-[#1A1D29] border-[#2A2D3A] text-white placeholder:text-[#6C757D]"
+            className="pl-10 bg-surface-hover border-border text-text-heading placeholder:text-text-muted"
           />
         </div>
       )}
 
       {/* Results */}
       {results.length > 0 && selected.length < 2 && (
-        <div className="rounded-xl border border-[#2A2D3A] bg-[#141621] overflow-hidden mb-6">
+        <div className="rounded-xl border border-border bg-card overflow-hidden mb-6">
           {results
             .filter((r) => !selected.find((s) => s.id === r.id))
             .map((player) => (
               <button
                 key={player.id}
                 onClick={() => addPlayer(player)}
-                className="flex items-center gap-3 w-full px-4 py-3 hover:bg-[#1A1D29] transition-colors text-left"
+                className="flex items-center gap-3 w-full px-4 py-3 hover:bg-surface-hover transition-colors text-left"
               >
                 {player.photoUrl ? (
                   <Image
@@ -162,39 +162,39 @@ export default function PlayerSelector() {
                     className="rounded-full object-cover"
                   />
                 ) : (
-                  <div className="w-8 h-8 rounded-full bg-[#232838] flex items-center justify-center text-xs font-bold text-[#ADB5BD]">
+                  <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs font-bold text-text-subtle">
                     {(player.pseudo?.[0] ?? "?").toUpperCase()}
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-[#E9ECEF]">{player.pseudo}</span>
+                    <span className="text-sm font-medium text-text-heading">{player.pseudo}</span>
                     <Badge className={`text-xs h-4 px-1 ${ROLE_COLORS[player.role] || ""}`}>
                       {player.role}
                     </Badge>
                   </div>
                   {player.realName && (
-                    <p className="text-xs text-[#6C757D]">{player.realName}</p>
+                    <p className="text-xs text-text-muted">{player.realName}</p>
                   )}
                 </div>
-                <ArrowRight className="h-4 w-4 text-[#6C757D]" />
+                <ArrowRight className="h-4 w-4 text-text-muted" />
               </button>
             ))}
           {results.filter((r) => !selected.find((s) => s.id === r.id)).length === 0 && (
-            <div className="px-4 py-3 text-sm text-[#6C757D]">All results already selected</div>
+            <div className="px-4 py-3 text-sm text-text-muted">All results already selected</div>
           )}
         </div>
       )}
 
       {loading && query.trim().length >= 2 && (
-        <div className="text-sm text-[#6C757D] mb-4">Loading...</div>
+        <div className="text-sm text-text-muted mb-4">Loading...</div>
       )}
 
       {/* Compare Button */}
       <Button
         onClick={handleCompare}
         disabled={selected.length !== 2}
-        className="w-full bg-[#E94560] text-white hover:bg-[#d13b54] disabled:opacity-50"
+        className="w-full bg-primary-accent text-text-heading hover:bg-primary-accent/90 disabled:opacity-50"
       >
         Compare
         <ArrowRight className="h-4 w-4 ml-2" />

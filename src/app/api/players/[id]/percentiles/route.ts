@@ -61,7 +61,7 @@ export async function GET(
       }
       // Also add metric key aliases for calculatePercentile
       const reverseMap: Record<string, string> = {
-        gamesPlayed: "W%",
+        winRate: "W%",
         kpPercent: "KP",
         ctrPercent: "CTR%",
         dthPercent: "DTH%",
@@ -205,7 +205,7 @@ export async function GET(
  */
 function mapMetricToDbField(metricKey: string): string {
   const map: Record<string, string> = {
-    "W%": "gamesPlayed",
+    "W%": "winRate",
     KP: "kpPercent",
     "CTR%": "ctrPercent",
     "DTH%": "dthPercent",

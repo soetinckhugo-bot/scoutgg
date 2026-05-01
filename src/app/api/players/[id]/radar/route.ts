@@ -101,8 +101,9 @@ export async function GET(
     // Get metrics for this role
     const roleMetrics = ROLE_METRICS[player.role]?.metrics || ROLE_METRICS.TOP.metrics;
 
-    // Calculate percentiles for each metric
+    // Calculate percentiles and averages for each metric
     const radarData = [];
+    const comparisonData = [];
 
     for (const metric of roleMetrics) {
       const dbField = METRIC_TO_DB_FIELD[metric.key];
@@ -113,8 +114,25 @@ export async function GET(
         continue;
       }
 
+      // Calculate percentile for player
       const percentile = calculateRankPercentile(
         value,
+        metric.key,
+        allPlayerData,
+        dbField
+      );
+
+      // Calculate average for the role
+      const validValues = allPlayerData
+        .map((p) => p[dbField as keyof PlayerData])
+        .filter((v): v is number => typeof v === "number");
+      const averageValue = validValues.length > 0
+        ? validValues.reduce((a, b) => a + b, 0) / validValues.length
+        : 0;
+
+      // Calculate average percentile (for radar chart comparison line)
+      const avgPercentile = calculateRankPercentile(
+        averageValue,
         metric.key,
         allPlayerData,
         dbField
@@ -126,6 +144,12 @@ export async function GET(
           percentile: percentile.percentile,
           tier: percentile.tier,
           value,
+        });
+
+        comparisonData.push({
+          metric: metric.label || metric.key,
+          averagePercentile: avgPercentile?.percentile ?? 50,
+          averageValue: Math.round(averageValue * 100) / 100,
         });
       }
     }
@@ -141,6 +165,7 @@ export async function GET(
       comparisonMode,
       sampleSize: sameRolePlayers.length,
       metrics: radarData,
+      comparison: comparisonData,
     }, {
       headers: { "Cache-Control": "public, max-age=300, stale-while-revalidate=86400" }
     });

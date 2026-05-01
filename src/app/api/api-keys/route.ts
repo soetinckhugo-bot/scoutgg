@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth/next";
 import { db } from "@/lib/server/db";
 import { authOptions } from "@/lib/server/auth-options";
 import crypto from "crypto";
+import { logger } from "@/lib/logger";
 
 function getUserId(session: any): string | null {
   return session?.user?.email || null;
@@ -52,7 +53,7 @@ export async function GET() {
         "API keys are managed via Stripe Customer Portal. Contact support for access.",
     });
   } catch (error) {
-    console.error("API key error:", error);
+    logger.error("API key error:", { error });
     return NextResponse.json({ error: "Failed" }, { status: 500 });
   }
 }
@@ -93,7 +94,7 @@ export async function POST() {
       warning: "This key will only be shown once. Copy it now!",
     });
   } catch (error) {
-    console.error("API key create error:", error);
+    logger.error("API key create error:", { error });
     return NextResponse.json({ error: "Failed" }, { status: 500 });
   }
 }

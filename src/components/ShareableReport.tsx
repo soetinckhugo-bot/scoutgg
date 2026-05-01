@@ -104,22 +104,22 @@ async function drawCardToCanvas(
     ctx.fillText(text, x, y);
   };
 
-  const pad = 24;
+  const pad = 20;
   let y = pad;
 
   // Logo
   ctx.fillStyle = "#E94560";
   ctx.beginPath();
-  ctx.arc(pad + 16, y + 16, 16, 0, Math.PI * 2);
+  ctx.arc(pad + 12, y + 12, 12, 0, Math.PI * 2);
   ctx.fill();
-  drawText("LS", pad + 16, y + 20, {
-    font: "bold 12px sans-serif",
+  drawText("LS", pad + 12, y + 16, {
+    font: "bold 10px sans-serif",
     color: "#ffffff",
     align: "center",
     baseline: "middle",
   });
-  drawText("LEAGUESCOUT REPORT", pad + 44, y + 16, {
-    font: "600 12px sans-serif",
+  drawText("LEAGUESCOUT REPORT", pad + 32, y + 12, {
+    font: "600 10px sans-serif",
     color: "#A0AEC0",
     baseline: "middle",
   });
@@ -128,17 +128,17 @@ async function drawCardToCanvas(
     day: "numeric",
     year: "numeric",
   });
-  drawText(dateStr, rect.width - pad, y + 16, {
-    font: "12px sans-serif",
+  drawText(dateStr, rect.width - pad, y + 12, {
+    font: "10px sans-serif",
     color: "#A0AEC0",
     align: "right",
     baseline: "middle",
   });
 
-  y += 56;
+  y += 44;
 
   // Photo
-  const imgSize = 80;
+  const imgSize = 64;
   const imgX = pad;
   const imgY = y;
 
@@ -163,7 +163,7 @@ async function drawCardToCanvas(
       ctx.roundRect(imgX, imgY, imgSize, imgSize, 8);
       ctx.fill();
       drawText((player.pseudo?.[0] ?? "?").toUpperCase(), imgX + imgSize / 2, imgY + imgSize / 2, {
-        font: "bold 24px sans-serif",
+        font: "bold 20px sans-serif",
         color: "#A0AEC0",
         align: "center",
         baseline: "middle",
@@ -175,80 +175,80 @@ async function drawCardToCanvas(
     ctx.roundRect(imgX, imgY, imgSize, imgSize, 8);
     ctx.fill();
     drawText((player.pseudo?.[0] ?? "?").toUpperCase(), imgX + imgSize / 2, imgY + imgSize / 2, {
-      font: "bold 24px sans-serif",
+      font: "bold 20px sans-serif",
       color: "#A0AEC0",
       align: "center",
       baseline: "middle",
     });
   }
 
-  const tx = imgX + imgSize + 16;
-  let ty = imgY + 8;
+  const tx = imgX + imgSize + 12;
+  let ty = imgY + 4;
   drawText(player.pseudo, tx, ty, {
-    font: "bold 22px sans-serif",
+    font: "bold 18px sans-serif",
     color: "#ffffff",
   });
 
   if (player.tier) {
-    const tw = ctx.measureText(player.tier).width + 16;
-    const tierX = tx + ctx.measureText(player.pseudo).width + 12;
+    const tw = ctx.measureText(player.tier).width + 12;
+    const tierX = tx + ctx.measureText(player.pseudo).width + 10;
     ctx.fillStyle = "rgba(245,158,11,0.1)";
     ctx.strokeStyle = "rgba(245,158,11,0.3)";
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.roundRect(tierX, ty - 14, tw, 22, 4);
+    ctx.roundRect(tierX, ty - 12, tw, 20, 4);
     ctx.fill();
     ctx.stroke();
     drawText(player.tier, tierX + tw / 2, ty - 1, {
-      font: "bold 12px sans-serif",
+      font: "bold 10px sans-serif",
       color: "#fbbf24",
       align: "center",
       baseline: "middle",
     });
   }
 
-  ty += 26;
+  ty += 22;
   if (player.realName) {
     drawText(player.realName, tx, ty, {
-      font: "13px sans-serif",
+      font: "11px sans-serif",
       color: "#A0AEC0",
     });
-    ty += 20;
+    ty += 16;
   } else {
     ty += 4;
   }
 
-  const roleWidth = ctx.measureText(player.role).width + 16;
+  const roleWidth = ctx.measureText(player.role).width + 12;
   ctx.fillStyle = "rgba(100,116,139,0.2)";
   ctx.strokeStyle = "rgba(100,116,139,0.3)";
   ctx.lineWidth = 1;
   ctx.beginPath();
-  ctx.roundRect(tx, ty - 12, roleWidth, 20, 4);
+  ctx.roundRect(tx, ty - 10, roleWidth, 18, 4);
   ctx.fill();
   ctx.stroke();
   drawText(player.role, tx + roleWidth / 2, ty + 1, {
-    font: "11px sans-serif",
+    font: "10px sans-serif",
     color: "#94a3b8",
     align: "center",
     baseline: "middle",
   });
 
-  const leagueX = tx + roleWidth + 10;
+  const leagueX = tx + roleWidth + 8;
   let lt = player.league;
   if (player.currentTeam) lt += ` \u2022 ${player.currentTeam}`;
   drawText(lt, leagueX, ty + 1, {
-    font: "11px sans-serif",
+    font: "10px sans-serif",
     color: "#A0AEC0",
     baseline: "middle",
   });
 
-  y += imgSize + 24;
+  y += imgSize + 16;
 
   if (stats) {
     const cols = 4;
-    const gap = 12;
+    const gap = 8;
     const cellW = (rect.width - pad * 2 - gap * (cols - 1)) / cols;
-    const cellH = 64;
+    const cellH = 56;
     const items = [
       { label: "KDA", value: stats.kda?.toFixed(2) ?? "\u2014" },
       { label: "DPM", value: stats.dpm?.toFixed(0) ?? "\u2014" },
@@ -267,55 +267,55 @@ async function drawCardToCanvas(
       ctx.beginPath();
       ctx.roundRect(cx, y, cellW, cellH, 8);
       ctx.fill();
-      drawText(item.label, cx + cellW / 2, y + 18, {
-        font: "10px sans-serif",
+      drawText(item.label, cx + cellW / 2, y + 14, {
+        font: "9px sans-serif",
         color: "#A0AEC0",
         align: "center",
         baseline: "middle",
       });
-      drawText(item.value, cx + cellW / 2, y + 42, {
-        font: "bold 18px sans-serif",
+      drawText(item.value, cx + cellW / 2, y + 36, {
+        font: "bold 16px sans-serif",
         color: "#ffffff",
         align: "center",
         baseline: "middle",
       });
     });
-    y += cellH + 20;
+    y += cellH + 16;
   }
 
   if (verdict) {
     ctx.fillStyle = "#1A1A2E";
     ctx.beginPath();
-    ctx.roundRect(pad, y, rect.width - pad * 2, 64, 8);
+    ctx.roundRect(pad, y, rect.width - pad * 2, 56, 8);
     ctx.fill();
-    drawText("Scout Verdict", pad + 12, y + 20, {
-      font: "10px sans-serif",
+    drawText("Scout Verdict", pad + 10, y + 18, {
+      font: "9px sans-serif",
       color: "#A0AEC0",
       baseline: "middle",
     });
-    const maxW = rect.width - pad * 2 - 24;
-    ctx.font = "13px sans-serif";
+    const maxW = rect.width - pad * 2 - 20;
+    ctx.font = "12px sans-serif";
     const lines = wrapText(ctx, verdict, maxW);
-    let ly = y + 40;
+    let ly = y + 34;
     for (const line of lines.slice(0, 2)) {
-      drawText(line, pad + 12, ly, {
-        font: "13px sans-serif",
+      drawText(line, pad + 10, ly, {
+        font: "12px sans-serif",
         color: "#ffffff",
         baseline: "middle",
       });
-      ly += 18;
+      ly += 16;
     }
-    y += 80;
+    y += 68;
   }
 
-  const footerY = rect.height - 16;
+  const footerY = rect.height - 14;
   drawText("leaguescout.gg", pad, footerY, {
-    font: "11px sans-serif",
+    font: "10px sans-serif",
     color: "#A0AEC0",
     baseline: "bottom",
   });
   drawText("Professional scouting intelligence", rect.width - pad, footerY, {
-    font: "11px sans-serif",
+    font: "10px sans-serif",
     color: "#A0AEC0",
     align: "right",
     baseline: "bottom",
@@ -367,20 +367,20 @@ export function ShareableReport({ player, stats, verdict }: ShareableReportProps
       {/* The shareable card */}
       <div
         ref={ref}
-        className="relative bg-[#0F0F1A] border border-[#2A2D3A] rounded-xl p-6 w-full"
+        className="relative bg-background border border-border rounded-xl p-5 w-full overflow-hidden"
         style={{ aspectRatio: "1200/630" }}
       >
         {/* Header bar */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded bg-[#E94560] flex items-center justify-center">
-              <span className="text-white font-bold text-sm">LS</span>
+            <div className="w-7 h-7 rounded bg-primary-accent flex items-center justify-center">
+              <span className="text-text-heading font-bold text-xs">LS</span>
             </div>
-            <span className="text-[#A0AEC0] text-sm font-semibold tracking-wider">
+            <span className="text-text-body text-xs font-semibold tracking-wider">
               LEAGUESCOUT REPORT
             </span>
           </div>
-          <span className="text-[#A0AEC0] text-xs">
+          <span className="text-text-body text-[10px]">
             {new Date().toLocaleDateString("en-US", {
               month: "short",
               day: "numeric",
@@ -390,42 +390,40 @@ export function ShareableReport({ player, stats, verdict }: ShareableReportProps
         </div>
 
         {/* Player identity */}
-        <div className="flex items-start gap-4 mb-6">
+        <div className="flex items-start gap-3 mb-4">
           {player.photoUrl ? (
             <Image
               src={player.photoUrl}
               alt={player.pseudo}
-              width={80}
-              height={80}
-              className="rounded-lg object-cover"
+              width={64}
+              height={64}
+              className="rounded-lg object-cover shrink-0"
               unoptimized
             />
           ) : (
-            <div className="w-20 h-20 rounded-lg bg-[#1A1A2E] flex items-center justify-center text-2xl font-bold text-[#A0AEC0]">
+            <div className="w-16 h-16 rounded-lg bg-surface-elevated flex items-center justify-center text-xl font-bold text-text-body shrink-0">
               {(player.pseudo?.[0] ?? "?").toUpperCase()}
             </div>
           )}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1 flex-wrap">
-              <h2 className="text-2xl font-bold text-white">{player.pseudo}</h2>
+              <h2 className="text-xl font-bold text-text-heading truncate">{player.pseudo}</h2>
               {player.tier && (
-                <Badge
-                  className={`${TIER_COLORS[player.tier] || ""} text-sm border`}
-                >
+                <Badge className={`${TIER_COLORS[player.tier] || ""} text-xs border`}>
                   {player.tier}
                 </Badge>
               )}
             </div>
             {player.realName && (
-              <p className="text-[#A0AEC0] text-sm">{player.realName}</p>
+              <p className="text-text-body text-xs truncate">{player.realName}</p>
             )}
-            <div className="flex items-center gap-2 mt-2 flex-wrap">
-              <Badge className={`text-xs ${ROLE_COLORS[player.role] || ""} border`}>
+            <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+              <Badge className={`text-[10px] ${ROLE_COLORS[player.role] || ""} border`}>
                 {player.role}
               </Badge>
-              <span className="text-[#A0AEC0] text-xs">{player.league}</span>
+              <span className="text-text-body text-[10px]">{player.league}</span>
               {player.currentTeam && (
-                <span className="text-[#A0AEC0] text-xs">
+                <span className="text-text-body text-[10px] truncate">
                   &bull; {player.currentTeam}
                 </span>
               )}
@@ -435,38 +433,38 @@ export function ShareableReport({ player, stats, verdict }: ShareableReportProps
 
         {/* Stats grid */}
         {stats && (
-          <div className="grid grid-cols-4 gap-3 mb-6">
-            <div className="bg-[#1A1A2E] rounded-lg p-3 text-center">
-              <p className="text-[#A0AEC0] text-[10px] uppercase tracking-wider mb-1">
+          <div className="grid grid-cols-4 gap-2 mb-4">
+            <div className="bg-surface-elevated rounded-lg p-2.5 text-center min-w-0">
+              <p className="text-text-body text-[9px] uppercase tracking-wider mb-1">
                 KDA
               </p>
-              <p className="text-white text-lg font-bold tabular-nums">
+              <p className="text-text-heading text-base font-bold tabular-nums truncate">
                 {stats.kda?.toFixed(2) || "\u2014"}
               </p>
             </div>
-            <div className="bg-[#1A1A2E] rounded-lg p-3 text-center">
-              <p className="text-[#A0AEC0] text-[10px] uppercase tracking-wider mb-1">
+            <div className="bg-surface-elevated rounded-lg p-2.5 text-center min-w-0">
+              <p className="text-text-body text-[9px] uppercase tracking-wider mb-1">
                 DPM
               </p>
-              <p className="text-white text-lg font-bold tabular-nums">
+              <p className="text-text-heading text-base font-bold tabular-nums truncate">
                 {stats.dpm?.toFixed(0) || "\u2014"}
               </p>
             </div>
-            <div className="bg-[#1A1A2E] rounded-lg p-3 text-center">
-              <p className="text-[#A0AEC0] text-[10px] uppercase tracking-wider mb-1">
+            <div className="bg-surface-elevated rounded-lg p-2.5 text-center min-w-0">
+              <p className="text-text-body text-[9px] uppercase tracking-wider mb-1">
                 CSD@15
               </p>
-              <p className="text-white text-lg font-bold tabular-nums">
+              <p className="text-text-heading text-base font-bold tabular-nums truncate">
                 {stats.csdAt15 != null
                   ? `${stats.csdAt15 > 0 ? "+" : ""}${stats.csdAt15.toFixed(1)}`
                   : "\u2014"}
               </p>
             </div>
-            <div className="bg-[#1A1A2E] rounded-lg p-3 text-center">
-              <p className="text-[#A0AEC0] text-[10px] uppercase tracking-wider mb-1">
+            <div className="bg-surface-elevated rounded-lg p-2.5 text-center min-w-0">
+              <p className="text-text-body text-[9px] uppercase tracking-wider mb-1">
                 Games
               </p>
-              <p className="text-white text-lg font-bold tabular-nums">
+              <p className="text-text-heading text-base font-bold tabular-nums truncate">
                 {stats.gamesPlayed || "\u2014"}
               </p>
             </div>
@@ -475,18 +473,18 @@ export function ShareableReport({ player, stats, verdict }: ShareableReportProps
 
         {/* Verdict */}
         {verdict && (
-          <div className="bg-[#1A1A2E] rounded-lg p-4">
-            <p className="text-[#A0AEC0] text-[10px] uppercase tracking-wider mb-2">
+          <div className="bg-surface-elevated rounded-lg p-3">
+            <p className="text-text-body text-[9px] uppercase tracking-wider mb-1">
               Scout Verdict
             </p>
-            <p className="text-white text-sm leading-relaxed">{verdict}</p>
+            <p className="text-text-heading text-xs leading-relaxed line-clamp-2">{verdict}</p>
           </div>
         )}
 
         {/* Footer */}
-        <div className="absolute bottom-4 left-6 right-6 flex items-center justify-between">
-          <span className="text-[#A0AEC0] text-xs">leaguescout.gg</span>
-          <span className="text-[#A0AEC0] text-xs">
+        <div className="absolute bottom-3 left-5 right-5 flex items-center justify-between">
+          <span className="text-text-body text-[10px]">leaguescout.gg</span>
+          <span className="text-text-body text-[10px]">
             Professional scouting intelligence
           </span>
         </div>

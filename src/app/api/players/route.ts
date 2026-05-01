@@ -3,6 +3,7 @@ import { logger } from "@/lib/logger";
 import { db } from "@/lib/server/db";
 import { PlayerCreateSchema } from "@/lib/schemas";
 import { requireAdmin } from "@/lib/server/auth";
+import { z } from "zod";
 
 const DEFAULT_LIMIT = 50;
 
@@ -63,18 +64,37 @@ function buildOrderBy(sort: SortField, order: "asc" | "desc"): any {
   }
 }
 
+const PlayerQuerySchema = z.object({
+  page: z.coerce.number().min(1).optional(),
+  limit: z.coerce.number().min(1).max(100).optional(),
+  sort: z.enum(["pseudo", "peakLp", "winrate", "totalGames", "kda", "dpm", "cspm", "gpm", "kpPercent", "visionScore", "csdAt15", "gdAt15", "soloKills", "poolSize", "prospectScore"]).optional(),
+  order: z.enum(["asc", "desc"]).optional(),
+  role: z.string().max(20).optional(),
+  league: z.string().max(20).optional(),
+  tier: z.string().max(10).optional(),
+  minGames: z.coerce.number().min(0).optional(),
+});
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
-    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") || String(DEFAULT_LIMIT), 10)));
+    const parsed = PlayerQuerySchema.safeParse(Object.fromEntries(searchParams));
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "Invalid query parameters", details: parsed.error.format() },
+        { status: 400 }
+      );
+    }
+
+    const page = Math.max(1, parsed.data.page || 1);
+    const limit = Math.min(100, Math.max(1, parsed.data.limit || DEFAULT_LIMIT));
     const skip = (page - 1) * limit;
-    const sort = (searchParams.get("sort") as SortField) || "pseudo";
-    const order = (searchParams.get("order") as "asc" | "desc") || "asc";
-    const role = searchParams.get("role");
-    const league = searchParams.get("league");
-    const tier = searchParams.get("tier");
-    const minGames = parseInt(searchParams.get("minGames") || "0", 10);
+    const sort = parsed.data.sort || "pseudo";
+    const order = parsed.data.order || "asc";
+    const role = parsed.data.role;
+    const league = parsed.data.league;
+    const tier = parsed.data.tier;
+    const minGames = parsed.data.minGames || 0;
 
     const where: any = {};
     if (role) where.role = role;
@@ -86,9 +106,46 @@ export async function GET(request: Request) {
     const [players, totalCount] = await Promise.all([
       db.player.findMany({
         where,
-        include: {
-          soloqStats: true,
-          proStats: true,
+        select: {
+          id: true,
+          pseudo: true,
+          realName: true,
+          role: true,
+          league: true,
+          currentTeam: true,
+          status: true,
+          photoUrl: true,
+          age: true,
+          prospectScore: true,
+          contractEndDate: true,
+          tier: true,
+          soloqStats: {
+            select: {
+              currentRank: true,
+              peakLp: true,
+              winrate: true,
+              totalGames: true,
+            },
+          },
+          proStats: {
+            select: {
+              kda: true,
+              dpm: true,
+              cspm: true,
+              gpm: true,
+              kpPercent: true,
+              visionScore: true,
+              csdAt15: true,
+              gdAt15: true,
+              soloKills: true,
+              poolSize: true,
+              gamesPlayed: true,
+              globalScore: true,
+              tierScore: true,
+              winRate: true,
+              dthPercent: true,
+            },
+          },
         },
         orderBy,
         skip,
@@ -158,11 +215,16 @@ export async function POST(request: Request) {
         lolprosUrl: body.lolprosUrl ?? null,
         leaguepediaUrl: body.leaguepediaUrl ?? null,
         twitterUrl: body.twitterUrl ?? null,
+        agentTwitterUrl: body.agentTwitterUrl ?? null,
         twitchUrl: body.twitchUrl ?? null,
         riotId: body.riotId ?? null,
         photoUrl: body.photoUrl ?? null,
         bio: body.bio ?? null,
         isFeatured: body.isFeatured ?? false,
+        hasPlayedInMajorLeague: body.hasPlayedInMajorLeague ?? false,
+        peakElo2Years: body.peakElo2Years ?? null,
+        bestProResult: body.bestProResult ?? null,
+        eyeTestRating: body.eyeTestRating ?? null,
       },
     });
 

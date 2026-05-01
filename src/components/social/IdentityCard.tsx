@@ -86,7 +86,7 @@ export default function IdentityCard({ player, theme = "default", background = "
 
   return (
     <div
-      className="relative w-[400px] rounded-2xl overflow-hidden shadow-2xl"
+      className="relative max-w-[400px] w-full rounded-2xl overflow-hidden shadow-2xl"
       style={{ background: t.gradient, fontFamily: "'Space Grotesk', sans-serif" }}
     >
       {/* Background pattern */}
@@ -108,11 +108,11 @@ export default function IdentityCard({ player, theme = "default", background = "
             {player.teamLogoUrl ? (
               <Image src={player.teamLogoUrl} alt="" width={32} height={32} className="w-8 h-8 object-contain" />
             ) : (
-              <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
-                <span className="text-xs font-bold text-white/60">{player.team?.charAt(0) ?? "?"}</span>
+              <div className="w-8 h-8 rounded-lg bg-card/10 flex items-center justify-center">
+                <span className="text-xs font-bold text-text-heading/60">{player.team?.charAt(0) ?? "?"}</span>
               </div>
             )}
-            <span className="text-xs font-bold text-white/60 uppercase tracking-wider">
+            <span className="text-xs font-bold text-text-heading/60 uppercase tracking-wider">
               {player.league ?? "—"}
             </span>
           </div>
@@ -135,20 +135,20 @@ export default function IdentityCard({ player, theme = "default", background = "
               className="w-20 h-20 rounded-xl object-cover border-2 border-white/10"
             />
           ) : (
-            <div className="w-20 h-20 rounded-xl bg-white/10 flex items-center justify-center border-2 border-white/10">
-              <span className="text-2xl font-bold text-white/40">{player.pseudo.charAt(0)}</span>
+            <div className="w-20 h-20 rounded-xl bg-card/10 flex items-center justify-center border-2 border-white/10">
+              <span className="text-2xl font-bold text-text-heading/40">{player.pseudo.charAt(0)}</span>
             </div>
           )}
           <div>
-            <h2 className="text-2xl font-black text-white leading-tight">{player.pseudo}</h2>
+            <h2 className="text-2xl font-black text-text-heading leading-tight">{player.pseudo}</h2>
             {player.realName && (
-              <p className="text-sm text-white/50">{player.realName}</p>
+              <p className="text-sm text-text-heading/50">{player.realName}</p>
             )}
             <div className="flex items-center gap-2 mt-1">
               <span style={{ color: t.accent }}>{ROLE_ICONS[player.role] ?? ROLE_ICONS.TOP}</span>
-              <span className="text-xs font-bold text-white/60 uppercase">{player.role}</span>
+              <span className="text-xs font-bold text-text-heading/60 uppercase">{player.role}</span>
               {player.team && (
-                <span className="text-xs text-white/40">• {player.team}</span>
+                <span className="text-xs text-text-heading/40">• {player.team}</span>
               )}
             </div>
           </div>
@@ -162,15 +162,15 @@ export default function IdentityCard({ player, theme = "default", background = "
               className="rounded-xl p-3"
               style={{ background: "rgba(255,255,255,0.05)" }}
             >
-              <div className="text-xs text-white/40 uppercase tracking-wider mb-1">{m.label}</div>
-              <div className="text-lg font-bold text-white">{m.raw}</div>
+              <div className="text-xs text-text-heading/40 uppercase tracking-wider mb-1">{m.label}</div>
+              <div className="text-lg font-bold text-text-heading">{m.raw}</div>
             </div>
           ))}
         </div>
 
         {/* Footer branding */}
         <div className="flex items-center justify-between pt-3 border-t border-white/5">
-          <span className="text-xs text-white/30 uppercase tracking-widest">LeagueScout</span>
+          <span className="text-xs text-text-heading/30 uppercase tracking-widest">LeagueScout</span>
           <div className="flex items-center gap-1">
             <div className="w-1.5 h-1.5 rounded-full" style={{ background: t.primary }} />
             <div className="w-1.5 h-1.5 rounded-full" style={{ background: t.accent }} />

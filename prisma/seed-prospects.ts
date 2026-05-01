@@ -489,10 +489,8 @@ async function main() {
       proWinrate,
       currentLeague: playerData.league,
       bestProResult,
-      soloqGames: soloqStats.totalGames,
       age: playerData.age,
-      proChampionPool: proStats.championPool,
-      soloqWinrate: soloqStats.winrate,
+      globalScore: null,
       eyeTestRating,
     });
 

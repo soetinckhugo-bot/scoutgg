@@ -189,16 +189,16 @@ export function calculatePercentile(
   const percentile = Math.round(((n - rank + 0.5) / n) * 100);
   const clamped = Math.max(0, Math.min(100, percentile));
 
-  // Determine tier
-  const tier = clamped >= 85 ? "S" : clamped >= 70 ? "A" : clamped >= 60 ? "B" : clamped >= 50 ? "C" : "D";
+  // Determine tier (matching RolePercentiles display)
+  const tier = clamped >= 90 ? "S" : clamped >= 75 ? "A" : clamped >= 60 ? "B" : clamped >= 50 ? "C" : "D";
 
-  // Tier colors (professional palette)
+  // Tier colors matching RolePercentiles
   const colors: Record<string, string> = {
-    S: "#F59E0B",
-    A: "#EAB308",
-    B: "#F97316",
-    C: "#EF4444",
-    D: "#6B7280",
+    S: "#3B82F6",   // Elite — Blue
+    A: "#22C55E",   // Excellent — Green
+    B: "#EAB308",   // Good — Yellow
+    C: "#F97316",   // Average — Orange
+    D: "#EF4444",   // Weak — Red
   };
 
   const result: PercentileResult = {
@@ -249,11 +249,11 @@ export function calculatePlayerPercentiles(
  * Get tier label from percentile
  */
 export function getTierFromPercentile(percentile: number): { tier: string; label: string; color: string } {
-  if (percentile >= 85) return { tier: "S", label: "Elite", color: "#F59E0B" };
-  if (percentile >= 70) return { tier: "A", label: "Excellent", color: "#EAB308" };
-  if (percentile >= 60) return { tier: "B", label: "Good", color: "#F97316" };
-  if (percentile >= 50) return { tier: "C", label: "Average", color: "#EF4444" };
-  return { tier: "D", label: "Weak", color: "#6B7280" };
+  if (percentile >= 90) return { tier: "S", label: "Elite", color: "#3B82F6" };
+  if (percentile >= 75) return { tier: "A", label: "Excellent", color: "#22C55E" };
+  if (percentile >= 60) return { tier: "B", label: "Good", color: "#EAB308" };
+  if (percentile >= 50) return { tier: "C", label: "Average", color: "#F97316" };
+  return { tier: "D", label: "Weak", color: "#EF4444" };
 }
 
 /**
@@ -268,12 +268,12 @@ export function getCentileColor(percentile: number | null): string {
  * Get Tailwind classes for a percentile value
  */
 export function getCentileClass(percentile: number | null): string {
-  if (percentile === null || percentile === undefined) return "text-gray-400 bg-gray-400/10";
-  if (percentile >= 85) return "text-amber-500 bg-amber-500/10";
-  if (percentile >= 70) return "text-yellow-500 bg-yellow-500/10";
-  if (percentile >= 60) return "text-orange-500 bg-orange-500/10";
-  if (percentile >= 50) return "text-red-500 bg-red-500/10";
-  return "text-gray-500 bg-gray-500/10";
+  if (percentile === null || percentile === undefined) return "text-[#A0AEC0] bg-gray-400/10";
+  if (percentile >= 90) return "text-blue-400 bg-blue-500/10";
+  if (percentile >= 75) return "text-green-400 bg-green-500/10";
+  if (percentile >= 60) return "text-yellow-400 bg-yellow-500/10";
+  if (percentile >= 50) return "text-orange-400 bg-orange-500/10";
+  return "text-red-400 bg-red-500/10";
 }
 
 /**

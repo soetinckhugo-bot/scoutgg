@@ -167,7 +167,7 @@ export default function RoleRadarChart({ role, proStats }: RoleRadarChartProps) 
           />
         </RadarChart>
       </ResponsiveContainer>
-      <p className="text-xs text-center text-[#6C757D] dark:text-gray-500 mt-2">
+      <p className="text-xs text-center text-text-muted text-text-muted mt-2">
         {isRealData ? "Scores derived from pro stats" : "Scores out of 100 — placeholder data"}
       </p>
     </div>

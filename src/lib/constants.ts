@@ -1,9 +1,9 @@
 export const ROLE_COLORS: Record<string, string> = {
-  TOP: "bg-slate-500/20 text-slate-300 border-slate-500/30",
-  JUNGLE: "bg-slate-500/20 text-slate-300 border-slate-500/30",
-  MID: "bg-slate-500/20 text-slate-300 border-slate-500/30",
-  ADC: "bg-slate-500/20 text-slate-300 border-slate-500/30",
-  SUPPORT: "bg-slate-500/20 text-slate-300 border-slate-500/30",
+  TOP: "bg-red-500/15 text-red-400 border-red-500/25",
+  JUNGLE: "bg-emerald-500/15 text-emerald-400 border-emerald-500/25",
+  MID: "bg-violet-500/15 text-violet-400 border-violet-500/25",
+  ADC: "bg-amber-500/15 text-amber-400 border-amber-500/25",
+  SUPPORT: "bg-cyan-500/15 text-cyan-400 border-cyan-500/25",
 };
 
 export const STATUS_COLORS: Record<string, string> = {
@@ -33,32 +33,32 @@ export const LEAGUE_TIERS: Record<string, { tier: number; coefficient: number; r
   // Tier 1 — Major leagues (coefficient 1.0)
   LCK: { tier: 1, coefficient: 1.0, region: "Korea" },
   LPL: { tier: 1, coefficient: 1.0, region: "China" },
-  // Tier 2 — Premier leagues (coefficient 0.8)
-  LEC: { tier: 2, coefficient: 0.8, region: "Europe" },
-  LCS: { tier: 2, coefficient: 0.8, region: "North America" },
-  CBLOL: { tier: 2, coefficient: 0.8, region: "Brazil" },
-  LCP: { tier: 2, coefficient: 0.8, region: "Taiwan" },
-  // Tier 3 — ERL Major + Academy (coefficient 0.6)
-  LFL: { tier: 3, coefficient: 0.6, region: "France" },
-  LES: { tier: 3, coefficient: 0.6, region: "Spain" },
-  TCL: { tier: 3, coefficient: 0.6, region: "Turkey" },
-  PRM: { tier: 3, coefficient: 0.6, region: "DACH" },
-  NACL: { tier: 3, coefficient: 0.6, region: "North America" },
-  LDL: { tier: 3, coefficient: 0.6, region: "China" },
-  "LCK CL": { tier: 3, coefficient: 0.6, region: "Korea" },
-  // Tier 4 — ERL Minor + Division 2 + Amateur (coefficient 0.5)
-  ROL: { tier: 4, coefficient: 0.5, region: "Benelux" },
-  NLC: { tier: 4, coefficient: 0.5, region: "UK & Nordics" },
-  LPLOL: { tier: 4, coefficient: 0.5, region: "Portugal" },
-  EBL: { tier: 4, coefficient: 0.5, region: "Balkans" },
-  HLL: { tier: 4, coefficient: 0.5, region: "Greece & Cyprus" },
-  LIT: { tier: 4, coefficient: 0.5, region: "Italy" },
-  RL: { tier: 4, coefficient: 0.5, region: "Poland & Baltics" },
-  AL: { tier: 4, coefficient: 0.5, region: "Arabia" },
-  HM: { tier: 4, coefficient: 0.5, region: "Czech & Slovakia" },
-  LFL2: { tier: 4, coefficient: 0.5, region: "France" },
-  PRM2: { tier: 4, coefficient: 0.5, region: "DACH" },
-  Amateur: { tier: 4, coefficient: 0.5, region: "Various" },
+  // Tier 2 — Premier leagues (coefficient 0.75)
+  LEC: { tier: 2, coefficient: 0.75, region: "Europe" },
+  LCS: { tier: 2, coefficient: 0.75, region: "North America" },
+  CBLOL: { tier: 2, coefficient: 0.75, region: "Brazil" },
+  LCP: { tier: 2, coefficient: 0.75, region: "Taiwan" },
+  // Tier 3 — ERL Major + Academy (coefficient 0.65)
+  LFL: { tier: 3, coefficient: 0.65, region: "France" },
+  LES: { tier: 3, coefficient: 0.65, region: "Spain" },
+  TCL: { tier: 3, coefficient: 0.65, region: "Turkey" },
+  PRM: { tier: 3, coefficient: 0.65, region: "DACH" },
+  NACL: { tier: 3, coefficient: 0.65, region: "North America" },
+  LDL: { tier: 3, coefficient: 0.65, region: "China" },
+  "LCK CL": { tier: 3, coefficient: 0.65, region: "Korea" },
+  // Tier 4 — ERL Minor + Division 2 + Amateur (coefficient 0.45)
+  ROL: { tier: 4, coefficient: 0.45, region: "Benelux" },
+  NLC: { tier: 4, coefficient: 0.45, region: "UK & Nordics" },
+  LPLOL: { tier: 4, coefficient: 0.45, region: "Portugal" },
+  EBL: { tier: 4, coefficient: 0.45, region: "Balkans" },
+  HLL: { tier: 4, coefficient: 0.45, region: "Greece & Cyprus" },
+  LIT: { tier: 4, coefficient: 0.45, region: "Italy" },
+  RL: { tier: 4, coefficient: 0.45, region: "Poland & Baltics" },
+  AL: { tier: 4, coefficient: 0.45, region: "Arabia" },
+  HM: { tier: 4, coefficient: 0.45, region: "Czech & Slovakia" },
+  LFL2: { tier: 4, coefficient: 0.45, region: "France" },
+  PRM2: { tier: 4, coefficient: 0.45, region: "DACH" },
+  Amateur: { tier: 4, coefficient: 0.45, region: "Various" },
 };
 
 export const TIER_COLORS: Record<string, string> = {
@@ -73,7 +73,7 @@ export const TIER_COLORS: Record<string, string> = {
 
 // Rank colors for SoloQ display
 export const RANK_COLORS: Record<string, string> = {
-  IRON: "text-gray-500",
+  IRON: "text-[#6C757D]",
   BRONZE: "text-amber-700",
   SILVER: "text-slate-400",
   GOLD: "text-yellow-500",
@@ -103,7 +103,7 @@ export const STATUSES = [
   { value: "UNDER_CONTRACT", label: "Under Contract" },
   { value: "ACADEMY", label: "Academy" },
   { value: "SUB", label: "Substitute" },
-  { value: "SCOUTING", label: "🔍 Scouting" },
+  { value: "SCOUTING", label: "Scouting" },
 ];
 
 export const BEHAVIOR_TAGS = [

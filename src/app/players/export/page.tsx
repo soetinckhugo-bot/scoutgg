@@ -4,7 +4,7 @@ import { useState, useRef, useCallback } from "react";
 import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Download, Image, FileImage } from "lucide-react";
+import { Download, Image as ImageIcon, FileImage } from "lucide-react";
 
 // Dynamic import to avoid SSR issues with html2canvas
 const IdentityCard = dynamic(() => import("@/components/social/IdentityCard"), { ssr: false });
@@ -85,18 +85,18 @@ export default function ExportPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
-      <h1 className="text-2xl font-bold text-[#E9ECEF] dark:text-white mb-2">Social Card Export</h1>
-      <p className="text-[#6C757D] dark:text-gray-400 mb-6">
+      <h1 className="text-2xl font-bold text-text-heading mb-2">Social Card Export</h1>
+      <p className="text-text-body mb-6">
         Generate shareable player cards for social media.
       </p>
 
       {/* Controls */}
-      <div className="flex flex-wrap items-center gap-4 mb-8 p-4 rounded-xl bg-white/5 border border-white/5">
+      <div className="flex flex-wrap items-center gap-4 mb-8 p-4 rounded-xl bg-card/5 border border-white/5">
         {/* Theme selector */}
         <div className="flex items-center gap-2">
-          <span className="text-sm text-[#ADB5BD] dark:text-gray-300">Theme:</span>
+          <span className="text-sm text-text-subtle text-text-subtle">Theme:</span>
           <Select value={theme} onValueChange={(v) => setTheme(v || "default")}>
-            <SelectTrigger className="w-[160px] h-9 text-sm bg-[#1e293b] border-gray-700">
+            <SelectTrigger className="w-[160px] h-9 text-sm bg-card border-border">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -113,13 +113,13 @@ export default function ExportPage() {
         </div>
 
         {/* Tab switcher */}
-        <div className="flex items-center gap-1 bg-white/5 rounded-lg p-1">
+        <div className="flex items-center gap-1 bg-card/5 rounded-lg p-1">
           <button
             onClick={() => setActiveTab("identity")}
             className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
               activeTab === "identity"
-                ? "bg-[#E94560] text-white"
-                : "text-[#6C757D] hover:text-white"
+                ? "bg-primary-accent text-text-heading"
+                : "text-text-muted hover:text-text-heading"
             }`}
           >
             Identity
@@ -128,8 +128,8 @@ export default function ExportPage() {
             onClick={() => setActiveTab("analysis")}
             className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
               activeTab === "analysis"
-                ? "bg-[#E94560] text-white"
-                : "text-[#6C757D] hover:text-white"
+                ? "bg-primary-accent text-text-heading"
+                : "text-text-muted hover:text-text-heading"
             }`}
           >
             Analysis
@@ -143,16 +143,16 @@ export default function ExportPage() {
             size="sm"
             onClick={() => exportCard(activeTab)}
             disabled={exporting}
-            className="border-gray-700 hover:bg-[#1e293b]"
+            className="border-border hover:bg-card"
           >
-            <Image className="h-4 w-4 mr-1.5" />
+            <ImageIcon className="h-4 w-4 mr-1.5" />
             Export {activeTab === "identity" ? "Identity" : "Analysis"}
           </Button>
           <Button
             size="sm"
             onClick={exportBoth}
             disabled={exporting}
-            className="bg-[#E94560] hover:bg-[#E94560]/90"
+            className="bg-primary-accent hover:bg-primary-accent/90"
           >
             <FileImage className="h-4 w-4 mr-1.5" />
             Export Both

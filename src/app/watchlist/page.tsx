@@ -51,7 +51,7 @@ function formatNotes(text: string): React.ReactElement {
                   href={url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[#0F3460] dark:text-blue-400 underline hover:text-[#E94560]"
+                  className="text-primary-accent underline hover:text-primary-accent/90"
                 >
                   {url}
                 </a>
@@ -160,7 +160,7 @@ function NoteEditor({
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Add scout notes... Use **bold**, *italic*, and paste links."
-          className="min-h-[100px] text-sm bg-white dark:bg-[#1e293b] border-[#E9ECEF] dark:border-gray-700"
+          className="min-h-[100px] text-sm bg-card border-border text-text-heading placeholder:text-text-muted"
           maxLength={5000}
         />
         <div className="flex items-center gap-2">
@@ -168,7 +168,7 @@ function NoteEditor({
             size="sm"
             onClick={handleSave}
             disabled={saving}
-            className="h-7 px-3 text-xs bg-[#1A1A2E] hover:bg-[#16213E] text-white"
+            className="h-9 px-3 text-xs bg-surface-elevated hover:bg-secondary text-text-heading min-h-[44px]"
           >
             {saving ? (
               <Loader2 className="h-3 w-3 animate-spin mr-1" />
@@ -182,12 +182,12 @@ function NoteEditor({
             variant="outline"
             onClick={handleCancel}
             disabled={saving}
-            className="h-7 px-3 text-xs"
+            className="h-9 px-3 text-xs min-h-[44px]"
           >
             <X className="h-3 w-3 mr-1" />
             Cancel
           </Button>
-          <span className="text-xs text-[#6C757D] dark:text-gray-500 ml-auto tabular-nums">
+          <span className="text-xs text-text-muted ml-auto tabular-nums">
             {notes.length}/5000
           </span>
         </div>
@@ -198,7 +198,7 @@ function NoteEditor({
   return (
     <div className="mt-2">
       {favorite.notes ? (
-        <div className="text-sm text-[#6C757D] dark:text-gray-400 bg-[#F8F9FA] dark:bg-[#1e293b] rounded-md p-3">
+        <div className="text-sm text-text-body bg-card rounded-md p-3">
           {formatNotes(favorite.notes)}
         </div>
       ) : null}
@@ -206,7 +206,7 @@ function NoteEditor({
         size="sm"
         variant="ghost"
         onClick={() => setEditing(true)}
-        className="h-7 px-2 text-xs text-[#6C757D] dark:text-gray-400 hover:text-[#1A1A2E] dark:hover:text-white mt-1"
+        className="h-9 px-2 text-xs text-text-body hover:text-text-heading mt-1 min-h-[44px]"
       >
         <Pencil className="h-3 w-3 mr-1" />
         {favorite.notes ? "Edit notes" : "Add notes"}
@@ -252,7 +252,7 @@ export default function WatchlistPage() {
     return (
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="flex items-center justify-center py-16">
-          <Loader2 className="h-8 w-8 animate-spin text-[#E94560]" />
+          <Loader2 className="h-8 w-8 animate-spin text-primary-accent" />
         </div>
       </div>
     );
@@ -262,12 +262,12 @@ export default function WatchlistPage() {
     return (
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="text-center py-16">
-          <Heart className="h-16 w-16 text-[#E9ECEF] dark:text-gray-700 mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-[#1A1A2E] dark:text-white mb-2">
+          <Heart className="h-16 w-16 text-border mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-text-heading mb-2">
             Sign in to view your watchlist
           </h2>
           <Link href="/login">
-            <Button className="bg-[#1A1A2E] text-white hover:bg-[#16213E]">
+            <Button className="bg-surface-elevated text-text-heading hover:bg-secondary">
               Sign In
             </Button>
           </Link>
@@ -280,12 +280,12 @@ export default function WatchlistPage() {
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
-          <Heart className="h-7 w-7 text-[#E94560]" />
-          <h1 className="text-3xl font-bold text-[#1A1A2E] dark:text-white">
+          <Heart className="h-7 w-7 text-primary-accent" />
+          <h1 className="text-3xl font-bold text-text-heading">
             Watchlist
           </h1>
         </div>
-        <p className="text-[#6C757D] dark:text-gray-400">
+        <p className="text-text-body">
           Players you are tracking and scouting
         </p>
       </div>

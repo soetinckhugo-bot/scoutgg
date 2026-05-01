@@ -3,6 +3,8 @@ import { db } from "@/lib/server/db";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/server/auth-options";
 import { z } from "zod";
+import { requireAdmin } from "@/lib/server/auth";
+import { logger } from "@/lib/logger";
 
 // GET /api/players/[id]/pro-matches
 export async function GET(
@@ -22,7 +24,7 @@ export async function GET(
     });
     return NextResponse.json({ matches });
   } catch (error) {
-    console.error("Error fetching pro matches:", error);
+    logger.error("Error fetching pro matches:", { error });
     return NextResponse.json(
       { error: "Failed to fetch pro matches" },
       { status: 500 }
@@ -63,6 +65,9 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const unauthorized = await requireAdmin();
+  if (unauthorized) return unauthorized;
+
   try {
     const { id } = await params;
     const body = await request.json();
@@ -84,7 +89,7 @@ export async function POST(
         { status: 400 }
       );
     }
-    console.error("Error creating pro match:", error);
+    logger.error("Error creating pro match:", { error });
     return NextResponse.json(
       { error: "Failed to create pro match" },
       { status: 500 }

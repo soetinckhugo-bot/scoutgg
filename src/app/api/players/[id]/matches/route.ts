@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/server/db";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/server/auth-options";
+import { logger } from "@/lib/logger";
 import {
   getSummonerByPuuid,
   getMatchIds,
@@ -61,6 +62,14 @@ export async function GET(
           ? (participant.kills + participant.assists) / participant.deaths
           : participant.kills + participant.assists;
 
+      // Find opponent in same lane
+      const opponent = match.info.participants.find(
+        (p) => p.puuid !== player.riotPuuid && p.teamPosition === participant.teamPosition
+      );
+
+      const keystoneRune = participant.perks?.styles?.[0]?.selections?.[0]?.perk ?? null;
+      const secondaryRune = participant.perks?.styles?.[1]?.style ?? null;
+
       return {
         matchId: match.metadata.matchId,
         gameCreation: match.info.gameCreation,
@@ -91,6 +100,20 @@ export async function GET(
         visionScore: participant.visionScore,
         wardsPlaced: participant.wardsPlaced,
         wardsKilled: participant.wardsKilled,
+        items: [
+          participant.item0,
+          participant.item1,
+          participant.item2,
+          participant.item3,
+          participant.item4,
+          participant.item5,
+          participant.item6,
+        ],
+        summoner1Id: participant.summoner1Id,
+        summoner2Id: participant.summoner2Id,
+        keystoneRune,
+        secondaryRune,
+        opponentChampion: opponent?.championName ?? null,
       };
     });
 
@@ -99,7 +122,7 @@ export async function GET(
       total: playerMatches.length,
     });
   } catch (error: any) {
-    console.error("Match history error:", error);
+    logger.error("Match history error:", { error });
     return NextResponse.json(
       { error: error.message || "Failed to fetch match history" },
       { status: 500 }

@@ -42,7 +42,7 @@ export default function SyncStatsButton({ playerId }: SyncStatsButtonProps) {
       size="sm"
       onClick={handleSync}
       disabled={isLoading}
-      className="h-8 px-2 text-xs border-[#E9ECEF] dark:border-gray-700 hover:bg-[#F8F9FA] dark:hover:bg-[#1e293b] dark:text-white"
+      className="h-8 px-2 text-xs border-border hover:bg-card text-text-heading"
     >
       <RefreshCw
         className={`h-3.5 w-3.5 mr-1 ${isLoading ? "animate-spin" : ""}`}

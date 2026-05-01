@@ -3,6 +3,12 @@ import { db } from "@/lib/server/db";
 import { notFound } from "next/navigation";
 import VsDuelCard from "@/components/VsDuelCard";
 import { Loader2 } from "lucide-react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "VS Duel | LeagueScout",
+  description: "Side-by-side visual duel comparison of League of Legends players. Stats, radars, and scouting metrics in a head-to-head card layout.",
+};
 
 interface DuelPageProps {
   searchParams: Promise<{
@@ -16,11 +22,13 @@ async function DuelContent({ searchParams }: DuelPageProps) {
 
   if (!p1 || !p2) {
     return (
+      <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-4xl px-4 py-12 text-center">
-        <h1 className="text-2xl font-bold text-[#E9ECEF] dark:text-white mb-4">VS Duel Mode</h1>
-        <p className="text-[#6C757D] dark:text-gray-400">
+        <h1 className="text-2xl font-bold text-text-heading mb-4">VS Duel Mode</h1>
+        <p className="text-text-body">
           Select two players to compare. Add <code>?p1=ID1&p2=ID2</code> to the URL.
         </p>
+      </div>
       </div>
     );
   }
@@ -84,6 +92,7 @@ async function DuelContent({ searchParams }: DuelPageProps) {
   }));
 
   return (
+    <div className="min-h-screen bg-background">
     <div className="mx-auto max-w-4xl px-4 py-8">
       <VsDuelCard
         player1={duelPlayer1}
@@ -91,19 +100,22 @@ async function DuelContent({ searchParams }: DuelPageProps) {
         allPlayers={allPlayersPlain}
       />
     </div>
+    </div>
   );
 }
 
 export default function DuelPage(props: DuelPageProps) {
   return (
+    <div className="min-h-screen bg-background">
     <Suspense
       fallback={
         <div className="flex items-center justify-center py-24">
-          <Loader2 className="h-8 w-8 animate-spin text-[#E94560]" />
+          <Loader2 className="h-8 w-8 animate-spin text-primary-accent" />
         </div>
       }
     >
       <DuelContent {...props} />
     </Suspense>
+    </div>
   );
 }

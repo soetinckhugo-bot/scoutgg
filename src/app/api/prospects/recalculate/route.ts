@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/server/db";
 import { computeProspectScore } from "@/lib/prospect-scoring";
 import { requireAdmin } from "@/lib/server/auth";
+import { logger } from "@/lib/logger";
 
 export async function POST() {
   const unauthorized = await requireAdmin();
@@ -17,36 +18,49 @@ export async function POST() {
       },
     });
 
+    // Prepare all updates
+    const updates = [];
     for (const p of prospects) {
       const ss = p.soloqStats;
       const ps = p.proStats;
 
-      if (!ss) continue;
-
       const computed = computeProspectScore({
-        peakLp: ss.peakLp,
-        proWinrate: ps?.kda ? 0.55 : null,
+        peakLp: p.peakElo2Years ?? ss?.peakLp ?? 0,
+        proWinrate: ps?.winRate ?? null,
         currentLeague: p.league,
-        bestProResult: null,
-        soloqGames: ss.totalGames,
+        bestProResult: p.bestProResult ?? null,
         age: p.age,
-        proChampionPool: ps?.championPool ?? null,
-        soloqWinrate: ss.winrate,
-        eyeTestRating: null,
+        globalScore: ps?.globalScore ?? null,
+        eyeTestRating: p.eyeTestRating ?? null,
       });
 
-      await db.player.update({
-        where: { id: p.id },
-        data: {
-          prospectScore: computed.total,
-          prospectMetrics: {
-            upsert: {
-              create: { ...computed.breakdown, lastUpdated: new Date() },
-              update: { ...computed.breakdown, lastUpdated: new Date() },
-            },
-          },
-        },
+      updates.push({
+        playerId: p.id,
+        score: computed.total,
+        breakdown: computed.breakdown,
       });
+    }
+
+    // Batch update all players
+    const BATCH_SIZE = 20;
+    for (let i = 0; i < updates.length; i += BATCH_SIZE) {
+      const batch = updates.slice(i, i + BATCH_SIZE);
+      await db.$transaction(
+        batch.map((u) =>
+          db.player.update({
+            where: { id: u.playerId },
+            data: {
+              prospectScore: u.score,
+              prospectMetrics: {
+                upsert: {
+                  create: { ...u.breakdown, lastUpdated: new Date() },
+                  update: { ...u.breakdown, lastUpdated: new Date() },
+                },
+              },
+            },
+          })
+        )
+      );
     }
 
     return NextResponse.json({
@@ -54,11 +68,10 @@ export async function POST() {
       recalculated: prospects.length,
     });
   } catch (error) {
-    console.error("Prospect recalculation error:", error);
+    logger.error("Prospect recalculation error:", { error });
     return NextResponse.json(
       { error: "Failed to recalculate prospects" },
       { status: 500 }
     );
   }
 }
-

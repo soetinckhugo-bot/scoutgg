@@ -9,25 +9,25 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-[#0f1117]">
+    <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
         <Link
           href="/"
-          className="inline-flex items-center text-sm text-[#6C757D] hover:text-[#E9ECEF] mb-12 transition-colors"
+          className="inline-flex items-center text-sm text-text-muted hover:text-text-heading mb-12 transition-colors"
         >
           <ArrowLeft className="h-4 w-4 mr-1" />
           Back to Home
         </Link>
 
-        <h1 className="text-3xl font-bold text-[#E9ECEF] mb-8">
+        <h1 className="text-3xl font-bold text-text-heading mb-8">
           Privacy Policy
         </h1>
 
-        <div className="prose prose-invert prose-sm max-w-none text-[#ADB5BD]">
-          <p className="text-[#6C757D] mb-8">Last updated: April 2026</p>
+        <div className="prose prose-invert prose-sm max-w-none text-text-subtle">
+          <p className="text-text-muted mb-8">Last updated: April 2026</p>
 
           <section className="mb-8">
-            <h2 className="text-lg font-semibold text-[#E9ECEF] mb-3">1. Information We Collect</h2>
+            <h2 className="text-lg font-semibold text-text-heading mb-3">1. Information We Collect</h2>
             <p className="mb-3">
               We collect information you provide directly to us, such as when you create
               an account, subscribe to our newsletter, or contact us for support.
@@ -41,7 +41,7 @@ export default function PrivacyPage() {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-lg font-semibold text-[#E9ECEF] mb-3">2. Automatically Collected Information</h2>
+            <h2 className="text-lg font-semibold text-text-heading mb-3">2. Automatically Collected Information</h2>
             <p>
               When you use LeagueScout, we automatically collect certain information
               about your device and usage, including:
@@ -55,7 +55,7 @@ export default function PrivacyPage() {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-lg font-semibold text-[#E9ECEF] mb-3">3. How We Use Your Information</h2>
+            <h2 className="text-lg font-semibold text-text-heading mb-3">3. How We Use Your Information</h2>
             <p>We use the information we collect to:</p>
             <ul className="list-disc pl-5 space-y-1 mt-2">
               <li>Provide, maintain, and improve our services</li>
@@ -68,7 +68,7 @@ export default function PrivacyPage() {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-lg font-semibold text-[#E9ECEF] mb-3">4. Cookies</h2>
+            <h2 className="text-lg font-semibold text-text-heading mb-3">4. Cookies</h2>
             <p>
               We use cookies and similar tracking technologies to track activity on our
               service and hold certain information. You can instruct your browser to refuse
@@ -77,7 +77,7 @@ export default function PrivacyPage() {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-lg font-semibold text-[#E9ECEF] mb-3">5. Data Sharing</h2>
+            <h2 className="text-lg font-semibold text-text-heading mb-3">5. Data Sharing</h2>
             <p>
               We do not sell, trade, or otherwise transfer your personal information to
               outside parties except as described in this policy. We may share information
@@ -87,7 +87,7 @@ export default function PrivacyPage() {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-lg font-semibold text-[#E9ECEF] mb-3">6. Data Security</h2>
+            <h2 className="text-lg font-semibold text-text-heading mb-3">6. Data Security</h2>
             <p>
               We implement appropriate technical and organizational measures to protect
               your personal information against unauthorized access, alteration, disclosure,
@@ -97,19 +97,19 @@ export default function PrivacyPage() {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-lg font-semibold text-[#E9ECEF] mb-3">7. Your Rights</h2>
+            <h2 className="text-lg font-semibold text-text-heading mb-3">7. Your Rights</h2>
             <p>
               Depending on your location, you may have the right to access, correct, delete,
               or restrict processing of your personal information. To exercise these rights,
               please contact us at{" "}
-              <a href="mailto:contact@LeagueScout.gg" className="text-[#E94560] hover:underline">
+              <a href="mailto:contact@LeagueScout.gg" className="text-primary-accent hover:underline">
                 contact@LeagueScout.gg
               </a>.
             </p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-lg font-semibold text-[#E9ECEF] mb-3">8. Changes to This Policy</h2>
+            <h2 className="text-lg font-semibold text-text-heading mb-3">8. Changes to This Policy</h2>
             <p>
               We may update this Privacy Policy from time to time. We will notify you of
               any changes by posting the new policy on this page and updating the
@@ -118,10 +118,10 @@ export default function PrivacyPage() {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-lg font-semibold text-[#E9ECEF] mb-3">9. Contact Us</h2>
+            <h2 className="text-lg font-semibold text-text-heading mb-3">9. Contact Us</h2>
             <p>
               If you have any questions about this Privacy Policy, please contact us at{" "}
-              <a href="mailto:contact@LeagueScout.gg" className="text-[#E94560] hover:underline">
+              <a href="mailto:contact@LeagueScout.gg" className="text-primary-accent hover:underline">
                 contact@LeagueScout.gg
               </a>.
             </p>

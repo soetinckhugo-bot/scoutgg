@@ -18,23 +18,23 @@ export default function Error({
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-24 text-center">
-      <h1 className="text-6xl font-bold text-[#1A1A2E] dark:text-white mb-4">
+      <h1 className="text-6xl font-bold text-text-heading mb-4">
         Oops
       </h1>
-      <p className="text-xl text-[#6C757D] dark:text-gray-400 mb-8">
+      <p className="text-xl text-text-body mb-8">
         Something went wrong. Please try again.
       </p>
       <div className="flex justify-center gap-4">
         <Button
           variant="outline"
           onClick={() => reset()}
-          className="border-[#1A1A2E] dark:border-white"
+          className="border-white"
         >
           <RefreshCw className="h-4 w-4 mr-2" />
           Try Again
         </Button>
         <Link href="/">
-          <Button className="bg-[#1A1A2E] text-white hover:bg-[#16213E]">
+          <Button className="bg-surface-elevated text-text-heading hover:bg-secondary">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Home
           </Button>

@@ -129,16 +129,16 @@ const tiers: Array<{
 
 function SuccessBanner({ tier }: { tier: string }) {
   return (
-    <div className="mb-8 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+    <div className="mb-8 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-lg">
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-800 flex items-center justify-center shrink-0">
-          <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
+        <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
+          <Check className="h-5 w-5 text-emerald-400" />
         </div>
         <div>
-          <h3 className="font-semibold text-green-800 dark:text-green-300">
+          <h3 className="font-semibold text-emerald-400">
             Welcome to {tier}!
           </h3>
-          <p className="text-sm text-green-700 dark:text-green-400">
+          <p className="text-sm text-emerald-400/80">
             Your subscription is active. You now have access to all {tier} features.
           </p>
         </div>
@@ -149,16 +149,16 @@ function SuccessBanner({ tier }: { tier: string }) {
 
 function CanceledBanner() {
   return (
-    <div className="mb-8 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+    <div className="mb-8 p-4 bg-amber-500/10 border border-amber-500/20 rounded-lg">
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-800 flex items-center justify-center shrink-0">
-          <X className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+        <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
+          <X className="h-5 w-5 text-amber-400" />
         </div>
         <div>
-          <h3 className="font-semibold text-amber-800 dark:text-amber-300">
+          <h3 className="font-semibold text-amber-400">
             Subscription canceled
           </h3>
-          <p className="text-sm text-amber-700 dark:text-amber-400">
+          <p className="text-sm text-amber-400/80">
             No worries — you can subscribe anytime. Your free access remains active.
           </p>
         </div>
@@ -207,6 +207,7 @@ export default function PricingPage() {
   };
 
   return (
+    <div className="min-h-screen bg-background">
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       {/* Success / Cancel banners */}
       <Suspense fallback={null}>
@@ -214,10 +215,10 @@ export default function PricingPage() {
       </Suspense>
 
       <div className="text-center mb-12">
-        <h1 className="text-3xl font-bold text-[#1A1A2E] dark:text-white mb-4">
+        <h1 className="text-3xl font-bold text-text-heading mb-4">
           Choose Your Plan
         </h1>
-        <p className="text-[#6C757D] dark:text-gray-400 max-w-xl mx-auto">
+        <p className="text-text-body max-w-xl mx-auto">
           From casual fan to professional scout. Find the plan that fits your needs.
         </p>
       </div>
@@ -228,38 +229,38 @@ export default function PricingPage() {
             key={tier.name}
             className={`relative flex flex-col ${
               tier.highlight
-                ? "border-[#E94560] dark:border-[#E94560] shadow-lg"
-                : "border-[#E9ECEF] dark:border-gray-700"
-            }`}
+                ? "border-2 border-primary-accent shadow-lg shadow-primary-accent/10"
+                : "border border-border"
+            } ${tier.badge ? "overflow-visible" : ""}`}
           >
             {tier.badge && (
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
-                <span className="inline-flex items-center rounded-full bg-[#E94560] px-3 py-1 text-xs font-semibold text-white whitespace-nowrap shadow-sm">
+                <span className="inline-flex items-center rounded-full bg-primary-accent px-3 py-1 text-xs font-semibold text-text-heading whitespace-nowrap">
                   {tier.badge}
                 </span>
               </div>
             )}
 
-            <CardHeader className="pb-4 pt-2">
+            <CardHeader className={`pb-4 ${tier.badge ? "pt-6" : "pt-2"}`}>
               <div className="min-h-[28px]">
                 {tier.badge ? null : <div className="h-[28px]" />}
               </div>
               <CardTitle className="text-xl flex items-center gap-2">
                 <tier.icon
                   className={`h-5 w-5 ${
-                    tier.highlight ? "text-[#E94560]" : "text-[#6C757D] dark:text-gray-400"
+                    tier.highlight ? "text-primary-accent" : "text-text-muted"
                   }`}
                 />
                 {tier.name}
               </CardTitle>
               <div className="min-h-[80px]">
-                <p className="text-3xl font-bold text-[#1A1A2E] dark:text-white">
+                <p className="text-3xl font-bold text-text-heading">
                   {tier.price}
                 </p>
-                <p className="text-sm text-[#6C757D] dark:text-gray-400">
+                <p className="text-sm text-text-body">
                   {tier.period}
                 </p>
-                <p className="text-xs text-[#6C757D] dark:text-gray-400 mt-1">
+                <p className="text-xs text-text-muted mt-1">
                   {tier.description}
                 </p>
               </div>
@@ -272,14 +273,14 @@ export default function PricingPage() {
                     key={feature.name}
                     className={`flex items-center gap-2 text-sm ${
                       feature.included
-                        ? "text-[#1A1A2E] dark:text-white"
-                        : "text-[#6C757D] dark:text-gray-500"
+                        ? "text-text-heading"
+                        : "text-text-muted"
                     }`}
                   >
                     {feature.included ? (
-                      <Check className="h-4 w-4 text-[#28A745] shrink-0" />
+                      <Check className="h-4 w-4 text-success shrink-0" />
                     ) : (
-                      <X className="h-4 w-4 text-[#DC3545] shrink-0" />
+                      <X className="h-4 w-4 text-destructive shrink-0" />
                     )}
                     {feature.name}
                   </li>
@@ -289,16 +290,16 @@ export default function PricingPage() {
               {tier.ctaVariant === "outline" ? (
                 <Link
                   href={tier.ctaHref}
-                  className="inline-flex items-center justify-center rounded-md text-sm font-medium border border-[#1A1A2E] dark:border-white text-[#1A1A2E] dark:text-white hover:bg-[#1A1A2E] hover:text-white dark:hover:bg-white dark:hover:text-[#0f172a] h-9 px-4 py-2 w-full mt-6 transition-colors"
+                  className="inline-flex items-center justify-center rounded-md text-sm font-medium border border-border text-text-heading hover:bg-surface-hover hover:border-border-hover h-10 px-4 py-2 w-full mt-6 transition-colors min-h-[44px]"
                 >
                   {tier.cta}
                 </Link>
               ) : (
                 <Button
-                  className={`w-full mt-6 ${
+                  className={`w-full mt-6 min-h-[44px] h-10 ${
                     tier.highlight
-                      ? "bg-[#E94560] hover:bg-[#d63d56] text-white"
-                      : "bg-[#1A1A2E] hover:bg-[#16213E] text-white"
+                      ? "bg-primary-accent hover:bg-primary-accent/90 text-text-heading"
+                      : "bg-surface-elevated hover:bg-secondary text-text-heading"
                   }`}
                   onClick={() => {
                     if (tier.checkoutTier) {
@@ -320,17 +321,18 @@ export default function PricingPage() {
 
       {/* FAQ / Contact */}
       <div className="mt-16 text-center">
-        <p className="text-[#6C757D] dark:text-gray-400 mb-4">
+        <p className="text-text-body mb-4">
           Questions? Need a custom plan for your organization?
         </p>
         <Link
           href="/contact"
-          className="inline-flex items-center gap-2 text-[#0F3460] hover:text-[#1A1A2E] dark:text-gray-400 dark:hover:text-white font-medium"
+          className="inline-flex items-center gap-2 text-primary-accent hover:text-primary-accent/90 font-medium"
         >
           <Mail className="h-4 w-4" />
           Contact us
         </Link>
       </div>
+    </div>
     </div>
   );
 }

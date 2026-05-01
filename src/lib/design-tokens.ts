@@ -10,7 +10,7 @@ export const PERCENTILE_COLORS = {
   A: { min: 70, color: "#EAB308", label: "Excellent", twClass: "text-yellow-500 bg-yellow-500/10" },
   B: { min: 60, color: "#F97316", label: "Good", twClass: "text-orange-500 bg-orange-500/10" },
   C: { min: 50, color: "#EF4444", label: "Average", twClass: "text-red-500 bg-red-500/10" },
-  D: { min: 0, color: "#6B7280", label: "Weak", twClass: "text-gray-500 bg-gray-500/10" },
+  D: { min: 0, color: "#6B7280", label: "Weak", twClass: "text-[#6C757D] bg-gray-500/10" },
 } as const;
 
 export type PercentileTier = keyof typeof PERCENTILE_COLORS;
@@ -42,7 +42,7 @@ export function getPercentileColor(percentile: number | null): string {
  */
 export function getPercentileClass(percentile: number | null): string {
   const tier = getPercentileTier(percentile);
-  return tier?.twClass ?? "text-gray-400 bg-gray-400/10";
+  return tier?.twClass ?? "text-[#A0AEC0] bg-gray-400/10";
 }
 
 // ── Glassmorphism ──

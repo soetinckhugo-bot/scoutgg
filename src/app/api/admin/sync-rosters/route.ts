@@ -5,6 +5,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/server/auth";
 import { syncRostersWithLeaguepedia } from "@/lib/leaguepedia";
+import { logger } from "@/lib/logger";
 
 export async function POST(request: Request) {
   const unauthorized = await requireAdmin();
@@ -25,7 +26,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(result);
   } catch (error: any) {
-    console.error("Sync rosters error:", error);
+    logger.error("Sync rosters error:", { error });
     return NextResponse.json(
       { error: error.message || "Sync failed" },
       { status: 500 }

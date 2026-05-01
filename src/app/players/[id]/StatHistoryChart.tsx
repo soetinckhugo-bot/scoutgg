@@ -53,7 +53,7 @@ export default function StatHistoryChart({ playerId }: { playerId: string }) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-6 w-6 animate-spin text-[#E94560]" />
+        <Loader2 className="h-6 w-6 animate-spin text-primary-accent" />
       </div>
     );
   }
@@ -61,8 +61,8 @@ export default function StatHistoryChart({ playerId }: { playerId: string }) {
   if (history.length < 2) {
     return (
       <div className="text-center py-8">
-        <TrendingUp className="h-10 w-10 text-[#E9ECEF] mx-auto mb-2" />
-        <p className="text-sm text-[#6C757D]">
+        <TrendingUp className="h-10 w-10 text-text-heading mx-auto mb-2" />
+        <p className="text-sm text-text-muted">
           Not enough data yet. Stats history builds up over time as sync runs.
         </p>
       </div>
@@ -94,8 +94,8 @@ export default function StatHistoryChart({ playerId }: { playerId: string }) {
           onClick={() => setMetric("peakLp")}
           className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
             metric === "peakLp"
-              ? "bg-[#E94560] text-white"
-              : "bg-[#1A1F2E] text-[#6C757D] hover:bg-[#1E2435]"
+              ? "bg-primary-accent text-text-heading"
+              : "bg-surface-elevated text-text-muted hover:bg-surface-hover"
           }`}
         >
           Peak LP
@@ -104,8 +104,8 @@ export default function StatHistoryChart({ playerId }: { playerId: string }) {
           onClick={() => setMetric("winrate")}
           className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
             metric === "winrate"
-              ? "bg-[#0F3460] text-white"
-              : "bg-[#1A1F2E] text-[#6C757D] hover:bg-[#1E2435]"
+              ? "bg-accent text-text-heading"
+              : "bg-surface-elevated text-text-muted hover:bg-surface-hover"
           }`}
         >
           Winrate
@@ -113,14 +113,14 @@ export default function StatHistoryChart({ playerId }: { playerId: string }) {
       </div>
 
       {/* Chart */}
-      <div className="rounded-lg border border-[#2A2D3A] overflow-hidden">
-        <div className="bg-[#141621] px-3 py-2 border-b border-[#2A2D3A] flex items-center gap-2">
-          <TrendingUp className="h-3.5 w-3.5 text-[#6C757D]" />
-          <span className="text-xs font-semibold text-[#6C757D] uppercase tracking-wider">
+      <div className="rounded-lg border border-border overflow-hidden">
+        <div className="bg-card px-3 py-2 border-b border-border flex items-center gap-2">
+          <TrendingUp className="h-3.5 w-3.5 text-text-muted" />
+          <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">
             {label} Over Time
           </span>
         </div>
-        <div className="bg-[#1A1F2E] p-4">
+        <div className="bg-surface-elevated p-4">
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={history}>
               <CartesianGrid
@@ -164,14 +164,14 @@ export default function StatHistoryChart({ playerId }: { playerId: string }) {
       </div>
 
       {/* Stats Summary */}
-      <div className="rounded-lg border border-[#2A2D3A] overflow-hidden">
-        <div className="bg-[#141621] px-3 py-2 border-b border-[#2A2D3A] flex items-center gap-2">
-          <TrendingUp className="h-3.5 w-3.5 text-[#6C757D]" />
-          <span className="text-xs font-semibold text-[#6C757D] uppercase tracking-wider">
+      <div className="rounded-lg border border-border overflow-hidden">
+        <div className="bg-card px-3 py-2 border-b border-border flex items-center gap-2">
+          <TrendingUp className="h-3.5 w-3.5 text-text-muted" />
+          <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">
             Summary
           </span>
         </div>
-        <div className="bg-[#1A1F2E] grid grid-cols-3 divide-x divide-[#232838]">
+        <div className="bg-surface-elevated grid grid-cols-3 divide-x divide-[#232838]">
           {/* Total Change */}
           <div className="px-3 py-3 text-center">
             <div
@@ -188,27 +188,27 @@ export default function StatHistoryChart({ playerId }: { playerId: string }) {
                 : `${change.toFixed(2)}%`}
               </span>
             </div>
-            <div className="text-xs text-[#6C757D] uppercase">
+            <div className="text-xs text-text-muted uppercase">
               Total Change
             </div>
           </div>
           {/* Peak */}
           <div className="px-3 py-3 text-center">
-            <div className="text-lg font-bold text-[#E9ECEF] tabular-nums">
+            <div className="text-lg font-bold text-text-heading tabular-nums">
               {metric === "peakLp"
                 ? `${max} LP`
                 : `${max.toFixed(2)}%`}
             </div>
-            <div className="text-xs text-[#6C757D] uppercase">
+            <div className="text-xs text-text-muted uppercase">
               Peak {label}
             </div>
           </div>
           {/* Weeks Tracked */}
           <div className="px-3 py-3 text-center">
-            <div className="text-lg font-bold text-[#E9ECEF] tabular-nums">
+            <div className="text-lg font-bold text-text-heading tabular-nums">
               {history.length}
             </div>
-            <div className="text-xs text-[#6C757D] uppercase">
+            <div className="text-xs text-text-muted uppercase">
               Weeks Tracked
             </div>
           </div>

@@ -66,10 +66,8 @@ async function main() {
     proWinrate,
     currentLeague: playerData.league,
     bestProResult,
-    soloqGames: soloqStats.totalGames,
     age: playerData.age,
-    proChampionPool: proStats.championPool,
-    soloqWinrate: soloqStats.winrate,
+    globalScore: null,
     eyeTestRating,
   });
 
@@ -80,10 +78,7 @@ async function main() {
   console.log(`  • Best Pro Result  : ${computed.breakdown.bestProResultScore}/25`);
   console.log(`  • Pro Winrate      : ${computed.breakdown.proWinrateScore}/15`);
   console.log(`  • Age              : ${computed.breakdown.ageScore}/10`);
-  console.log(`  • SoloQ Winrate    : ${computed.breakdown.soloqWinrateScore}/5`);
-  console.log(`  • SoloQ Games      : ${computed.breakdown.soloqGamesScore}/5`);
   console.log(`  • Current League   : ${computed.breakdown.currentLeagueScore}/5`);
-  console.log(`  • Pro Champion Pool: ${computed.breakdown.proChampionPoolScore}/5`);
   console.log(`  • Eye Test         : ${computed.breakdown.eyeTestScore}/5`);
 
   // Vérifie si le joueur existe déjà

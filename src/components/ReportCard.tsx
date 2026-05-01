@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Lock, Star } from "lucide-react";
+import ScoutIcon from "./ScoutIcon";
 
 interface Player {
   id: string;
@@ -38,21 +39,21 @@ export default function ReportCard({
   // Locked preview for non-premium users
   if (variant === "preview") {
     return (
-      <Card className="border-[#E9ECEF] dark:border-gray-700 relative overflow-hidden">
+      <Card className="border-border relative overflow-hidden">
         <CardContent className="p-4">
-          <div className="absolute inset-0 bg-white/80 dark:bg-[#0f172a]/80 backdrop-blur-sm flex items-center justify-center z-10">
+          <div className="absolute inset-0 bg-card/80 bg-background/80 backdrop-blur-sm flex items-center justify-center z-10">
             <div className="text-center">
-              <Lock className="h-8 w-8 text-[#6C757D] dark:text-gray-400 mx-auto mb-2" />
-              <p className="text-sm font-medium text-[#1A1A2E] dark:text-white">
+              <ScoutIcon icon={Lock} size="xl" variant="default" />
+              <p className="text-sm font-medium text-text-heading">
                 {report.title}
               </p>
               {playerName && (
-                <p className="text-xs text-[#6C757D] dark:text-gray-400 mb-1">{playerName}</p>
+                <p className="text-xs text-text-body mb-1">{playerName}</p>
               )}
-              <p className="text-xs text-[#6C757D] dark:text-gray-400 mb-3">Premium content</p>
+              <p className="text-xs text-text-body mb-3">Premium content</p>
               <Link
                 href="/pricing"
-                className="inline-flex items-center px-3 py-1.5 bg-[#E94560] text-white text-sm rounded-md hover:bg-[#d63d56]"
+                className="inline-flex items-center px-3 py-1.5 bg-primary-accent text-text-heading text-sm rounded-md hover:bg-primary-accent/90"
               >
                 Unlock with Scout Pass
               </Link>
@@ -60,7 +61,7 @@ export default function ReportCard({
           </div>
           <div className="opacity-20">
             <h3 className="font-semibold">{report.title}</h3>
-            <p className="text-sm text-[#6C757D] dark:text-gray-400">
+            <p className="text-sm text-text-body">
               {report.content.slice(0, 200)}...
             </p>
           </div>
@@ -71,32 +72,32 @@ export default function ReportCard({
 
   // Full content for free reports OR premium users viewing premium reports
   return (
-    <Card className="border-[#E9ECEF] dark:border-gray-700">
+    <Card className="border-border">
       <CardContent className="p-4">
         <div className="flex items-center gap-2 mb-3">
           {report.isPremium ? (
-            <Lock className="h-4 w-4 text-[#E94560]" />
+            <ScoutIcon icon={Lock} size="md" variant="accent" />
           ) : (
-            <Star className="h-4 w-4 text-[#28A745]" />
+            <ScoutIcon icon={Star} size="md" variant="success" />
           )}
-          <h4 className="font-semibold text-[#1A1A2E] dark:text-white">{report.title}</h4>
+          <h4 className="font-semibold text-text-heading">{report.title}</h4>
           <Badge
             variant="outline"
-            className={report.isPremium ? "border-[#E94560] text-[#E94560]" : "border-[#28A745] text-[#28A745]"}
+            className={report.isPremium ? "border-primary-accent text-primary-accent" : "border-success text-success"}
           >
             {report.verdict}
           </Badge>
         </div>
-        <p className="text-sm text-[#6C757D] dark:text-gray-400 leading-relaxed whitespace-pre-line">
+        <p className="text-sm text-text-body leading-relaxed whitespace-pre-line">
           {report.content}
         </p>
-        <div className="mt-3 pt-3 border-t border-[#E9ECEF] dark:border-gray-700">
+        <div className="mt-3 pt-3 border-t border-border">
           <div className="flex flex-wrap gap-2 mb-2">
             {(report.strengths || "").split(",").filter(Boolean).map((s) => (
               <Badge
                 key={s}
                 variant="secondary"
-                className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
+                className="bg-green-100 text-green-800 bg-emerald-500/30 text-emerald-400"
               >
                 + {s.trim()}
               </Badge>
@@ -107,14 +108,14 @@ export default function ReportCard({
               <Badge
                 key={w}
                 variant="secondary"
-                className="bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
+                className="bg-red-100 text-red-800 bg-primary-accent/30 text-primary-accent"
               >
                 - {w.trim()}
               </Badge>
             ))}
           </div>
         </div>
-        <p className="text-xs text-[#6C757D] dark:text-gray-400 mt-3">
+        <p className="text-xs text-text-body mt-3">
           by {report.author} • {new Date(report.publishedAt).toLocaleDateString()}
         </p>
       </CardContent>

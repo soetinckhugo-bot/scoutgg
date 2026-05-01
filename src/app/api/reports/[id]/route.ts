@@ -4,6 +4,7 @@ import { ReportUpdateSchema } from "@/lib/schemas";
 import { requireAdmin } from "@/lib/server/auth";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/server/auth-options";
+import { logger } from "@/lib/logger";
 
 export async function GET(
   request: Request,
@@ -52,7 +53,7 @@ export async function GET(
 
     return NextResponse.json(report);
   } catch (error) {
-    console.error("Error fetching report:", error);
+    logger.error("Error fetching report:", { error });
     return NextResponse.json(
       { error: "Failed to fetch report" },
       { status: 500 }
@@ -97,7 +98,7 @@ export async function PUT(
 
     return NextResponse.json(report);
   } catch (error) {
-    console.error("Error updating report:", error);
+    logger.error("Error updating report:", { error });
     return NextResponse.json(
       { error: "Failed to update report" },
       { status: 500 }
@@ -121,7 +122,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error deleting report:", error);
+    logger.error("Error deleting report:", { error });
     return NextResponse.json(
       { error: "Failed to delete report" },
       { status: 500 }

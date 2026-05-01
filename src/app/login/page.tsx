@@ -38,30 +38,30 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0f1117] flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-background flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#E94560] flex items-center justify-center">
-              <span className="text-white font-bold text-sm">L</span>
+            <div className="w-8 h-8 rounded-lg bg-primary-accent flex items-center justify-center">
+              <span className="text-text-heading font-bold text-sm">L</span>
             </div>
-            <span className="text-xl font-bold text-[#E9ECEF]">
-              League<span className="text-[#E94560]">Scout</span>
+            <span className="text-xl font-bold text-text-heading">
+              League<span className="text-primary-accent">Scout</span>
             </span>
           </Link>
         </div>
 
-        <Card className="border-[#2A2D3A] bg-[#1A1D29]">
+        <Card className="border-border bg-surface-hover">
           <CardHeader>
-            <CardTitle className="text-xl text-center text-[#E9ECEF]">
+            <CardTitle className="text-xl text-center text-text-heading">
               Sign in to your account
             </CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-[#ADB5BD]">
+                <Label htmlFor="email" className="text-text-subtle">
                   Email
                 </Label>
                 <Input
@@ -72,11 +72,11 @@ export default function LoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
                   required
-                  className="bg-[#141621] border-[#2A2D3A] text-[#E9ECEF] placeholder:text-[#6C757D] focus:border-[#E94560] focus:ring-[#E94560]"
+                  className="bg-card border-border text-text-heading placeholder:text-text-muted focus:border-primary-accent focus:ring-primary-accent"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-[#ADB5BD]">
+                <Label htmlFor="password" className="text-text-subtle">
                   Password
                 </Label>
                 <Input
@@ -87,12 +87,12 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
-                  className="bg-[#141621] border-[#2A2D3A] text-[#E9ECEF] placeholder:text-[#6C757D] focus:border-[#E94560] focus:ring-[#E94560]"
+                  className="bg-card border-border text-text-heading placeholder:text-text-muted focus:border-primary-accent focus:ring-primary-accent"
                 />
               </div>
               <Button
                 type="submit"
-                className="w-full bg-[#E94560] text-white hover:bg-[#d13b54]"
+                className="w-full bg-primary-accent text-text-heading hover:bg-primary-accent/90"
                 disabled={loading}
               >
                 {loading ? "Signing in..." : "Sign In"}
@@ -100,11 +100,11 @@ export default function LoginPage() {
             </form>
 
             <div className="mt-6 text-center">
-              <p className="text-sm text-[#6C757D]">
+              <p className="text-sm text-text-muted">
                 Don&apos;t have an account?{" "}
                 <Link
                   href="/register"
-                  className="text-[#E94560] hover:underline font-medium"
+                  className="text-primary-accent hover:underline font-medium"
                 >
                   Create one
                 </Link>

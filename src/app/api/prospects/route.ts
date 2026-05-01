@@ -23,6 +23,7 @@ export async function GET(request: NextRequest) {
 
   const where: any = {
     isProspect: true,
+    hasPlayedInMajorLeague: false,
     age: { lte: maxAge },
     NOT: { league: { in: MAJOR_LEAGUES } },
   };
@@ -47,9 +48,6 @@ export async function GET(request: NextRequest) {
 
   // Enrich with computed score and breakdown if missing
   const enriched = players.map((p) => {
-    const ss = p.soloqStats;
-    const ps = p.proStats;
-
     if (p.prospectMetrics && p.prospectScore) {
       return {
         ...p,
@@ -58,32 +56,18 @@ export async function GET(request: NextRequest) {
       };
     }
 
-    const computed = ss
-      ? computeProspectScore({
-          peakLp: ss.peakLp,
-          proWinrate: ps?.kda ? 0.55 : null, // fallback
-          currentLeague: p.league,
-          bestProResult: null,
-          soloqGames: ss.totalGames,
-          age: p.age,
-          proChampionPool: ps?.championPool ?? null,
-          soloqWinrate: ss.winrate,
-          eyeTestRating: null,
-        })
-      : {
-          total: 0,
-          breakdown: {
-            peakLpScore: 0,
-            proWinrateScore: 0,
-            currentLeagueScore: 0,
-            bestProResultScore: 0,
-            soloqGamesScore: 0,
-            ageScore: 0,
-            proChampionPoolScore: 0,
-            soloqWinrateScore: 0,
-            eyeTestScore: 0,
-          },
-        };
+    const ss = p.soloqStats;
+    const ps = p.proStats;
+
+    const computed = computeProspectScore({
+      peakLp: p.peakElo2Years ?? ss?.peakLp ?? 0,
+      proWinrate: ps?.winRate ?? null,
+      currentLeague: p.league,
+      bestProResult: p.bestProResult ?? null,
+      age: p.age,
+      globalScore: ps?.globalScore ?? null,
+      eyeTestRating: p.eyeTestRating ?? null,
+    });
 
     return {
       ...p,
@@ -99,4 +83,3 @@ export async function GET(request: NextRequest) {
     totalPages: Math.ceil(Math.min(totalCount, PROSPECT_LIMIT) / limit),
   });
 }
-

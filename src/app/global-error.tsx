@@ -16,17 +16,17 @@ export default function GlobalError({
 
   return (
     <html>
-      <body className="min-h-screen flex items-center justify-center bg-white dark:bg-[#0f172a]">
+      <body className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center max-w-md px-4">
-          <h1 className="text-4xl font-bold text-[#1A1A2E] dark:text-white mb-4">
+          <h1 className="text-4xl font-bold text-text-heading mb-4">
             Oops
           </h1>
-          <p className="text-[#6C757D] dark:text-gray-400 mb-6">
+          <p className="text-text-body mb-6">
             A critical error occurred. Our team has been notified.
           </p>
           <button
             onClick={reset}
-            className="inline-flex items-center px-4 py-2 bg-[#E94560] text-white rounded-md hover:bg-[#d63d56] transition-colors"
+            className="inline-flex items-center px-4 py-2 bg-primary-accent text-text-heading rounded-md hover:bg-primary-accent/90 transition-colors"
           >
             Reload page
           </button>

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +11,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import dynamic from "next/dynamic";
 import { useSession, signOut } from "next-auth/react";
+import NotificationBell from "@/components/NotificationBell";
 
 const CommandPalette = dynamic(() => import("@/components/CommandPalette"), { ssr: false });
 
@@ -25,6 +27,7 @@ interface Suggestion {
 const navLinks = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/players", label: "Players" },
+  { href: "/leaderboards", label: "Leaderboards" },
   { href: "/prospects", label: "Prospects" },
   { href: "/compare", label: "Comparison" },
   { href: "/similarity", label: "Similarity" },
@@ -159,11 +162,11 @@ function SearchDropdown({
       className="absolute top-full left-0 right-0 mt-2 bg-card rounded-lg border border-border shadow-xl overflow-hidden z-50"
     >
       {loading && (
-        <div className="px-4 py-3 text-sm text-muted-foreground">Loading...</div>
+        <div className="px-4 py-3 text-sm text-text-muted">Loading...</div>
       )}
 
       {showNoResults && (
-        <div className="px-4 py-3 text-sm text-muted-foreground">No results</div>
+        <div className="px-4 py-3 text-sm text-text-muted">No results</div>
       )}
 
       {!loading &&
@@ -176,27 +179,27 @@ function SearchDropdown({
             role="option"
             aria-selected={activeIndex === index}
             id={`search-suggestion-${s.id}`}
-            className="flex items-center gap-3 px-4 py-3 hover:bg-accent transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary"
+            className="flex items-center gap-3 px-4 py-3 hover:bg-surface-hover transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary"
           >
             <Avatar size="sm">
               {s.photoUrl ? (
                 <AvatarImage src={s.photoUrl} alt={s.pseudo} />
               ) : null}
-              <AvatarFallback className="bg-muted text-muted-foreground text-xs">
+              <AvatarFallback className="bg-card text-text-muted text-xs">
                 <User className="size-3" />
               </AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-foreground truncate">
+                <span className="text-sm font-medium text-text-heading truncate">
                   {s.pseudo}
                 </span>
-                <span className="text-xs h-4 px-2 bg-muted text-muted-foreground border border-border rounded-md flex items-center">
+                <span className="text-xs h-4 px-2 bg-card text-text-muted border border-border rounded-md flex items-center">
                   {s.role}
                 </span>
               </div>
               {s.realName && (
-                <p className="text-xs text-muted-foreground truncate">{s.realName}</p>
+                <p className="text-xs text-text-muted truncate">{s.realName}</p>
               )}
             </div>
           </Link>
@@ -257,7 +260,7 @@ function SearchInputWithAutocomplete({
 
   return (
     <div className={cn("relative isolate", className)}>
-      <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground z-10 pointer-events-none" />
+      <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-text-muted z-10 pointer-events-none" />
       <Input
         ref={inputRef}
         type="search"
@@ -273,7 +276,7 @@ function SearchInputWithAutocomplete({
             : undefined
         }
         className={cn(
-          "w-full h-10 pl-10 pr-4 py-2 bg-muted border-border focus:border-ring focus:ring-ring dark:text-white text-base leading-normal",
+          "w-full h-10 pl-10 pr-4 py-2 bg-card border-border focus:border-ring focus:ring-primary-accent text-text-heading text-base leading-normal",
           inputClassName
         )}
         value={searchQuery}
@@ -324,7 +327,7 @@ function UserDropdown() {
   }, [open]);
 
   if (status === "loading") {
-    return <div className="h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse" />;
+    return <div className="h-8 w-8 bg-border rounded-full animate-pulse" />;
   }
 
   if (session?.user) {
@@ -339,33 +342,33 @@ function UserDropdown() {
           aria-expanded={open}
           aria-haspopup="menu"
           aria-label="User menu"
-          className="flex items-center gap-2 rounded-full hover:bg-muted transition-colors px-2 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          className="flex items-center gap-2 rounded-full hover:bg-surface transition-colors px-2 py-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary min-h-[44px]"
         >
           <Avatar className="h-8 w-8">
             {session.user.image ? (
               <AvatarImage src={session.user.image} alt={session.user.name || ""} />
             ) : null}
-            <AvatarFallback className="bg-muted text-muted-foreground text-xs">
+            <AvatarFallback className="bg-card text-text-muted text-xs">
               {initials}
             </AvatarFallback>
           </Avatar>
-          <ChevronDown className="size-3 text-muted-foreground" />
+          <ChevronDown className="size-3 text-text-muted" />
         </button>
 
         {open && (
           <div className="absolute right-0 mt-2 w-48 bg-card rounded-lg border border-border shadow-xl overflow-hidden z-50 py-1">
             <div className="px-4 py-2 border-b border-border">
-              <p className="text-sm font-medium text-foreground truncate">
+              <p className="text-sm font-medium text-text-heading truncate">
                 {session.user.name || session.user.email}
               </p>
-              <p className="text-xs text-muted-foreground truncate">
+              <p className="text-xs text-text-muted truncate">
                 {session.user.email}
               </p>
             </div>
             <Link
               href="/settings"
               onClick={() => setOpen(false)}
-              className="block px-4 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+              className="block px-4 py-2 text-sm text-text-muted hover:bg-surface-hover hover:text-text-heading transition-colors"
             >
               Settings
             </Link>
@@ -375,7 +378,7 @@ function UserDropdown() {
                   setOpen(false);
                   signOut({ callbackUrl: "/" });
                 }}
-                className="w-full text-left px-4 py-2 text-sm text-primary hover:bg-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary"
+                className="w-full text-left px-4 py-2 text-sm text-text-heading hover:bg-surface-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary"
               >
                 Sign Out
               </button>
@@ -388,10 +391,10 @@ function UserDropdown() {
 
   return (
     <div className="flex items-center gap-2">
-      <Link href="/login" className="px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+      <Link href="/login" className="px-3 py-1.5 text-sm font-medium text-text-muted hover:text-text-heading transition-colors">
         Sign In
       </Link>
-      <Link href="/register" className="px-3 py-1.5 text-sm font-medium text-white bg-[#E94560] rounded-md hover:bg-[#d13b54] transition-colors">
+      <Link href="/register" className="px-3 py-1.5 text-sm font-medium text-text-heading bg-primary-accent rounded-md hover:bg-primary-accent/90 transition-colors">
         Sign Up
       </Link>
     </div>
@@ -400,6 +403,7 @@ function UserDropdown() {
 
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <>
@@ -408,8 +412,8 @@ export function Header() {
         <div className="mx-auto flex h-16 max-w-7xl items-center px-4 sm:px-6 lg:px-8 overflow-visible">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 shrink-0 mr-4">
-            <span className="font-heading text-xl font-bold tracking-tight text-foreground">
-              League<span className="text-[#E94560]">Scout</span>
+            <span className="font-heading text-xl font-bold tracking-tight text-text-heading">
+              League<span className="text-primary-accent">Scout</span>
             </span>
           </Link>
 
@@ -424,12 +428,14 @@ export function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="px-3 py-2 text-sm font-medium text-white hover:text-foreground transition-colors whitespace-nowrap focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:outline-none rounded-md"
+                aria-current={pathname === link.href ? "page" : undefined}
+                className="px-3 py-2 text-sm font-medium text-text-heading hover:text-text-heading transition-colors whitespace-nowrap focus-visible:ring-2 focus-visible:ring-primary-accent/50 focus-visible:ring-offset-2 focus-visible:outline-none rounded-md"
               >
                 {link.label}
               </Link>
             ))}
             <div className="ml-2 flex items-center gap-2">
+              <NotificationBell />
               <UserDropdown />
             </div>
           </nav>
@@ -439,7 +445,7 @@ export function Header() {
           <SheetTrigger
             aria-label="Open navigation menu"
             aria-expanded={mobileOpen}
-            className="md:hidden inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9"
+            className="md:hidden inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary-accent disabled:pointer-events-none disabled:opacity-50 hover:bg-surface-hover hover:text-text-heading h-10 w-10 min-h-[44px] min-w-[44px]"
           >
             <Menu className="size-5" aria-hidden="true" />
           </SheetTrigger>
@@ -452,7 +458,8 @@ export function Header() {
                     key={link.href}
                     href={link.href}
                     onClick={() => setMobileOpen(false)}
-                    className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors"
+                    aria-current={pathname === link.href ? "page" : undefined}
+                    className="px-3 py-3 text-sm font-medium text-text-muted hover:text-text-heading hover:bg-surface rounded-md transition-colors"
                   >
                     {link.label}
                   </Link>

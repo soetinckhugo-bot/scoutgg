@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatStatus(status: string): string {
-  if (status === "SCOUTING") return "🔍 Scouting";
+  if (status === "SCOUTING") return "Scouting";
   return status.replace(/_/g, " ");
 }
 

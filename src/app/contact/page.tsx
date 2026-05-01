@@ -53,12 +53,12 @@ const contactLinks = [
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen bg-[#0f1117]">
+    <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
         {/* Back link */}
         <Link
           href="/"
-          className="inline-flex items-center text-sm text-[#6C757D] hover:text-[#E9ECEF] mb-12 transition-colors"
+          className="inline-flex items-center text-sm text-text-muted hover:text-text-heading mb-12 transition-colors"
         >
           <ArrowLeft className="h-4 w-4 mr-1" />
           Back to Home
@@ -67,15 +67,15 @@ export default function ContactPage() {
         {/* Logo + Title */}
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-lg bg-[#E94560] flex items-center justify-center">
-              <span className="text-white font-bold text-lg">L</span>
+            <div className="w-10 h-10 rounded-lg bg-primary-accent flex items-center justify-center">
+              <span className="text-text-heading font-bold text-lg">L</span>
             </div>
-            <span className="text-2xl font-bold text-[#E9ECEF]">LeagueScout</span>
+            <span className="text-2xl font-bold text-text-heading">LeagueScout</span>
           </div>
-          <h1 className="text-3xl font-bold text-[#E9ECEF] mb-4">
+          <h1 className="text-3xl font-bold text-text-heading mb-4">
             Get in touch
           </h1>
-          <p className="text-[#6C757D] max-w-md mx-auto leading-relaxed">
+          <p className="text-text-muted max-w-md mx-auto leading-relaxed">
             Have questions, feedback, or just want to say hello? We&apos;d love to
             hear from you. We&apos;re always here to listen and will get back to you
             as quickly as we can.
@@ -90,15 +90,15 @@ export default function ContactPage() {
               href={link.href}
               target={link.external ? "_blank" : undefined}
               rel={link.external ? "noopener noreferrer" : undefined}
-              className="group rounded-xl border border-[#2A2D3A] bg-[#1A1D29] p-6 text-center hover:border-[#3A3D4A] hover:bg-[#1E2130] transition-all"
+              className="group rounded-xl border border-border bg-surface-hover p-6 text-center hover:border-border-hover hover:bg-surface-hover transition-all"
             >
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#232838] text-[#ADB5BD] group-hover:text-[#E9ECEF] transition-colors">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-muted text-text-subtle group-hover:text-text-heading transition-colors">
                 {link.icon}
               </div>
-              <div className="text-sm font-semibold text-[#E9ECEF] mb-1">
+              <div className="text-sm font-semibold text-text-heading mb-1">
                 {link.label}
               </div>
-              <div className="text-xs text-[#6C757D]">
+              <div className="text-xs text-text-muted">
                 {link.description}
               </div>
             </a>
@@ -106,12 +106,12 @@ export default function ContactPage() {
         </div>
 
         {/* Footer links */}
-        <div className="mt-16 flex items-center justify-center gap-6 text-xs text-[#6C757D]">
-          <Link href="/tos" className="hover:text-[#E9ECEF] transition-colors">
+        <div className="mt-16 flex items-center justify-center gap-6 text-xs text-text-muted">
+          <Link href="/tos" className="hover:text-text-heading transition-colors">
             Terms of Service
           </Link>
-          <span className="text-[#2A2D3A]">|</span>
-          <Link href="/privacy" className="hover:text-[#E9ECEF] transition-colors">
+          <span className="text-border">|</span>
+          <Link href="/privacy" className="hover:text-text-heading transition-colors">
             Privacy Policy
           </Link>
         </div>

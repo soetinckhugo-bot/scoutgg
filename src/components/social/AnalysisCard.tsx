@@ -134,7 +134,7 @@ export default function AnalysisCard({ player, theme = "default" }: AnalysisCard
 
   return (
     <div
-      className="relative w-[400px] rounded-2xl overflow-hidden shadow-2xl"
+      className="relative max-w-[400px] w-full rounded-2xl overflow-hidden shadow-2xl"
       style={{ background: t.gradient, fontFamily: "'Space Grotesk', sans-serif" }}
     >
       {/* Background */}
@@ -153,13 +153,13 @@ export default function AnalysisCard({ player, theme = "default" }: AnalysisCard
           {player.photoUrl ? (
             <Image src={player.photoUrl} alt={player.pseudo} width={48} height={48} className="w-12 h-12 rounded-lg object-cover" />
           ) : (
-            <div className="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center">
-              <span className="text-lg font-bold text-white/40">{player.pseudo.charAt(0)}</span>
+            <div className="w-12 h-12 rounded-lg bg-card/10 flex items-center justify-center">
+              <span className="text-lg font-bold text-text-heading/40">{player.pseudo.charAt(0)}</span>
             </div>
           )}
           <div>
-            <h2 className="text-xl font-black text-white">{player.pseudo}</h2>
-            <p className="text-xs text-white/50 uppercase tracking-wider">Performance Analysis</p>
+            <h2 className="text-xl font-black text-text-heading">{player.pseudo}</h2>
+            <p className="text-xs text-text-heading/50 uppercase tracking-wider">Performance Analysis</p>
           </div>
         </div>
 
@@ -186,12 +186,12 @@ export default function AnalysisCard({ player, theme = "default" }: AnalysisCard
         {/* Stats grids */}
         {fightStats.length > 0 && (
           <div className="mb-3">
-            <h4 className="text-xs font-bold text-white/40 uppercase tracking-wider mb-2">Fight</h4>
+            <h4 className="text-xs font-bold text-text-heading/40 uppercase tracking-wider mb-2">Fight</h4>
             <div className="grid grid-cols-3 gap-2">
               {fightStats.map((s) => (
                 <div key={s.key} className="rounded-lg p-2" style={{ background: "rgba(255,255,255,0.05)" }}>
-                  <div className="text-xs text-white/40 uppercase">{s.key}</div>
-                  <div className="text-sm font-bold text-white">{String(s.value)}</div>
+                  <div className="text-xs text-text-heading/40 uppercase">{s.key}</div>
+                  <div className="text-sm font-bold text-text-heading">{String(s.value)}</div>
                 </div>
               ))}
             </div>
@@ -200,12 +200,12 @@ export default function AnalysisCard({ player, theme = "default" }: AnalysisCard
 
         {visionStats.length > 0 && (
           <div className="mb-3">
-            <h4 className="text-xs font-bold text-white/40 uppercase tracking-wider mb-2">Vision</h4>
+            <h4 className="text-xs font-bold text-text-heading/40 uppercase tracking-wider mb-2">Vision</h4>
             <div className="grid grid-cols-3 gap-2">
               {visionStats.map((s) => (
                 <div key={s.key} className="rounded-lg p-2" style={{ background: "rgba(255,255,255,0.05)" }}>
-                  <div className="text-xs text-white/40 uppercase">{s.key}</div>
-                  <div className="text-sm font-bold text-white">{String(s.value)}</div>
+                  <div className="text-xs text-text-heading/40 uppercase">{s.key}</div>
+                  <div className="text-sm font-bold text-text-heading">{String(s.value)}</div>
                 </div>
               ))}
             </div>
@@ -214,12 +214,12 @@ export default function AnalysisCard({ player, theme = "default" }: AnalysisCard
 
         {resourceStats.length > 0 && (
           <div className="mb-3">
-            <h4 className="text-xs font-bold text-white/40 uppercase tracking-wider mb-2">Resources</h4>
+            <h4 className="text-xs font-bold text-text-heading/40 uppercase tracking-wider mb-2">Resources</h4>
             <div className="grid grid-cols-3 gap-2">
               {resourceStats.map((s) => (
                 <div key={s.key} className="rounded-lg p-2" style={{ background: "rgba(255,255,255,0.05)" }}>
-                  <div className="text-xs text-white/40 uppercase">{s.key}</div>
-                  <div className="text-sm font-bold text-white">{String(s.value)}</div>
+                  <div className="text-xs text-text-heading/40 uppercase">{s.key}</div>
+                  <div className="text-sm font-bold text-text-heading">{String(s.value)}</div>
                 </div>
               ))}
             </div>
@@ -228,7 +228,7 @@ export default function AnalysisCard({ player, theme = "default" }: AnalysisCard
 
         {/* Footer */}
         <div className="flex items-center justify-between pt-3 border-t border-white/5">
-          <span className="text-xs text-white/30 uppercase tracking-widest">LeagueScout</span>
+          <span className="text-xs text-text-heading/30 uppercase tracking-widest">LeagueScout</span>
           <div className="flex items-center gap-1">
             <div className="w-1.5 h-1.5 rounded-full" style={{ background: t.primary }} />
             <div className="w-1.5 h-1.5 rounded-full" style={{ background: t.accent }} />

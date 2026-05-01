@@ -163,41 +163,41 @@ export default function SoloqPotwTab() {
   }
 
   if (loading) {
-    return <p className="text-center text-gray-400 py-8">Loading...</p>;
+    return <p className="text-center text-text-body py-8">Loading...</p>;
   }
 
   return (
     <div>
       {/* Actions */}
       <div className="flex justify-between items-center mb-6">
-        <p className="text-sm text-[#6C757D] dark:text-gray-400">
+        <p className="text-sm text-text-body">
           {potws.length} entries
         </p>
-        <Button className="bg-[#1A1A2E] text-white hover:bg-[#16213E]" onClick={startAdd}>
+        <Button className="bg-surface-elevated text-text-heading hover:bg-secondary" onClick={startAdd}>
           <Plus className="h-4 w-4 mr-2" />
           Add Week
         </Button>
       </div>
 
       {/* Table */}
-      <Card className="border-[#E9ECEF] dark:border-gray-700">
+      <Card className="border-border">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#E9ECEF] dark:border-gray-700 bg-[#F8F9FA] dark:bg-[#1e293b]">
-                  <th className="text-left p-3 text-xs font-semibold text-[#6C757D] dark:text-gray-400 uppercase">Week</th>
-                  <th className="text-left p-3 text-xs font-semibold text-[#6C757D] dark:text-gray-400 uppercase">Player</th>
-                  <th className="text-left p-3 text-xs font-semibold text-[#6C757D] dark:text-gray-400 uppercase">LP Gain</th>
-                  <th className="text-left p-3 text-xs font-semibold text-[#6C757D] dark:text-gray-400 uppercase">WR</th>
-                  <th className="text-left p-3 text-xs font-semibold text-[#6C757D] dark:text-gray-400 uppercase">Games</th>
-                  <th className="text-left p-3 text-xs font-semibold text-[#6C757D] dark:text-gray-400 uppercase">Active</th>
-                  <th className="text-left p-3 text-xs font-semibold text-[#6C757D] dark:text-gray-400 uppercase">Actions</th>
+                <tr className="border-b border-border bg-card">
+                  <th className="text-left p-3 text-xs font-semibold text-text-body uppercase">Week</th>
+                  <th className="text-left p-3 text-xs font-semibold text-text-body uppercase">Player</th>
+                  <th className="text-left p-3 text-xs font-semibold text-text-body uppercase">LP Gain</th>
+                  <th className="text-left p-3 text-xs font-semibold text-text-body uppercase">WR</th>
+                  <th className="text-left p-3 text-xs font-semibold text-text-body uppercase">Games</th>
+                  <th className="text-left p-3 text-xs font-semibold text-text-body uppercase">Active</th>
+                  <th className="text-left p-3 text-xs font-semibold text-text-body uppercase">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {potws.map((potw) => (
-                  <tr key={potw.id} className="border-b border-[#E9ECEF] dark:border-gray-700 hover:bg-[#F8F9FA] dark:hover:bg-[#1e293b]">
+                  <tr key={potw.id} className="border-b border-border hover:bg-card">
                     <td className="p-3">
                       <Badge variant="secondary" className="text-xs">
                         W{potw.week} {potw.year}
@@ -214,15 +214,15 @@ export default function SoloqPotwTab() {
                             className="rounded-full object-cover"
                           />
                         ) : (
-                          <div className="w-8 h-8 rounded-full bg-[#1A1A2E] flex items-center justify-center text-xs font-bold text-white">
+                          <div className="w-8 h-8 rounded-full bg-surface-elevated flex items-center justify-center text-xs font-bold text-text-heading">
                             {(potw.player.pseudo?.[0] ?? "?").toUpperCase()}
                           </div>
                         )}
                         <div>
-                          <p className="text-sm font-medium text-[#1A1A2E] dark:text-white">
+                          <p className="text-sm font-medium text-text-heading">
                             {potw.player.pseudo}
                           </p>
-                          <p className="text-xs text-[#6C757D] dark:text-gray-400">
+                          <p className="text-xs text-text-body">
                             {potw.player.role}
                           </p>
                         </div>
@@ -233,10 +233,10 @@ export default function SoloqPotwTab() {
                         +{potw.lpGain}
                       </span>
                     </td>
-                    <td className="p-3 text-sm text-[#6C757D] dark:text-gray-400">
+                    <td className="p-3 text-sm text-text-body">
                       {(potw.winrate * 100).toFixed(0)}%
                     </td>
-                    <td className="p-3 text-sm text-[#6C757D] dark:text-gray-400">
+                    <td className="p-3 text-sm text-text-body">
                       {potw.gamesPlayed}
                     </td>
                     <td className="p-3">
@@ -244,7 +244,7 @@ export default function SoloqPotwTab() {
                         variant="ghost"
                         size="sm"
                         onClick={() => toggleActive(potw.id, potw.isActive)}
-                        className={potw.isActive ? "text-green-500" : "text-gray-400"}
+                        className={potw.isActive ? "text-green-500" : "text-text-body"}
                       >
                         {potw.isActive ? "Active" : "Inactive"}
                       </Button>
@@ -259,10 +259,10 @@ export default function SoloqPotwTab() {
                         >
                           <DialogTrigger>
                             <div
-                              className="inline-flex items-center justify-center h-8 w-8 rounded-md hover:bg-accent cursor-pointer"
+                              className="inline-flex items-center justify-center h-8 w-8 rounded-md hover:bg-surface-hover cursor-pointer"
                               onClick={() => startEdit(potw)}
                             >
-                              <Edit className="h-4 w-4 text-[#0F3460]" />
+                              <Edit className="h-4 w-4 text-accent" />
                             </div>
                           </DialogTrigger>
                           <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
@@ -284,7 +284,7 @@ export default function SoloqPotwTab() {
                           className="h-8 w-8"
                           onClick={() => deletePotw(potw.id)}
                         >
-                          <Trash2 className="h-4 w-4 text-[#E94560]" />
+                          <Trash2 className="h-4 w-4 text-primary-accent" />
                         </Button>
                       </div>
                     </td>
@@ -413,7 +413,7 @@ function PotwForm({
       </div>
 
       <div className="flex gap-2 pt-4">
-        <Button className="bg-[#1A1A2E] text-white hover:bg-[#16213E]" onClick={onSave}>
+        <Button className="bg-surface-elevated text-text-heading hover:bg-secondary" onClick={onSave}>
           <Save className="h-4 w-4 mr-2" />
           Save
         </Button>

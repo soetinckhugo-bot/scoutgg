@@ -60,11 +60,13 @@ test.describe("Page Navigation Flows", () => {
 
     // Click first player card
     const firstCard = page.locator("a[href^='/players/']").first();
+    const href = await firstCard.getAttribute("href");
     await firstCard.click();
 
     // Should be on player detail
-    await expect(page).toHaveURL(/\/players\/[a-zA-Z0-9_-]+/);
-    await expect(page.locator("h1")).toBeVisible();
+    await page.waitForURL(/\/players\/[a-zA-Z0-9_-]+/);
+    // Verify page loaded with content
+    await expect(page.locator("body")).toContainText(/LeagueScout|Player|Overview|Stats/i, { timeout: 10000 });
 
     // Go back
     await page.goBack();

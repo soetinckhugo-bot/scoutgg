@@ -33,7 +33,7 @@ export const ROLE_METRICS: Record<string, RoleMetricSet> = {
     name: "Top",
     icon: "shield",
     metrics: [
-      { key: "W%", label: "W%", inverted: false, coeff: 0.5 },
+      { key: "W%", label: "W%", inverted: false, coeff: 0 },
       { key: "KP", label: "KP", inverted: false, coeff: 1.5 },
       { key: "CTR%", label: "CTR%", inverted: true, coeff: 2 },
       { key: "DTH%", label: "DTH%", inverted: true, coeff: 1.5 },
@@ -56,7 +56,7 @@ export const ROLE_METRICS: Record<string, RoleMetricSet> = {
     name: "Jungle",
     icon: "tree",
     metrics: [
-      { key: "W%", label: "W%", inverted: false, coeff: 0.5 },
+      { key: "W%", label: "W%", inverted: false, coeff: 0 },
       { key: "KP", label: "KP", inverted: false, coeff: 2 },
       { key: "DTH%", label: "DTH%", inverted: true, coeff: 1.5 },
       { key: "FB%", label: "FB%", inverted: false, coeff: 2 },

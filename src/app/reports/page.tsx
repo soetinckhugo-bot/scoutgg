@@ -37,10 +37,11 @@ export default async function ReportsPage() {
   const premiumReports = reports.filter((r) => r.isPremium);
 
   return (
+    <div className="min-h-screen bg-background">
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[#1A1A2E] dark:text-white mb-2">Scouting Reports</h1>
-        <p className="text-[#6C757D] dark:text-gray-400">
+        <h1 className="text-3xl font-bold text-text-heading mb-2">Scouting Reports</h1>
+        <p className="text-text-body">
           In-depth analysis and scouting reports by our expert team
         </p>
       </div>
@@ -48,8 +49,8 @@ export default async function ReportsPage() {
       {/* Free Reports */}
       {freeReports.length > 0 && (
         <div className="mb-12">
-          <h2 className="text-xl font-semibold text-[#1A1A2E] dark:text-white mb-4 flex items-center gap-2">
-            <Star className="h-5 w-5 text-[#28A745]" />
+          <h2 className="text-xl font-semibold text-text-heading mb-4 flex items-center gap-2">
+            <Star className="h-5 w-5 text-success" />
             Free Reports
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -65,8 +66,8 @@ export default async function ReportsPage() {
       {/* Premium Reports */}
       {premiumReports.length > 0 && (
         <div>
-          <h2 className="text-xl font-semibold text-[#1A1A2E] dark:text-white mb-4 flex items-center gap-2">
-            <Lock className="h-5 w-5 text-[#E94560]" />
+          <h2 className="text-xl font-semibold text-text-heading mb-4 flex items-center gap-2">
+            <Lock className="h-5 w-5 text-primary-accent" />
             Premium Reports
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -89,6 +90,7 @@ export default async function ReportsPage() {
           action={{ label: "Browse players", href: "/players" }}
         />
       )}
+    </div>
     </div>
   );
 }

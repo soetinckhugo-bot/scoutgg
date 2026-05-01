@@ -8,15 +8,15 @@
  * 4. Apply league coefficient for global score
  */
 
-import { ROLE_METRICS } from "./radar-metrics";
+import { getRoleMetrics } from "./radar-metrics";
 
 // ============================================================================
 // TIER DEFINITIONS — 4-Tier League System
 // ============================================================================
 // Tier 1: LCK, LPL                              → coefficient 1.0
-// Tier 2: LEC, LCS, CBLOL, LCP                  → coefficient 0.8
-// Tier 3: LFL, LES, TCL, PRM, NACL, LDL, LCK CL → coefficient 0.6
-// Tier 4: ROL, NLC, LPLOL, EBL, HLL, LIT, RL, AL, HM, LFL2, PRM2, Amateur → coefficient 0.5
+// Tier 2: LEC, LCS, CBLOL, LCP                  → coefficient 0.75
+// Tier 3: LFL, LES, TCL, PRM, NACL, LDL, LCK CL → coefficient 0.65
+// Tier 4: ROL, NLC, LPLOL, EBL, HLL, LIT, RL, AL, HM, LFL2, PRM2, Amateur → coefficient 0.45
 
 export const LEAGUE_TIERS = {
   TIER_1: ["LCK", "LPL"],
@@ -41,10 +41,18 @@ export function getTierFromLeague(league: string): TierLevel {
 
 export const LEAGUE_GLOBAL_COEFFICIENTS: Record<TierLevel, number> = {
   TIER_1: 1.0,
-  TIER_2: 0.8,
-  TIER_3: 0.6,
-  TIER_4: 0.5,
+  TIER_2: 0.75,
+  TIER_3: 0.65,
+  TIER_4: 0.45,
 };
+
+// LPL a un coefficient réduit car stats incomplètes, mais reste Tier 1
+export function getLeagueCoefficient(league: string): number {
+  const upper = league.toUpperCase();
+  if (upper === "LPL") return 0.9;
+  const tier = getTierFromLeague(league);
+  return LEAGUE_GLOBAL_COEFFICIENTS[tier];
+}
 
 // ============================================================================
 // METRIC TO DB FIELD MAPPING
@@ -261,7 +269,7 @@ export function calculateScores(
   }
 
   const role = playerStats.role?.toUpperCase() || "TOP";
-  const roleMetrics = ROLE_METRICS[role]?.metrics || ROLE_METRICS.TOP.metrics;
+  const roleMetrics = getRoleMetrics(role);
 
   // Filter players by same role
   const sameRolePlayers = allPlayers.filter(
@@ -314,7 +322,7 @@ export function calculateScores(
 
   // Apply league coefficient for global score
   const tier = getTierFromLeague(playerStats.league);
-  const globalScore = Math.round(clampedRaw * LEAGUE_GLOBAL_COEFFICIENTS[tier]);
+  const globalScore = Math.round(clampedRaw * getLeagueCoefficient(playerStats.league));
 
   const result: ScoringResult = {
     rawScore: Math.round(clampedRaw),
@@ -348,7 +356,7 @@ export function calculateScoresSimple(stats: { role: string; league: string }): 
   const tier = getTierFromLeague(stats.league);
   return {
     rawScore: 50,
-    globalScore: Math.round(50 * LEAGUE_GLOBAL_COEFFICIENTS[tier]),
+    globalScore: Math.round(50 * getLeagueCoefficient(stats.league)),
     tierScore: 50,
     tier,
   };

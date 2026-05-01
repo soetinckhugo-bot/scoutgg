@@ -108,8 +108,8 @@ export default function ProChampions({ matches }: ProChampionsProps) {
   if (champions.length === 0) {
     return (
       <div className="text-center py-8">
-        <Swords className="h-10 w-10 text-[#E9ECEF] dark:text-gray-700 mx-auto mb-2" />
-        <p className="text-sm text-[#6C757D] dark:text-gray-400">
+        <Swords className="h-10 w-10 text-text-muted mx-auto mb-2" />
+        <p className="text-sm text-text-body">
           No pro champion data available.
         </p>
       </div>
@@ -120,25 +120,25 @@ export default function ProChampions({ matches }: ProChampionsProps) {
     <div className="space-y-3">
       {/* Header stats */}
       <div className="flex flex-wrap items-center gap-3">
-        <div className="flex items-center gap-2 bg-[#1A1D29] border border-[#2A2D3A] rounded-lg px-3 py-1.5">
+        <div className="flex items-center gap-2 bg-surface-hover border border-border rounded-lg px-3 py-1.5">
           <Trophy className="h-3.5 w-3.5 text-yellow-500" />
-          <span className="text-sm font-bold text-[#E9ECEF]">
+          <span className="text-sm font-bold text-text-heading">
             {totalWins}W — {totalGames - totalWins}L
           </span>
-          <span className="text-xs text-[#6C757D]">
+          <span className="text-xs text-text-muted">
             ({Math.round((totalWins / totalGames) * 100)}% WR)
           </span>
-          <span className="text-xs text-[#6C757D] ml-2">
+          <span className="text-xs text-text-muted ml-2">
             {champions.length} champions
           </span>
         </div>
       </div>
 
       {/* Champions table — compact style */}
-      <div className="overflow-x-auto rounded-lg border border-[#2A2D3A]">
+      <div className="overflow-x-auto rounded-lg border border-border">
         <table className="w-full text-xs">
           <thead>
-            <tr className="bg-[#141621] text-[#6C757D] text-xs uppercase tracking-wider border-b border-[#2A2D3A]">
+            <tr className="bg-card text-text-muted text-xs uppercase tracking-wider border-b border-border">
               <th className="text-left py-2 px-2 font-semibold">Champion</th>
               <th className="text-left py-2 px-2 font-semibold">Games</th>
               <th className="text-left py-2 px-2 font-semibold">Win%</th>
@@ -155,7 +155,7 @@ export default function ProChampions({ matches }: ProChampionsProps) {
               return (
                 <tr
                   key={champ.champion}
-                  className="bg-[#1A1F2E] hover:bg-[#1E2435] transition-colors border-b border-[#232838] last:border-b-0"
+                  className="bg-surface-elevated hover:bg-surface-hover transition-colors border-b border-border last:border-b-0"
                 >
                   {/* Champion */}
                   <td className="py-1.5 px-2">
@@ -171,14 +171,14 @@ export default function ProChampions({ matches }: ProChampionsProps) {
                           }}
                         />
                       </div>
-                      <span className="font-semibold text-[#E9ECEF] text-xs whitespace-nowrap">
+                      <span className="font-semibold text-text-heading text-xs whitespace-nowrap">
                         {champ.champion}
                       </span>
                     </div>
                   </td>
 
                   {/* Games */}
-                  <td className="py-2 px-2 text-[#ADB5BD]">
+                  <td className="py-2 px-2 text-text-subtle">
                     <span className="font-medium">{champ.games}</span>
                   </td>
 
@@ -194,22 +194,22 @@ export default function ProChampions({ matches }: ProChampionsProps) {
                   </td>
 
                   {/* KDA */}
-                  <td className="py-2 px-2 text-[#ADB5BD]">
+                  <td className="py-2 px-2 text-text-subtle">
                     <span className="font-medium">{champ.kda.toFixed(1)}</span>
                   </td>
 
                   {/* KP% */}
-                  <td className="py-2 px-2 text-[#ADB5BD]">
+                  <td className="py-2 px-2 text-text-subtle">
                     <span className="font-medium">{champ.kp.toFixed(1)}%</span>
                   </td>
 
                   {/* DPM */}
-                  <td className="py-2 px-2 text-[#ADB5BD]">
+                  <td className="py-2 px-2 text-text-subtle">
                     <span className="font-medium">{champ.dpm.toFixed(0)}</span>
                   </td>
 
                   {/* CSM */}
-                  <td className="py-2 px-2 text-[#ADB5BD]">
+                  <td className="py-2 px-2 text-text-subtle">
                     <span className="font-medium">{champ.csm.toFixed(1)}</span>
                   </td>
                 </tr>

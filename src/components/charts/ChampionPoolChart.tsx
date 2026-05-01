@@ -75,7 +75,7 @@ export default function ChampionPoolChart({
 
   if (data.length === 0) {
     return (
-      <div className="text-center py-8 text-sm text-[#6C757D] dark:text-gray-400">
+      <div className="text-center py-8 text-sm text-text-body">
         No champion data available
       </div>
     );
@@ -124,7 +124,7 @@ export default function ChampionPoolChart({
           </Bar>
         </BarChart>
       </ResponsiveContainer>
-      <p className="text-xs text-center text-[#6C757D] dark:text-gray-400 mt-2">
+      <p className="text-xs text-center text-text-body mt-2">
         Top {data.length} champions by games played
       </p>
     </div>

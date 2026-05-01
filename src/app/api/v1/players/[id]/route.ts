@@ -31,6 +31,9 @@ async function handler(
           wcpm: true,
           visionScore: true,
           fbPercent: true,
+          globalScore: true,
+          tierScore: true,
+          winRate: true,
         },
       },
       reports: {

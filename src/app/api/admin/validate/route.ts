@@ -6,6 +6,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/server/auth";
 import { validateImport } from "@/lib/import-validator";
+import { logger } from "@/lib/logger";
 
 export async function GET(request: Request) {
   const unauthorized = await requireAdmin();
@@ -26,7 +27,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(result);
   } catch (error: any) {
-    console.error("Validation error:", error);
+    logger.error("Validation error:", { error });
     return NextResponse.json(
       { error: error.message || "Validation failed" },
       { status: 500 }

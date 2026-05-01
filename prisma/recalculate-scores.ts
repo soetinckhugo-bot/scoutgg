@@ -1,89 +1,108 @@
 import { PrismaClient } from "@prisma/client";
-import { computeProspectScore } from "../src/lib/prospect-scoring";
+import { calculateScores, type PlayerData } from "../src/lib/scoring";
 
-const prisma = new PrismaClient();
-
-// ============================================================================
-// RECALCULER TOUS LES SCORES DE PROSPECTS
-// ============================================================================
-// Lance : npx tsx prisma/recalculate-scores.ts
-//
-// Recalcule automatiquement tous les scores avec l'algo actuel.
-// Utile quand tu modifies la formule dans src/lib/prospect-scoring.ts
-// ============================================================================
+const db = new PrismaClient();
 
 async function main() {
-  console.log("🔄 Recalcul des scores de tous les prospects...\n");
+  console.log("Fetching all pro stats...");
 
-  const prospects = await prisma.player.findMany({
-    where: { isProspect: true },
-    include: {
-      soloqStats: true,
-      proStats: true,
-    },
+  const proStatsList = await db.proStats.findMany({
+    include: { player: true },
   });
 
-  console.log(`${prospects.length} prospects trouvés.\n`);
-
-  for (const p of prospects) {
-    const ss = p.soloqStats;
-    const ps = p.proStats;
-
-    if (!ss) {
-      console.log(`⚠️  ${p.pseudo} — pas de SoloQ stats, ignoré.`);
-      continue;
-    }
-
-    // Récupère les métriques existantes ou valeurs par défaut
-    const existingMetrics = await prisma.prospectMetrics.findUnique({
-      where: { playerId: p.id },
-    });
-
-    const computed = computeProspectScore({
-      peakLp: ss.peakLp,
-      proWinrate: existingMetrics?.proWinrateScore
-        ? (existingMetrics.proWinrateScore / 15) // reverse calc
-        : ps?.kda ? 0.55 : null,
-      currentLeague: p.league,
-      bestProResult: null, // On garde les valeurs existantes si dispo
-      soloqGames: ss.totalGames,
-      age: p.age,
-      proChampionPool: ps?.championPool ?? null,
-      soloqWinrate: ss.winrate,
-      eyeTestRating: existingMetrics?.eyeTestScore || null,
-    });
-
-    // Update
-    await prisma.player.update({
-      where: { id: p.id },
-      data: {
-        prospectScore: computed.total,
-        prospectMetrics: {
-          upsert: {
-            create: { ...computed.breakdown, lastUpdated: new Date() },
-            update: { ...computed.breakdown, lastUpdated: new Date() },
-          },
-        },
-      },
-    });
-
-    console.log(`${p.pseudo}: ${computed.total}/100`);
+  if (proStatsList.length === 0) {
+    console.log("No pro stats found.");
+    return;
   }
 
-  // Affiche le nouveau classement
-  const updated = await prisma.player.findMany({
-    where: { isProspect: true },
-    orderBy: { prospectScore: "desc" },
-    select: { pseudo: true, prospectScore: true, role: true, league: true },
+  console.log(`Found ${proStatsList.length} players with pro stats.`);
+
+  // Build PlayerData for all (needed for percentile calculation)
+  const allPlayerData: PlayerData[] = proStatsList.map((ps) => {
+    const { id: _proId, playerId, player, ...stats } = ps;
+    return {
+      id: player.id,
+      pseudo: player.pseudo,
+      role: player.role,
+      league: player.league,
+      ...stats,
+    };
   });
 
-  console.log(`\n📋 Nouveau classement Top 30 :`);
-  updated.forEach((p, i) => {
-    const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}.`;
-    console.log(`   ${medal} ${p.pseudo} (${p.role}, ${p.league}) — ${p.prospectScore}/100`);
-  });
+  // Group by (role, league)
+  const groups = new Map<string, PlayerData[]>();
+  for (const pd of allPlayerData) {
+    const key = `${pd.role}|${pd.league}`;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key)!.push(pd);
+  }
 
-  console.log(`\n✅ ${updated.length} prospects recalculés avec succès !`);
+  // Calculate new scores for each player
+  const updates: {
+    playerId: string;
+    globalScore: number;
+    tierScore: number;
+    rawScore: number;
+    tier: string;
+  }[] = [];
+
+  for (const ps of proStatsList) {
+    const groupKey = `${ps.player.role}|${ps.player.league}`;
+    const groupPlayers = groups.get(groupKey) || [];
+
+    if (groupPlayers.length === 0) continue;
+
+    const result = calculateScores(
+      { role: ps.player.role, league: ps.player.league, ...ps },
+      groupPlayers
+    );
+
+    updates.push({
+      playerId: ps.playerId,
+      globalScore: result.globalScore,
+      tierScore: result.tierScore,
+      rawScore: result.rawScore,
+      tier: result.tier,
+    });
+  }
+
+  console.log(`Recalculating ${updates.length} players...`);
+
+  // Batch update
+  const BATCH_SIZE = 20;
+  let updatedCount = 0;
+
+  for (let i = 0; i < updates.length; i += BATCH_SIZE) {
+    const batch = updates.slice(i, i + BATCH_SIZE);
+
+    await db.$transaction(
+      batch.map((u) =>
+        db.proStats.update({
+          where: { playerId: u.playerId },
+          data: {
+            globalScore: u.globalScore,
+            tierScore: u.tierScore,
+            rawScore: u.rawScore,
+            tier: u.tier,
+          },
+        })
+      )
+    );
+
+    await db.$transaction(
+      batch.map((u) =>
+        db.player.update({
+          where: { id: u.playerId },
+          data: { tier: u.tier.replace("TIER_", "") },
+        })
+      )
+    );
+
+    updatedCount += batch.length;
+    console.log(`  → ${updatedCount}/${updates.length} done`);
+  }
+
+  console.log(`\n✅ Done! ${updatedCount} players recalculated.`);
 }
 
 main()
@@ -92,5 +111,5 @@ main()
     process.exit(1);
   })
   .finally(async () => {
-    await prisma.$disconnect();
+    await db.$disconnect();
   });

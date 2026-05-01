@@ -26,11 +26,14 @@ import {
   Crown,
   BarChart3,
   Eye,
+  ClipboardList,
 } from "lucide-react";
+import ScoutIcon from "@/components/ScoutIcon";
 import { EmptyState } from "@/components/ui/empty-state";
 import { toast } from "sonner";
 import { ROLE_COLORS } from "@/lib/constants";
 import PlayerCard from "@/components/PlayerCard";
+import ScoutingBoard from "@/components/ScoutingBoard";
 import { PageTitle, DataLabel, DataValue } from "@/components/ui/typography";
 
 interface Favorite {
@@ -121,15 +124,15 @@ interface Potw {
 function getNotifIcon(type: string) {
   switch (type) {
     case "status_change":
-      return <AlertCircle className="size-4 text-blue-500" />;
+      return <ScoutIcon icon={AlertCircle} size="md" variant="info" />;
     case "new_report":
-      return <FileText className="size-4 text-purple-500" />;
+      return <ScoutIcon icon={FileText} size="md" variant="purple" />;
     case "rank_up":
-      return <TrendingUp className="size-4 text-green-500" />;
+      return <ScoutIcon icon={TrendingUp} size="md" variant="success" />;
     case "transfer":
-      return <Briefcase className="size-4 text-orange-500" />;
+      return <ScoutIcon icon={Briefcase} size="md" variant="warning" />;
     default:
-      return <Bell className="size-4 text-gray-400" />;
+      return <ScoutIcon icon={Bell} size="md" variant="default" />;
   }
 }
 
@@ -145,12 +148,12 @@ function QuickStatItem({
   color: string;
 }) {
   return (
-    <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-lg border border-border">
+    <div className="flex items-center gap-3 p-4 bg-card rounded-lg border border-border">
       <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${color}`}>
         <Icon className="size-5" />
       </div>
       <div>
-        <DataValue highlight className="text-[#1A1A2E] dark:text-white">{value}</DataValue>
+        <DataValue highlight className="text-text-heading">{value}</DataValue>
         <DataLabel className="normal-case">{label}</DataLabel>
       </div>
     </div>
@@ -166,6 +169,7 @@ export default function DashboardPage() {
   const [prospects, setProspects] = useState<Prospect[]>([]);
   const [reports, setReports] = useState<Report[]>([]);
   const [potw, setPotw] = useState<Potw | null>(null);
+  const [boardCount, setBoardCount] = useState(0);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -180,12 +184,13 @@ export default function DashboardPage() {
   async function loadDashboard() {
     setLoading(true);
     try {
-      const [favRes, notifRes, prospectRes, reportRes, potwRes] = await Promise.all([
+      const [favRes, notifRes, prospectRes, reportRes, potwRes, boardRes] = await Promise.all([
         fetch("/api/favorites").then((r) => (r.ok ? r.json() : [])),
         fetch("/api/notifications").then((r) => (r.ok ? r.json() : { notifications: [] })),
         fetch("/api/prospects?limit=5").then((r) => (r.ok ? r.json() : { prospects: [] })),
         fetch("/api/reports?limit=5").then((r) => (r.ok ? r.json() : { reports: [] })),
         fetch("/api/soloq-potw").then((r) => (r.ok ? r.json() : null)),
+        fetch("/api/scouting").then((r) => (r.ok ? r.json() : { cards: [] })),
       ]);
 
       setFavorites(favRes || []);
@@ -193,6 +198,7 @@ export default function DashboardPage() {
       setProspects(prospectRes.prospects || []);
       setReports(reportRes.reports || []);
       setPotw(potwRes?.potw || null);
+      setBoardCount(boardRes?.cards?.length || 0);
     } catch (err) {
       console.error("Dashboard load error:", err);
       toast.error("Failed to load dashboard");
@@ -205,7 +211,7 @@ export default function DashboardPage() {
     return (
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="flex items-center justify-center py-24">
-          <Loader2 className="h-10 w-10 animate-spin text-[#E94560]" />
+          <Loader2 className="h-10 w-10 animate-spin text-primary-accent" />
         </div>
       </div>
     );
@@ -221,55 +227,64 @@ export default function DashboardPage() {
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       {/* Header */}
       <div className="mb-8">
-        <PageTitle className="text-[#1A1A2E] dark:text-white mb-1">
+        <PageTitle className="text-text-heading mb-1">
           My Scout Desk
         </PageTitle>
-        <p className="text-[#6C757D] dark:text-gray-400">
+        <p className="text-text-body">
           Your personalized scouting command center
         </p>
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
         <QuickStatItem
           icon={Heart}
           label="Watchlist"
           value={favorites.length}
-          color="bg-red-100 text-red-600 dark:bg-red-900/20 dark:text-red-400"
+          color="bg-primary-accent/20 text-primary-accent"
         />
         <QuickStatItem
           icon={Bell}
           label="Unread Alerts"
           value={unreadCount}
-          color="bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
+          color="bg-blue-500/20 text-blue-400"
         />
         <QuickStatItem
           icon={Star}
           label="Prospects"
           value={prospects.length > 0 ? "Top 5" : 0}
-          color="bg-amber-100 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400"
+          color="bg-amber-500/20 text-amber-400"
         />
         <QuickStatItem
           icon={FileText}
           label="Reports"
           value={reports.length}
-          color="bg-purple-100 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400"
+          color="bg-purple-500/20 text-purple-400"
+        />
+        <QuickStatItem
+          icon={ClipboardList}
+          label="Pipeline"
+          value={boardCount}
+          color="bg-primary-accent/20 text-primary-accent"
         />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column — 2/3 */}
         <div className="lg:col-span-2 space-y-6">
+          {/* Scouting Pipeline */}
+          <ScoutingBoard />
+
           {/* Watchlist */}
-          <div className="rounded-lg border border-[#E9ECEF] dark:border-gray-700 overflow-hidden">
-            <div className="px-4 py-3 border-b border-[#E9ECEF] dark:border-gray-700 bg-[#F8F9FA] dark:bg-[#1e293b]">
+          <div className="rounded-lg border border-border overflow-hidden">
+            <div className="px-4 py-3 border-b border-border bg-surface-hover">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold flex items-center gap-2 text-[#1A1A2E] dark:text-white">
-                  <Heart className="size-5 text-[#E94560]" />
+                <h3 className="text-lg font-semibold flex items-center gap-2 text-text-heading">
+                  <ScoutIcon icon={Heart} size="lg" variant="accent" glow />
                   My Watchlist
                 </h3>
                 <Link href="/watchlist">
-                  <Button variant="ghost" size="sm" className="h-8 text-xs">
+                  <Button variant="ghost" size="default" className="text-xs">
                     View All
                     <ArrowRight className="size-3 ml-1" />
                   </Button>
@@ -302,14 +317,14 @@ export default function DashboardPage() {
           </div>
 
           {/* Notifications */}
-          <div className="rounded-lg border border-[#E9ECEF] dark:border-gray-700 overflow-hidden">
-            <div className="px-4 py-3 border-b border-[#E9ECEF] dark:border-gray-700 bg-[#F8F9FA] dark:bg-[#1e293b]">
+          <div className="rounded-lg border border-border overflow-hidden">
+            <div className="px-4 py-3 border-b border-border bg-surface-hover">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold flex items-center gap-2 text-[#1A1A2E] dark:text-white">
-                  <Bell className="size-5 text-blue-500" />
+                <h3 className="text-lg font-semibold flex items-center gap-2 text-text-heading">
+                  <ScoutIcon icon={Bell} size="lg" variant="info" glow />
                   Recent Activity
                   {unreadCount > 0 && (
-                    <Badge className="bg-[#E94560] text-white text-xs h-5">
+                    <Badge className="bg-primary-accent text-text-heading text-xs h-5">
                       {unreadCount} new
                     </Badge>
                   )}
@@ -326,28 +341,28 @@ export default function DashboardPage() {
                   className="py-8"
                 />
               ) : (
-                <div className="divide-y divide-[#E9ECEF] dark:divide-gray-700">
+                <div className="divide-y divide-border">
                   {notifications.slice(0, 5).map((notif) => (
                     <div
                       key={notif.id}
-                      className={`px-4 py-3 flex items-start gap-3 hover:bg-[#F8F9FA] dark:hover:bg-[#0f172a] transition-colors ${
-                        !notif.read ? "bg-blue-50/50 dark:bg-blue-900/10" : ""
+                      className={`px-4 py-3 flex items-start gap-3 hover:bg-surface-hover transition-colors ${
+                        !notif.read ? "bg-accent/10" : ""
                       }`}
                     >
                       <div className="shrink-0 mt-0.5">{getNotifIcon(notif.type)}</div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-[#1A1A2E] dark:text-white">
+                        <p className="text-sm font-medium text-text-heading">
                           {notif.title}
                         </p>
-                        <p className="text-xs text-[#6C757D] dark:text-gray-400">
+                        <p className="text-xs text-text-body">
                           {notif.message}
                         </p>
-                        <p className="text-xs text-[#6C757D] dark:text-gray-500 mt-0.5">
+                        <p className="text-xs text-text-muted mt-0.5">
                           {new Date(notif.createdAt).toLocaleDateString()}
                         </p>
                       </div>
                       {!notif.read && (
-                        <div className="shrink-0 w-2 h-2 rounded-full bg-[#E94560] mt-1.5" />
+                        <div className="shrink-0 w-2 h-2 rounded-full bg-primary-accent mt-1.5" />
                       )}
                     </div>
                   ))}
@@ -357,15 +372,15 @@ export default function DashboardPage() {
           </div>
 
           {/* Top Prospects */}
-          <div className="rounded-lg border border-[#E9ECEF] dark:border-gray-700 overflow-hidden">
-            <div className="px-4 py-3 border-b border-[#E9ECEF] dark:border-gray-700 bg-[#F8F9FA] dark:bg-[#1e293b]">
+          <div className="rounded-lg border border-border overflow-hidden">
+            <div className="px-4 py-3 border-b border-border bg-surface-hover">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold flex items-center gap-2 text-[#1A1A2E] dark:text-white">
-                  <Crown className="size-5 text-amber-500" />
+                <h3 className="text-lg font-semibold flex items-center gap-2 text-text-heading">
+                  <ScoutIcon icon={Crown} size="lg" variant="gold" glow />
                   Top Prospects
                 </h3>
                 <Link href="/prospects">
-                  <Button variant="ghost" size="sm" className="h-8 text-xs">
+                  <Button variant="ghost" size="default" className="text-xs">
                     View All
                     <ArrowRight className="size-3 ml-1" />
                   </Button>
@@ -387,19 +402,19 @@ export default function DashboardPage() {
                     <Link
                       key={prospect.id}
                       href={`/players/${prospect.id}`}
-                      className="flex items-center gap-3 p-3 rounded-lg border border-[#E9ECEF] dark:border-gray-700 hover:border-[#0F3460] dark:hover:border-gray-500 transition-colors"
+                      className="flex items-center gap-3 p-3 rounded-lg border border-border hover:border-primary-accent/50 hover:bg-surface-hover transition-colors"
                     >
                       <Avatar className="h-10 w-10">
                         {prospect.photoUrl ? (
                           <AvatarImage src={prospect.photoUrl} alt={prospect.pseudo} />
                         ) : null}
-                        <AvatarFallback className="bg-[#1A1A2E] text-white text-xs">
+                        <AvatarFallback className="bg-muted text-text-heading text-xs">
                           {(prospect.pseudo?.[0] ?? "?").toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="font-semibold text-sm text-[#1A1A2E] dark:text-white truncate">
+                          <span className="font-semibold text-sm text-text-heading truncate">
                             {prospect.pseudo}
                           </span>
                           <Badge
@@ -409,16 +424,16 @@ export default function DashboardPage() {
                             {prospect.role}
                           </Badge>
                         </div>
-                        <div className="text-xs text-[#6C757D] dark:text-gray-400">
+                        <div className="text-xs text-text-body">
                           {prospect.league} · {prospect.soloqStats?.currentRank || "Unranked"}
                         </div>
                       </div>
                       {prospect.prospectScore && (
                         <div className="text-right">
-                          <div className="text-sm font-bold text-[#E94560] tabular-nums">
+                          <div className="text-sm font-bold text-primary-accent tabular-nums">
                             {prospect.prospectScore.toFixed(1)}
                           </div>
-                          <div className="text-xs text-[#6C757D] dark:text-gray-400">score</div>
+                          <div className="text-xs text-text-body">score</div>
                         </div>
                       )}
                     </Link>
@@ -433,10 +448,10 @@ export default function DashboardPage() {
         <div className="space-y-6">
           {/* SoloQ POTW */}
           {potw && (
-            <Card className="border-[#E9ECEF] dark:border-gray-700 bg-gradient-to-br from-amber-50 to-white dark:from-amber-900/10 dark:to-[#0f172a]">
+            <Card className="border-border bg-gradient-to-br from-amber-50 to-white from-amber-500/10 to-[#0F0F1A]">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <Zap className="size-5 text-amber-500" />
+                  <ScoutIcon icon={Zap} size="lg" variant="gold" glow />
                   SoloQ POTW
                 </CardTitle>
               </CardHeader>
@@ -446,44 +461,44 @@ export default function DashboardPage() {
                     {potw.player.photoUrl ? (
                       <AvatarImage src={potw.player.photoUrl} alt={potw.player.pseudo} />
                     ) : null}
-                    <AvatarFallback className="bg-[#1A1A2E] text-white">
+                    <AvatarFallback className="bg-muted text-text-heading">
                       {(potw.player.pseudo?.[0] ?? "?").toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div>
                     <Link
                       href={`/players/${potw.player.id}`}
-                      className="font-bold text-[#1A1A2E] dark:text-white hover:text-[#E94560] transition-colors"
+                      className="font-bold text-text-heading hover:text-primary-accent transition-colors"
                     >
                       {potw.player.pseudo}
                     </Link>
-                    <div className="text-xs text-[#6C757D] dark:text-gray-400">
+                    <div className="text-xs text-text-body">
                       {potw.player.role} · {potw.player.soloqStats?.currentRank || "Unranked"}
                     </div>
                   </div>
                 </div>
-                <div className="grid grid-cols-3 gap-2 text-center">
-                  <div className="bg-white/60 dark:bg-[#1e293b]/60 rounded-lg p-2">
-                    <div className="text-lg font-bold text-green-600 dark:text-green-400 tabular-nums">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-center">
+                  <div className="bg-background/60 rounded-lg p-2">
+                    <div className="text-lg font-bold text-emerald-400 tabular-nums">
                       +{potw.lpGain}
                     </div>
-                    <div className="text-xs text-[#6C757D] dark:text-gray-400">LP Gain</div>
+                    <div className="text-xs text-text-body">LP Gain</div>
                   </div>
-                  <div className="bg-white/60 dark:bg-[#1e293b]/60 rounded-lg p-2">
-                    <div className="text-lg font-bold text-[#1A1A2E] dark:text-white tabular-nums">
+                  <div className="bg-background/60 rounded-lg p-2">
+                    <div className="text-lg font-bold text-text-heading tabular-nums">
                       {potw.winrate}%
                     </div>
-                    <div className="text-xs text-[#6C757D] dark:text-gray-400">Winrate</div>
+                    <div className="text-xs text-text-body">Winrate</div>
                   </div>
-                  <div className="bg-white/60 dark:bg-[#1e293b]/60 rounded-lg p-2">
-                    <div className="text-lg font-bold text-[#1A1A2E] dark:text-white tabular-nums">
+                  <div className="bg-background/60 rounded-lg p-2">
+                    <div className="text-lg font-bold text-text-heading tabular-nums">
                       {potw.gamesPlayed}
                     </div>
-                    <div className="text-xs text-[#6C757D] dark:text-gray-400">Games</div>
+                    <div className="text-xs text-text-body">Games</div>
                   </div>
                 </div>
                 {potw.reason && (
-                  <p className="text-xs text-[#6C757D] dark:text-gray-400 mt-3 italic">
+                  <p className="text-xs text-text-body mt-3 italic">
                     "{potw.reason}"
                   </p>
                 )}
@@ -492,15 +507,15 @@ export default function DashboardPage() {
           )}
 
           {/* Latest Reports */}
-          <div className="rounded-lg border border-[#E9ECEF] dark:border-gray-700 overflow-hidden">
-            <div className="px-4 py-3 border-b border-[#E9ECEF] dark:border-gray-700 bg-[#F8F9FA] dark:bg-[#1e293b]">
+          <div className="rounded-lg border border-border overflow-hidden">
+            <div className="px-4 py-3 border-b border-border bg-surface-hover">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold flex items-center gap-2 text-[#1A1A2E] dark:text-white">
-                  <FileText className="size-5 text-purple-500" />
+                <h3 className="text-lg font-semibold flex items-center gap-2 text-text-heading">
+                  <ScoutIcon icon={FileText} size="lg" variant="purple" glow />
                   Latest Reports
                 </h3>
                 <Link href="/reports">
-                  <Button variant="ghost" size="sm" className="h-8 text-xs">
+                  <Button variant="ghost" size="default" className="text-xs">
                     All
                     <ArrowRight className="size-3 ml-1" />
                   </Button>
@@ -517,28 +532,28 @@ export default function DashboardPage() {
                   className="py-6"
                 />
               ) : (
-                <div className="divide-y divide-[#E9ECEF] dark:divide-gray-700">
+                <div className="divide-y divide-border">
                   {reports.slice(0, 5).map((report) => (
                     <Link
                       key={report.id}
                       href={`/reports`}
-                      className="block px-4 py-3 hover:bg-[#F8F9FA] dark:hover:bg-[#0f172a] transition-colors"
+                      className="block px-4 py-3 hover:bg-surface-hover transition-colors"
                     >
-                      <p className="text-sm font-medium text-[#1A1A2E] dark:text-white truncate">
+                      <p className="text-sm font-medium text-text-heading truncate">
                         {report.title}
                       </p>
                       <div className="flex items-center gap-2 mt-1">
-                        <span className="text-xs text-[#6C757D] dark:text-gray-400">
+                        <span className="text-xs text-text-body">
                           {report.player.pseudo}
                         </span>
                         <Badge
                           variant="secondary"
                           className={`text-xs h-4 px-1 ${
                             report.verdict === "Must Sign"
-                              ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
+                              ? "bg-emerald-500/20 text-emerald-400"
                               : report.verdict === "Pass"
-                              ? "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400"
-                              : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400"
+                              ? "bg-primary-accent/20 text-primary-accent"
+                              : "bg-amber-500/20 text-amber-400"
                           }`}
                         >
                           {report.verdict}
@@ -552,10 +567,10 @@ export default function DashboardPage() {
           </div>
 
           {/* Quick Links */}
-          <Card className="border-[#E9ECEF] dark:border-gray-700">
+          <Card className="border-border">
             <CardHeader className="pb-3">
               <CardTitle className="text-lg flex items-center gap-2">
-                <BarChart3 className="size-5 text-[#0F3460] dark:text-gray-400" />
+                <ScoutIcon icon={BarChart3} size="lg" variant="muted" />
                 Quick Links
               </CardTitle>
             </CardHeader>
@@ -571,13 +586,13 @@ export default function DashboardPage() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-[#F8F9FA] dark:hover:bg-[#1e293b] transition-colors group"
+                  className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-surface-hover transition-colors group"
                 >
-                  <link.icon className="size-4 text-[#6C757D] dark:text-gray-400 group-hover:text-[#E94560] transition-colors" />
-                  <span className="text-sm text-[#1A1A2E] dark:text-white group-hover:text-[#E94560] transition-colors">
+                  <link.icon className="size-4 text-text-body group-hover:text-primary-accent transition-colors" />
+                  <span className="text-sm text-text-heading group-hover:text-primary-accent transition-colors">
                     {link.label}
                   </span>
-                  <ArrowRight className="size-3 ml-auto text-[#E9ECEF] dark:text-gray-600 group-hover:text-[#E94560] transition-colors" />
+                  <ArrowRight className="size-3 ml-auto text-border group-hover:text-primary-accent transition-colors" />
                 </Link>
               ))}
             </CardContent>

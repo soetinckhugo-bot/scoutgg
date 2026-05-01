@@ -205,6 +205,19 @@ vi.stubGlobal("fetch", vi.fn());
 
 ---
 
+## Pipeline de données Pro — `ProStats` vs `ProMatch`
+
+> ⚠️ **Distinction critique** — Documentée pour éviter toute confusion future.
+
+| Table | Source de vérité | Usage | Scoring |
+|-------|-----------------|-------|---------|
+| **`ProStats`** | Import CSV (Oracle's Elixir / Gol.gg) | Stats agrégées (KDA, CSPM, DPM, GD@15, vision, etc.) | ✅ **OUI** — `globalScore`, `tierScore`, `rawScore`, `tier` sont calculés depuis ces stats via `prisma/recalculate-scores.ts` |
+| **`ProMatch`** | Saisie manuelle ou import match-by-match | Historique détaillé de chaque game (champion, build, runes, résultat) | ❌ **NON** — Les matchs individuels ne sont **jamais** utilisés pour calculer les scores. Ils servent uniquement à l'affichage de l'historique et à l'agrégation du champion pool |
+
+**Règle d'or** : Ajouter des `ProMatch` met à jour l'onglet **Matches** et **Champ Pool**, mais ne modifie **aucunement** les scores du joueur. Pour mettre à jour les scores, il faut soit réimporter un CSV dans `ProStats`, soit modifier manuellement les champs `kda`, `cspm`, `dpm`, etc. dans `ProStats`.
+
+---
+
 ## Migration Prisma (SQLite dev)
 
 SQLite ne supporte pas `prisma migrate dev` en non-interactif. Utiliser :

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { db } from "@/lib/server/db";
+import { logger } from "@/lib/logger";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
   apiVersion: "2026-03-25.dahlia",
@@ -17,7 +18,7 @@ export async function POST(request: Request) {
   try {
     event = stripe.webhooks.constructEvent(payload, sig, endpointSecret);
   } catch (err: any) {
-    console.error("Stripe webhook signature verification failed:", err.message);
+    logger.error("Stripe webhook signature verification failed:", err.message);
     return NextResponse.json(
       { error: `Webhook Error: ${err.message}` },
       { status: 400 }
@@ -65,6 +66,24 @@ export async function POST(request: Request) {
         break;
       }
 
+      case "invoice.payment_succeeded": {
+        const invoice = event.data.object as Stripe.Invoice;
+        const customerId = invoice.customer as string;
+        const periodEnd = invoice.lines?.data[0]?.period?.end;
+
+        await db.user.updateMany({
+          where: { stripeCustomerId: customerId },
+          data: {
+            subscriptionStatus: "active",
+            isPremium: true,
+            premiumUntil: periodEnd ? new Date(periodEnd * 1000) : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+          },
+        });
+
+        console.log(`Payment succeeded, premium extended for customer ${customerId}`);
+        break;
+      }
+
       case "invoice.payment_failed": {
         const invoice = event.data.object as Stripe.Invoice;
         const customerId = invoice.customer as string;
@@ -75,6 +94,27 @@ export async function POST(request: Request) {
         });
 
         console.log(`Subscription past_due for customer ${customerId}`);
+        break;
+      }
+
+      case "customer.subscription.updated": {
+        const subscription = event.data.object as Stripe.Subscription;
+        const customerId = subscription.customer as string;
+        const status = subscription.status;
+
+        const isActive = status === "active" || status === "trialing";
+        await db.user.updateMany({
+          where: { stripeCustomerId: customerId },
+          data: {
+            isPremium: isActive,
+            subscriptionStatus: status,
+            premiumUntil: (subscription as any).current_period_end
+              ? new Date((subscription as any).current_period_end * 1000)
+              : undefined,
+          },
+        });
+
+        console.log(`Subscription updated: ${status} for customer ${customerId}`);
         break;
       }
 
@@ -95,11 +135,28 @@ export async function POST(request: Request) {
         break;
       }
 
+      case "charge.refunded": {
+        const charge = event.data.object as Stripe.Charge;
+        const customerId = charge.customer as string;
+
+        await db.user.updateMany({
+          where: { stripeCustomerId: customerId },
+          data: {
+            isPremium: false,
+            subscriptionStatus: "refunded",
+            premiumUntil: new Date(),
+          },
+        });
+
+        console.log(`Charge refunded for customer ${customerId}`);
+        break;
+      }
+
       default:
         console.log(`Unhandled event type: ${event.type}`);
     }
   } catch (err: any) {
-    console.error("Webhook processing error:", err);
+    logger.error("Webhook processing error:", { err });
     return NextResponse.json(
       { error: "Webhook handler failed" },
       { status: 500 }

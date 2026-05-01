@@ -23,7 +23,12 @@ export async function requirePremium() {
   }
 
   const user = session.user as any;
-  const isPremium = user?.isPremium === true && user?.subscriptionStatus === "active";
+  const now = new Date();
+  const premiumUntil = user?.premiumUntil ? new Date(user.premiumUntil) : null;
+  const isPremium =
+    user?.isPremium === true &&
+    user?.subscriptionStatus === "active" &&
+    (!premiumUntil || premiumUntil > now);
 
   if (!isPremium) {
     return NextResponse.json(

@@ -16,7 +16,7 @@ import { toast } from "sonner";
 import { Upload, FileSpreadsheet, CheckCircle, AlertCircle, UserPlus, UserCheck } from "lucide-react";
 import Link from "next/link";
 
-const LEAGUES = ["LEC", "LFL", "LFL_D2", "LVP", "Prime League", "ROL", "ERL Major", "ERL Minor", "ERL2", "Amateur"];
+import { LEAGUES } from "@/lib/constants";
 const SEASONS = ["2024", "2025", "2026", "2027"];
 const SPLITS = ["Spring", "Summer", "Winter", "Playoffs"];
 
@@ -31,6 +31,7 @@ export default function ImportCsvPage() {
     updated: number;
     players: string[];
     errors: string[];
+    detectedMetrics?: string[];
   } | null>(null);
 
   const onDrop = useCallback((e: React.DragEvent) => {
@@ -82,22 +83,22 @@ export default function ImportCsvPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0f1117]">
+    <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <Link href="/admin" className="text-sm text-[#6C757D] hover:text-[#E9ECEF] transition-colors">
+          <Link href="/admin" className="text-sm text-text-muted hover:text-text-heading transition-colors">
             ← Back to Admin
           </Link>
-          <h1 className="text-2xl font-bold text-[#E9ECEF] mt-4 mb-1">Import Players from CSV</h1>
-          <p className="text-sm text-[#6C757D]">
+          <h1 className="text-2xl font-bold text-text-heading mt-4 mb-1">Import Players from CSV</h1>
+          <p className="text-sm text-text-muted">
             Upload a CSV file to bulk-import players with their stats. New players will be marked as{" "}
-            <span className="text-orange-400 font-medium">🔍 Scouting</span>.
+            <span className="text-orange-400 font-medium">Scouting</span>.
           </p>
         </div>
 
-        <Card className="border-[#2A2D3A] bg-[#1A1D29]">
+        <Card className="border-border bg-surface-hover">
           <CardHeader>
-            <CardTitle className="text-lg text-[#E9ECEF]">CSV Import</CardTitle>
+            <CardTitle className="text-lg text-text-heading">CSV Import</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -105,7 +106,7 @@ export default function ImportCsvPage() {
               <div
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={onDrop}
-                className="border-2 border-dashed border-[#2A2D3A] rounded-xl p-8 text-center hover:border-[#E94560] hover:bg-[#E94560]/5 transition-colors cursor-pointer"
+                className="border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-primary-accent hover:bg-primary-accent/5 transition-colors cursor-pointer"
                 onClick={() => document.getElementById("csv-file")?.click()}
               >
                 <input
@@ -123,21 +124,21 @@ export default function ImportCsvPage() {
                 />
                 {file ? (
                   <div className="flex items-center justify-center gap-3">
-                    <FileSpreadsheet className="h-8 w-8 text-[#E94560]" />
+                    <FileSpreadsheet className="h-8 w-8 text-primary-accent" />
                     <div className="text-left">
-                      <p className="text-sm font-medium text-[#E9ECEF]">{file.name}</p>
-                      <p className="text-xs text-[#6C757D]">
+                      <p className="text-sm font-medium text-text-heading">{file.name}</p>
+                      <p className="text-xs text-text-muted">
                         {(file.size / 1024).toFixed(1)} KB — Click to change
                       </p>
                     </div>
                   </div>
                 ) : (
                   <>
-                    <Upload className="h-10 w-10 text-[#6C757D] mx-auto mb-3" />
-                    <p className="text-sm font-medium text-[#ADB5BD]">
+                    <Upload className="h-10 w-10 text-text-muted mx-auto mb-3" />
+                    <p className="text-sm font-medium text-text-subtle">
                       Drop a CSV file here, or click to browse
                     </p>
-                    <p className="text-xs text-[#6C757D] mt-1">
+                    <p className="text-xs text-text-muted mt-1">
                       Supports: Player,Team,Pos,Games,KDA,CSD@15,GD@15,DPM,KP%,etc.
                     </p>
                   </>
@@ -147,14 +148,14 @@ export default function ImportCsvPage() {
               {/* Settings */}
               <div className="grid grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <Label className="text-[#ADB5BD]">League</Label>
+                  <Label className="text-text-subtle">League</Label>
                   <Select value={league} onValueChange={(v) => v && setLeague(v)}>
-                    <SelectTrigger className="bg-[#141621] border-[#2A2D3A] text-[#E9ECEF]">
+                    <SelectTrigger className="bg-card border-border text-text-heading">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-[#1A1D29] border-[#2A2D3A]">
+                    <SelectContent className="bg-surface-hover border-border">
                       {LEAGUES.map((l) => (
-                        <SelectItem key={l} value={l} className="text-[#E9ECEF]">
+                        <SelectItem key={l} value={l} className="text-text-heading">
                           {l}
                         </SelectItem>
                       ))}
@@ -162,14 +163,14 @@ export default function ImportCsvPage() {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-[#ADB5BD]">Season</Label>
+                  <Label className="text-text-subtle">Season</Label>
                   <Select value={season} onValueChange={(v) => v && setSeason(v)}>
-                    <SelectTrigger className="bg-[#141621] border-[#2A2D3A] text-[#E9ECEF]">
+                    <SelectTrigger className="bg-card border-border text-text-heading">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-[#1A1D29] border-[#2A2D3A]">
+                    <SelectContent className="bg-surface-hover border-border">
                       {SEASONS.map((s) => (
-                        <SelectItem key={s} value={s} className="text-[#E9ECEF]">
+                        <SelectItem key={s} value={s} className="text-text-heading">
                           {s}
                         </SelectItem>
                       ))}
@@ -177,14 +178,14 @@ export default function ImportCsvPage() {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-[#ADB5BD]">Split</Label>
+                  <Label className="text-text-subtle">Split</Label>
                   <Select value={split} onValueChange={(v) => v && setSplit(v)}>
-                    <SelectTrigger className="bg-[#141621] border-[#2A2D3A] text-[#E9ECEF]">
+                    <SelectTrigger className="bg-card border-border text-text-heading">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-[#1A1D29] border-[#2A2D3A]">
+                    <SelectContent className="bg-surface-hover border-border">
                       {SPLITS.map((s) => (
-                        <SelectItem key={s} value={s} className="text-[#E9ECEF]">
+                        <SelectItem key={s} value={s} className="text-text-heading">
                           {s}
                         </SelectItem>
                       ))}
@@ -195,7 +196,7 @@ export default function ImportCsvPage() {
 
               <Button
                 type="submit"
-                className="w-full bg-[#E94560] text-white hover:bg-[#d13b54]"
+                className="w-full bg-primary-accent text-text-heading hover:bg-primary-accent/90"
                 disabled={loading || !file}
               >
                 {loading ? "Importing..." : "Import Players"}
@@ -206,40 +207,60 @@ export default function ImportCsvPage() {
 
         {/* Results */}
         {result && (
-          <Card className="border-[#2A2D3A] bg-[#1A1D29] mt-6">
+          <Card className="border-border bg-surface-hover mt-6">
             <CardHeader>
-              <CardTitle className="text-lg text-[#E9ECEF]">Import Results</CardTitle>
+              <CardTitle className="text-lg text-text-heading">Import Results</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-3 gap-4 mb-6">
-                <div className="bg-[#141621] rounded-lg p-4 text-center border border-[#2A2D3A]">
+                <div className="bg-card rounded-lg p-4 text-center border border-border">
                   <UserPlus className="h-5 w-5 text-emerald-400 mx-auto mb-1" />
-                  <p className="text-2xl font-bold text-[#E9ECEF]">{result.created}</p>
-                  <p className="text-xs text-[#6C757D]">Created</p>
+                  <p className="text-2xl font-bold text-text-heading">{result.created}</p>
+                  <p className="text-xs text-text-muted">Created</p>
                 </div>
-                <div className="bg-[#141621] rounded-lg p-4 text-center border border-[#2A2D3A]">
+                <div className="bg-card rounded-lg p-4 text-center border border-border">
                   <UserCheck className="h-5 w-5 text-blue-400 mx-auto mb-1" />
-                  <p className="text-2xl font-bold text-[#E9ECEF]">{result.updated}</p>
-                  <p className="text-xs text-[#6C757D]">Updated</p>
+                  <p className="text-2xl font-bold text-text-heading">{result.updated}</p>
+                  <p className="text-xs text-text-muted">Updated</p>
                 </div>
-                <div className="bg-[#141621] rounded-lg p-4 text-center border border-[#2A2D3A]">
+                <div className="bg-card rounded-lg p-4 text-center border border-border">
                   <AlertCircle className="h-5 w-5 text-red-400 mx-auto mb-1" />
-                  <p className="text-2xl font-bold text-[#E9ECEF]">{result.errors.length}</p>
-                  <p className="text-xs text-[#6C757D]">Errors</p>
+                  <p className="text-2xl font-bold text-text-heading">{result.errors.length}</p>
+                  <p className="text-xs text-text-muted">Errors</p>
                 </div>
               </div>
 
+              {result.detectedMetrics && result.detectedMetrics.length > 0 && (
+                <div className="mb-4">
+                  <h4 className="text-sm font-medium text-text-subtle mb-2">
+                    Detected Metrics ({result.detectedMetrics.length})
+                  </h4>
+                  <div className="bg-card rounded-lg border border-border p-3">
+                    <div className="flex flex-wrap gap-2">
+                      {result.detectedMetrics.map((m) => (
+                        <span
+                          key={m}
+                          className="inline-flex items-center gap-1 text-xs bg-primary-accent/10 text-primary-accent px-2 py-1 rounded"
+                        >
+                          {m}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {result.players.length > 0 && (
                 <div className="mb-4">
-                  <h4 className="text-sm font-medium text-[#ADB5BD] mb-2">
+                  <h4 className="text-sm font-medium text-text-subtle mb-2">
                     Players imported ({result.players.length})
                   </h4>
-                  <div className="bg-[#141621] rounded-lg border border-[#2A2D3A] p-3 max-h-48 overflow-y-auto">
+                  <div className="bg-card rounded-lg border border-border p-3 max-h-48 overflow-y-auto">
                     <div className="flex flex-wrap gap-2">
                       {result.players.map((p) => (
                         <span
                           key={p}
-                          className="inline-flex items-center gap-1 text-xs bg-[#232838] text-[#ADB5BD] px-2 py-1 rounded"
+                          className="inline-flex items-center gap-1 text-xs bg-muted text-text-subtle px-2 py-1 rounded"
                         >
                           <CheckCircle className="h-3 w-3 text-emerald-400" />
                           {p}
@@ -252,8 +273,8 @@ export default function ImportCsvPage() {
 
               {result.errors.length > 0 && (
                 <div>
-                  <h4 className="text-sm font-medium text-[#ADB5BD] mb-2">Errors</h4>
-                  <div className="bg-[#141621] rounded-lg border border-red-500/20 p-3 max-h-48 overflow-y-auto">
+                  <h4 className="text-sm font-medium text-text-subtle mb-2">Errors</h4>
+                  <div className="bg-card rounded-lg border border-red-500/20 p-3 max-h-48 overflow-y-auto">
                     {result.errors.map((err, i) => (
                       <p key={i} className="text-xs text-red-400 py-1">
                         {err}

@@ -66,17 +66,16 @@
 
 ## 🟡 MEDIUM PRIORITY (Nice to have before launch)
 
-### 12. NO ANALYTICS
-- No Vercel Analytics, no Google Analytics
-- Can't track user behavior, popular players, conversion
+### 12. ANALYTICS ✅
+- Vercel Analytics installed and active in root layout
 
 ### 15. IMAGE OPTIMIZATION
 - Uses raw `<img>` tags instead of Next.js `<Image>`
 - Missing `width`/`height` causes layout shift (CLS)
 
-### 22. STRIPE WEBHOOKS
-- No webhook handling for subscription events
-- Can't verify if a user has actually paid
+### 22. STRIPE WEBHOOKS ✅
+- Handles 6 events: checkout.completed, invoice.succeeded/failed, subscription.updated/deleted, charge.refunded
+- Premium status synced automatically
 
 ---
 
@@ -112,7 +111,7 @@
 
 ### Payments
 - Stripe Checkout for Scout Pass subscription
-- No webhook handling yet (subscription status not verified)
+- Webhook handling active (6 events: checkout, invoice, subscription, refund)
 
 ### File Upload
 - Local file system (`public/uploads/players/`)
@@ -144,7 +143,7 @@
 
 ---
 
-## 🎯 PRODUCTION READINESS: ~75%
+## 🎯 PRODUCTION READINESS: ~92%
 
 **Blockers for launch:**
 1. ~~Authentication~~ ✅
@@ -153,9 +152,12 @@
 4. ~~Pagination~~ ✅
 
 **Nice to have before launch:**
-- Analytics
-- Image optimization (`<Image />`)
-- Stripe webhooks
+- ~~Analytics~~ ✅
+- ~~Image optimization (`<Image />`)~~ ✅
+- ~~Stripe webhooks~~ ✅
+- Data Completeness Dashboard ✅
+- Scouting Pipeline (Kanban) ✅
+- Notifications system ✅
 
 ---
 

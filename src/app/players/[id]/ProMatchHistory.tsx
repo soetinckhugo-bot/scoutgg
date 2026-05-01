@@ -56,9 +56,9 @@ function parseItems(itemsJson: string | null): string[] {
 
 function formatDateShort(date: Date): string {
   const d = new Date(date);
-  const day = d.getDate().toString().padStart(2, "0");
-  const month = (d.getMonth() + 1).toString().padStart(2, "0");
-  const year = d.getFullYear().toString().slice(-2);
+  const day = d.getUTCDate().toString().padStart(2, "0");
+  const month = (d.getUTCMonth() + 1).toString().padStart(2, "0");
+  const year = d.getUTCFullYear().toString().slice(-2);
   return `${day}/${month}/${year}`;
 }
 
@@ -103,11 +103,11 @@ export default function ProMatchHistory({ matches }: ProMatchHistoryProps) {
   if (matches.length === 0) {
     return (
       <div className="text-center py-12">
-        <Swords className="h-10 w-10 text-[#E9ECEF] dark:text-gray-700 mx-auto mb-2" />
-        <p className="text-sm text-[#6C757D] dark:text-gray-400">
+        <Swords className="h-10 w-10 text-text-muted mx-auto mb-2" />
+        <p className="text-sm text-text-body">
           Aucun match pro enregistré
         </p>
-        <p className="text-xs text-[#6C757D] dark:text-gray-500 mt-1">
+        <p className="text-xs text-text-muted text-text-muted mt-1">
           Les matchs seront importés depuis Gol.gg
         </p>
       </div>
@@ -118,12 +118,12 @@ export default function ProMatchHistory({ matches }: ProMatchHistoryProps) {
     <div className="space-y-3">
       {/* Header stats */}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2 bg-[#1A1D29] border border-[#2A2D3A] rounded-lg px-3 py-1.5">
+        <div className="flex items-center gap-2 bg-surface-hover border border-border rounded-lg px-3 py-1.5">
           <Trophy className="h-3.5 w-3.5 text-yellow-500" />
-          <span className="text-sm font-bold text-[#E9ECEF] tabular-nums">
+          <span className="text-sm font-bold text-text-heading tabular-nums">
             {wins}W — {losses}L
           </span>
-          <span className="text-xs text-[#6C757D] tabular-nums">({winrate}% WR)</span>
+          <span className="text-xs text-text-muted tabular-nums">({winrate}% WR)</span>
         </div>
 
         <div className="flex items-center gap-1">
@@ -137,8 +137,8 @@ export default function ProMatchHistory({ matches }: ProMatchHistoryProps) {
                     ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
                     : f === "loss"
                     ? "bg-red-500/20 text-red-400 border border-red-500/30"
-                    : "bg-[#3B82F6]/20 text-[#3B82F6] border border-[#3B82F6]/30"
-                  : "bg-[#1A1D29] text-[#6C757D] border border-[#2A2D3A] hover:text-[#E9ECEF]"
+                    : "bg-tier-s/20 text-tier-s border border-tier-s/30"
+                  : "bg-surface-hover text-text-muted border border-border hover:text-text-heading"
               }`}
             >
               {f === "all" ? "All" : f === "win" ? "Wins" : "Losses"}
@@ -147,177 +147,166 @@ export default function ProMatchHistory({ matches }: ProMatchHistoryProps) {
         </div>
       </div>
 
-      {/* Matches table — LCK style, compact */}
-      <div className="overflow-x-auto rounded-lg border border-[#2A2D3A]">
-        <table className="w-full text-xs">
-          <thead>
-            <tr className="bg-[#141621] text-[#6C757D] text-xs uppercase tracking-wider border-b border-[#2A2D3A]">
-              <th className="text-left py-2 px-2 font-semibold">Champion</th>
-              <th className="text-left py-2 px-2 font-semibold">Result</th>
-              <th className="text-left py-2 px-2 font-semibold">Duration</th>
-              <th className="text-left py-2 px-2 font-semibold">KDA</th>
-              <th className="text-left py-2 px-2 font-semibold">CSM</th>
-              <th className="text-left py-2 px-2 font-semibold">DPM</th>
-              <th className="text-left py-2 px-2 font-semibold">KP%</th>
-              <th className="text-left py-2 px-2 font-semibold">Build</th>
-              <th className="text-left py-2 px-2 font-semibold">Date</th>
-              <th className="text-left py-2 px-2 font-semibold">Game</th>
-              <th className="text-left py-2 px-2 font-semibold">Tournament</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((match) => {
-              const items = parseItems(match.items);
-              const kdaParts = parseKda(match.kda);
-              const kdaValue = kdaParts.d === 0 ? kdaParts.k + kdaParts.a : (kdaParts.k + kdaParts.a) / kdaParts.d;
-              const won = isWin(match.result);
+      {/* Match Cards grouped by date — style RFT */}
+      <div className="space-y-4">
+        {(() => {
+          // Group matches by date
+          const groups: Record<string, typeof filtered> = {};
+          filtered.forEach((match) => {
+            const dateKey = new Date(match.matchDate).toISOString().split("T")[0];
+            if (!groups[dateKey]) groups[dateKey] = [];
+            groups[dateKey].push(match);
+          });
 
-              return (
-                <tr
-                  key={match.id}
-                  className="bg-[#1A1F2E] hover:bg-[#1E2435] transition-colors border-b border-[#232838] last:border-b-0"
-                >
-                  {/* Champion */}
-                  <td className="py-1.5 px-2">
-                    <div className="flex items-center gap-2">
-                      <div className="relative w-8 h-8 rounded overflow-hidden flex-shrink-0 ring-1 ring-[#2A2D3A]">
-                        <Image
-                          src={getChampionIconUrl(match.champion)}
-                          alt={match.champion}
-                          fill
-                          className="object-cover"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).style.display = "none";
-                          }}
-                        />
-                      </div>
-                      <span className="font-semibold text-[#E9ECEF] text-xs whitespace-nowrap">
-                        {match.champion}
-                      </span>
-                    </div>
-                  </td>
+          return Object.entries(groups).map(([date, dayMatches]) => (
+            <div key={date}>
+              {/* Date header */}
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-semibold text-text-heading">
+                  {new Date(date).toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </h3>
+                {dayMatches[0]?.tournament && (
+                  <span className="text-xs text-text-muted">
+                    {formatTournamentShort(dayMatches[0].tournament)}
+                  </span>
+                )}
+              </div>
 
-                  {/* Result */}
-                  <td className="py-2 px-2">
-                    <span className={`font-bold text-xs ${won ? "text-emerald-400" : "text-red-400"}`}>
-                      {won ? "Victory" : "Defeat"}
-                    </span>
-                  </td>
+              {/* Match cards for this date */}
+              <div className="space-y-2">
+                {dayMatches.map((match) => {
+                  const items = parseItems(match.items);
+                  const kdaParts = parseKda(match.kda);
+                  const kdaValue = kdaParts.d === 0 ? kdaParts.k + kdaParts.a : (kdaParts.k + kdaParts.a) / kdaParts.d;
+                  const won = isWin(match.result);
 
-                  {/* Duration */}
-                  <td className="py-2 px-2 text-[#ADB5BD]">
-                    <div className="flex items-center gap-1">
-                      <Clock className="h-2.5 w-2.5 text-[#6C757D]" />
-                      {match.duration}
-                    </div>
-                  </td>
-
-                  {/* KDA */}
-                  <td className="py-2 px-2">
-                    <span className={`font-mono font-bold text-xs ${kdaColor(kdaValue)} tabular-nums`}>
-                      {match.kda}
-                    </span>
-                    <span className="text-xs text-[#6C757D] ml-1 tabular-nums">
-                      {kdaValue.toFixed(1)}
-                    </span>
-                  </td>
-
-                  {/* CSM */}
-                  <td className="py-2 px-2 text-[#ADB5BD]">
-                    <span className="font-medium tabular-nums">{match.cspm?.toFixed(1) ?? "—"}</span>
-                  </td>
-
-                  {/* DPM */}
-                  <td className="py-2 px-2 text-[#ADB5BD]">
-                    <span className="font-medium tabular-nums">{match.dpm?.toFixed(0) ?? "—"}</span>
-                  </td>
-
-                  {/* KP% — white, no color coding */}
-                  <td className="py-2 px-2 text-[#ADB5BD]">
-                    <span className="font-medium tabular-nums">
-                      {match.kpPercent !== null && match.kpPercent !== undefined
-                        ? `${match.kpPercent.toFixed(1)}%`
-                        : "—"}
-                    </span>
-                  </td>
-
-                  {/* Build = Runes + Items */}
-                  <td className="py-2 px-2">
-                    <div className="flex items-center gap-2">
-                      {/* Runes */}
-                      <div className="flex items-center gap-0.5">
-                        {match.keystoneRune && (
-                          <div className="relative w-4 h-4">
+                  return (
+                    <div
+                      key={match.id}
+                      className={`rounded-xl border p-3 transition-colors ${
+                        won
+                          ? "bg-emerald-500/5 border-emerald-500/20"
+                          : "bg-red-500/5 border-red-500/20"
+                      }`}
+                    >
+                      {/* Top row */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          {/* Champion */}
+                          <div className="relative w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 ring-1 ring-border">
                             <Image
-                              src={getKeystoneRuneIconUrl(Number(match.keystoneRune))}
-                              alt="keystone"
+                              src={getChampionIconUrl(match.champion)}
+                              alt={match.champion}
                               fill
-                              className="object-contain"
+                              className="object-cover"
                               onError={(e) => {
                                 (e.target as HTMLImageElement).style.display = "none";
                               }}
                             />
                           </div>
-                        )}
-                        {match.secondaryRune && (
-                          <div className="relative w-3.5 h-3.5 opacity-60">
-                            <Image
-                              src={getSecondaryRuneIconUrl(Number(match.secondaryRune))}
-                              alt="secondary"
-                              fill
-                              className="object-contain"
-                              onError={(e) => {
-                                (e.target as HTMLImageElement).style.display = "none";
-                              }}
-                            />
+
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className={`font-bold text-sm ${won ? "text-emerald-400" : "text-red-400"}`}>
+                                {won ? "Victory" : "Defeat"}
+                              </span>
+                              <span className="text-xs text-text-muted">
+                                <Clock className="h-3 w-3 inline mr-0.5" />
+                                {match.duration}
+                              </span>
+                            </div>
+                            <div className="flex flex-wrap items-center gap-2 text-xs text-text-body">
+                              <span className={`font-mono font-bold ${kdaColor(kdaValue)}`}>
+                                {match.kda}
+                              </span>
+                              <span className="text-text-muted">({kdaValue.toFixed(1)})</span>
+                              <span className="text-text-muted">·</span>
+                              <span>{match.cspm?.toFixed(1) ?? "—"} CSM</span>
+                              <span className="text-text-muted">·</span>
+                              <span>{match.dpm?.toFixed(0) ?? "—"} DPM</span>
+                              {match.kpPercent !== null && (
+                                <>
+                                  <span className="text-text-muted">·</span>
+                                  <span>{match.kpPercent.toFixed(0)}% KP</span>
+                                </>
+                              )}
+                            </div>
                           </div>
-                        )}
+                        </div>
+
+                        {/* Team vs Opponent */}
+                        <div className="text-right">
+                          <span className="text-xs font-semibold text-text-heading">{match.teamName}</span>
+                          <span className="text-xs text-text-muted mx-1">vs</span>
+                          <span className="text-xs text-text-subtle">{match.opponent}</span>
+                        </div>
                       </div>
-                      {/* Items */}
-                      <div className="flex items-center gap-px">
-                        {items.slice(0, 6).map((itemId, i) => (
-                          <div
-                            key={i}
-                            className="relative w-5 h-5 rounded overflow-hidden bg-[#0D1117] ring-1 ring-[#2A2D3A]"
-                          >
-                            {itemId && itemId !== "0" ? (
+
+                      {/* Bottom row: runes + items */}
+                      <div className="flex items-center gap-3 mt-2 pt-2 border-t border-border/50">
+                        {/* Runes */}
+                        <div className="flex items-center gap-1">
+                          {match.keystoneRune && (
+                            <div className="relative w-5 h-5">
                               <Image
-                                src={getItemIconUrl(itemId)}
-                                alt={`item-${i}`}
+                                src={getKeystoneRuneIconUrl(Number(match.keystoneRune))}
+                                alt="keystone"
                                 fill
-                                className="object-cover"
+                                className="object-contain"
                                 onError={(e) => {
                                   (e.target as HTMLImageElement).style.display = "none";
                                 }}
                               />
-                            ) : null}
-                          </div>
-                        ))}
+                            </div>
+                          )}
+                          {match.secondaryRune && (
+                            <div className="relative w-4 h-4 opacity-70">
+                              <Image
+                                src={getSecondaryRuneIconUrl(Number(match.secondaryRune))}
+                                alt="secondary"
+                                fill
+                                className="object-contain"
+                                onError={(e) => {
+                                  (e.target as HTMLImageElement).style.display = "none";
+                                }}
+                              />
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Items */}
+                        <div className="flex items-center gap-px">
+                          {items.slice(0, 6).map((itemId, i) => (
+                            <div
+                              key={i}
+                              className="relative w-6 h-6 rounded overflow-hidden bg-background ring-1 ring-border"
+                            >
+                              {itemId && itemId !== "0" ? (
+                                <Image
+                                  src={getItemIconUrl(itemId)}
+                                  alt={`item-${i}`}
+                                  fill
+                                  className="object-cover"
+                                  onError={(e) => {
+                                    (e.target as HTMLImageElement).style.display = "none";
+                                  }}
+                                />
+                              ) : null}
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </td>
-
-                  {/* Date — short, no icon */}
-                  <td className="py-2 px-2 text-[#ADB5BD] whitespace-nowrap">
-                    {formatDateShort(match.matchDate)}
-                  </td>
-
-                  {/* Game */}
-                  <td className="py-2 px-2 whitespace-nowrap">
-                    <span className="text-[#E9ECEF] font-semibold text-xs">{match.teamName}</span>
-                    <span className="mx-0.5 text-[#6C757D] text-xs">vs</span>
-                    <span className="text-[#ADB5BD] text-xs">{match.opponent}</span>
-                  </td>
-
-                  {/* Tournament — short */}
-                  <td className="py-1.5 px-2 text-[#6C757D] whitespace-nowrap text-xs">
-                    {formatTournamentShort(match.tournament)}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                  );
+                })}
+              </div>
+            </div>
+          ));
+        })()}
       </div>
     </div>
   );

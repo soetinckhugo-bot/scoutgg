@@ -83,11 +83,11 @@ function StatRow({
   const rightWins = winner === "right";
 
   return (
-    <div className="py-2 border-b border-[#232838] last:border-b-0">
-      <div className="grid grid-cols-[1fr_60px_1fr] gap-4 items-center">
+    <div className="py-2 border-b border-border last:border-b-0">
+      <div className="grid grid-cols-[1fr_40px_1fr] sm:grid-cols-[1fr_60px_1fr] gap-2 sm:gap-4 items-center">
         {/* Left value */}
         <div className="text-left">
-          <DataValue highlight={leftWins} className={leftWins ? "text-blue-400" : "text-muted-foreground"}>
+          <DataValue highlight={leftWins} className={leftWins ? "text-blue-400" : "text-text-muted"}>
             {format(lv)}
           </DataValue>
         </div>
@@ -97,20 +97,20 @@ function StatRow({
         </div>
         {/* Right value */}
         <div className="text-right">
-          <DataValue highlight={rightWins} className={rightWins ? "text-red-400" : "text-muted-foreground"}>
+          <DataValue highlight={rightWins} className={rightWins ? "text-red-400" : "text-text-muted"}>
             {format(rv)}
           </DataValue>
         </div>
       </div>
       {/* Center bars */}
       <div className="flex flex-col gap-1 mt-1.5 px-0">
-        <div className="h-1.5 rounded-full bg-[#232838] overflow-hidden flex justify-end">
+        <div className="h-1.5 rounded-full bg-muted overflow-hidden flex justify-end">
           <div
             className="h-full rounded-full bg-blue-500 transition-all"
             style={{ width: `${Math.min(leftPct, 100)}%` }}
           />
         </div>
-        <div className="h-1.5 rounded-full bg-[#232838] overflow-hidden">
+        <div className="h-1.5 rounded-full bg-muted overflow-hidden">
           <div
             className="h-full rounded-full bg-red-500 transition-all"
             style={{ width: `${Math.min(rightPct, 100)}%` }}
@@ -123,7 +123,7 @@ function StatRow({
 
 function CompareSectionHeader({ title }: { title: string }) {
   return (
-    <div className="border-l-2 border-[#6C757D] pl-3 mb-2">
+    <div className="border-l-2 border-text-muted pl-3 mb-2">
       <SectionHeader>{title}</SectionHeader>
     </div>
   );
@@ -151,18 +151,18 @@ function PlayerHeader({
             className="rounded-full object-cover ring-2 ring-[#2A2D3A]"
           />
         ) : (
-          <div className="w-[56px] h-[56px] rounded-full bg-[#232838] flex items-center justify-center text-xl font-bold text-[#ADB5BD] ring-2 ring-[#2A2D3A]">
+          <div className="w-[56px] h-[56px] rounded-full bg-muted flex items-center justify-center text-xl font-bold text-text-subtle ring-2 ring-[#2A2D3A]">
             {(player.pseudo?.[0] ?? "?").toUpperCase()}
           </div>
         )}
         <div className="flex flex-col">
-          <h2 className="text-lg font-bold text-[#E9ECEF]">{player.pseudo}</h2>
-          {player.realName && <p className="text-xs text-[#6C757D]">{player.realName}</p>}
+          <h2 className="text-lg font-bold text-text-heading">{player.pseudo}</h2>
+          {player.realName && <p className="text-xs text-text-muted">{player.realName}</p>}
           <div className="flex items-center gap-2 mt-1">
-            <Badge className={`text-xs h-5 px-2 ${ROLE_COLORS[player.role] || "bg-gray-100"}`}>
+            <Badge className={`text-xs h-5 px-2 ${ROLE_COLORS[player.role] || "bg-surface-hover"}`}>
               {player.role}
             </Badge>
-            <Badge className={`text-xs h-5 px-2 ${STATUS_COLORS[player.status] || "bg-gray-100"}`}>
+            <Badge className={`text-xs h-5 px-2 ${STATUS_COLORS[player.status] || "bg-surface-hover"}`}>
               {formatStatus(player.status)}
             </Badge>
           </div>
@@ -174,10 +174,10 @@ function PlayerHeader({
 
 function InfoRow({ label, left, right }: { label: string; left: React.ReactNode; right: React.ReactNode }) {
   return (
-    <div className="grid grid-cols-[1fr_80px_1fr] gap-4 items-center py-2 border-b border-[#232838] last:border-b-0">
-      <div className="text-left text-sm text-[#ADB5BD]">{left}</div>
-      <div className="text-center text-xs text-[#6C757D] uppercase tracking-wider">{label}</div>
-      <div className="text-right text-sm text-[#ADB5BD]">{right}</div>
+    <div className="grid grid-cols-[1fr_50px_1fr] sm:grid-cols-[1fr_80px_1fr] gap-2 sm:gap-4 items-center py-2 border-b border-border last:border-b-0">
+      <div className="text-left text-sm text-text-subtle">{left}</div>
+      <div className="text-center text-xs text-text-muted uppercase tracking-wider">{label}</div>
+      <div className="text-right text-sm text-text-subtle">{right}</div>
     </div>
   );
 }
@@ -190,7 +190,7 @@ function PlayerLinks({ player }: { player: Awaited<ReturnType<typeof getPlayersB
     { url: player.leaguepediaUrl, label: "Leaguepedia" },
   ].filter((l) => l.url);
 
-  if (links.length === 0) return <span className="text-sm text-[#6C757D]">—</span>;
+  if (links.length === 0) return <span className="text-sm text-text-muted">—</span>;
 
   return (
     <div className="flex flex-wrap gap-2 justify-center">
@@ -200,7 +200,7 @@ function PlayerLinks({ player }: { player: Awaited<ReturnType<typeof getPlayersB
           href={link.url!}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 text-xs text-[#6C757D] hover:text-[#E9ECEF] transition-colors"
+          className="inline-flex items-center gap-1 text-xs text-text-muted hover:text-text-heading transition-colors"
         >
           {link.label}
           <ExternalLink className="h-3 w-3" />
@@ -215,7 +215,7 @@ export default async function ComparePage({ searchParams }: ComparePageProps) {
 
   if (!players) {
     return (
-      <div className="min-h-screen bg-[#0f1117]">
+      <div className="min-h-screen bg-background">
         <PlayerSelector />
       </div>
     );
@@ -234,19 +234,19 @@ export default async function ComparePage({ searchParams }: ComparePageProps) {
   const [p1, p2] = playersData;
 
   return (
-    <div className="min-h-screen bg-[#0f1117]">
+    <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-[#E9ECEF] mb-1">Compare Players</h1>
-            <p className="text-sm text-[#6C757D]">Head-to-head comparison</p>
+            <h1 className="text-2xl font-bold text-text-heading mb-1">Compare Players</h1>
+            <p className="text-sm text-text-muted">Head-to-head comparison</p>
           </div>
           <Link href="/players">
             <Button
               variant="outline"
               size="sm"
-              className="border-[#2A2D3A] text-[#ADB5BD] hover:bg-[#1A1D29] hover:text-[#E9ECEF]"
+              className="border-border text-text-subtle hover:bg-surface-hover hover:text-text-heading"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Change Players
@@ -255,18 +255,18 @@ export default async function ComparePage({ searchParams }: ComparePageProps) {
         </div>
 
         {/* Player Headers */}
-        <div className="grid grid-cols-[1fr_60px_1fr] gap-4 mb-6">
+        <div className="grid grid-cols-[1fr_40px_1fr] sm:grid-cols-[1fr_60px_1fr] gap-2 sm:gap-4 mb-6">
           <PlayerHeader player={p1} side="left" />
           <div className="flex items-center justify-center">
-            <div className="w-10 h-10 rounded-full bg-[#232838] border border-[#2A2D3A] flex items-center justify-center">
-              <Swords className="h-4 w-4 text-[#6C757D]" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-muted border border-border flex items-center justify-center">
+              <Swords className="h-3 w-3 sm:h-4 sm:w-4 text-text-muted" />
             </div>
           </div>
           <PlayerHeader player={p2} side="right" />
         </div>
 
         {/* Head to Head Info */}
-        <div className="bg-[#141621] border border-[#2A2D3A] rounded-xl p-3 mb-6">
+        <div className="bg-card border border-border rounded-xl p-3 mb-6">
           <CompareSectionHeader title="Head to Head" />
           <InfoRow
             label="Country"
@@ -288,7 +288,7 @@ export default async function ComparePage({ searchParams }: ComparePageProps) {
         </div>
 
         {/* SoloQ Stats */}
-        <div className="bg-[#141621] border border-[#2A2D3A] rounded-xl p-3 mb-6">
+        <div className="bg-card border border-border rounded-xl p-3 mb-6">
           <CompareSectionHeader title="SoloQ Stats" />
           <StatRow
             label="Peak LP"
@@ -309,7 +309,7 @@ export default async function ComparePage({ searchParams }: ComparePageProps) {
         </div>
 
         {/* Pro Stats */}
-        <div className="bg-[#141621] border border-[#2A2D3A] rounded-xl p-3 mb-6">
+        <div className="bg-card border border-border rounded-xl p-3 mb-6">
           <CompareSectionHeader title="Pro Stats" />
           <StatRow
             label="KDA"
@@ -361,7 +361,7 @@ export default async function ComparePage({ searchParams }: ComparePageProps) {
         </div>
 
         {/* Links */}
-        <div className="bg-[#141621] border border-[#2A2D3A] rounded-xl p-3 mb-6">
+        <div className="bg-card border border-border rounded-xl p-3 mb-6">
           <CompareSectionHeader title="Links" />
           <div className="grid grid-cols-2 gap-4">
             <div className="text-left py-2">
@@ -374,17 +374,17 @@ export default async function ComparePage({ searchParams }: ComparePageProps) {
         </div>
 
         {/* Radar Charts */}
-        <div className="bg-[#141621] border border-[#2A2D3A] rounded-xl p-3 mb-6">
+        <div className="bg-card border border-border rounded-xl p-3 mb-6">
           <CompareSectionHeader title="General" />
           <div className="grid md:grid-cols-2 gap-6 mt-4">
             <div>
-              <h3 className="text-sm font-bold text-[#E9ECEF] text-center mb-3">
+              <h3 className="text-sm font-bold text-text-heading text-center mb-3">
                 {p1.pseudo} — {p1.role}
               </h3>
               <RoleRadarChart role={p1.role} proStats={p1.proStats} />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-[#E9ECEF] text-center mb-3">
+              <h3 className="text-sm font-bold text-text-heading text-center mb-3">
                 {p2.pseudo} — {p2.role}
               </h3>
               <RoleRadarChart role={p2.role} proStats={p2.proStats} />

@@ -25,11 +25,11 @@ export function Footer() {
           {/* Brand */}
           <div className="md:col-span-2">
             <Link href="/" className="flex items-center gap-2">
-              <span className="text-lg font-bold text-foreground">
-                League<span className="text-primary">Scout</span>
+              <span className="text-lg font-bold text-text-heading">
+                League<span className="text-text-heading">Scout</span>
               </span>
             </Link>
-            <p className="mt-4 max-w-sm text-sm text-muted-foreground">
+            <p className="mt-4 max-w-sm text-sm text-text-muted">
               Professional scouting platform for League of Legends. 
               Discover and analyze the next generation of talent with 
               data-driven insights and expert reports.
@@ -40,7 +40,7 @@ export function Footer() {
                 href="https://x.com/LeagueScoutHugo"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-colors"
+                className="text-text-muted hover:text-text-heading transition-colors"
                 aria-label="X (Twitter)"
               >
                 <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -52,7 +52,7 @@ export function Footer() {
                 href="https://discord.com/users/Hugo_____"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-colors"
+                className="text-text-muted hover:text-text-heading transition-colors"
                 aria-label="Discord"
               >
                 <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -64,7 +64,7 @@ export function Footer() {
                 href="https://youtube.com/@LeagueScout"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-colors"
+                className="text-text-muted hover:text-text-heading transition-colors"
                 aria-label="YouTube"
               >
                 <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -77,7 +77,7 @@ export function Footer() {
           {/* Links */}
           {Object.entries(footerLinks).map(([category, links]) => (
             <div key={category}>
-              <h3 className="text-sm font-semibold text-foreground">
+              <h3 className="text-sm font-semibold text-text-heading">
                 {category}
               </h3>
               <ul className="mt-4 space-y-3">
@@ -85,7 +85,7 @@ export function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                      className="text-sm text-text-muted hover:text-text-heading transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -97,10 +97,10 @@ export function Footer() {
         </div>
 
         <div className="mt-12 border-t border-border pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-text-muted">
             &copy; {new Date().getFullYear()} LeagueScout. All rights reserved.
           </p>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-text-muted">
             LeagueScout is not endorsed by Riot Games.
           </p>
         </div>

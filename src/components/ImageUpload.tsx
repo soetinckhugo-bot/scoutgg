@@ -99,12 +99,12 @@ export default function ImageUpload({ value, onChange }: ImageUploadProps) {
             alt="Preview"
             width={96}
             height={96}
-            className="rounded-lg object-cover border border-[#E9ECEF]"
+            className="rounded-lg object-cover border border-border"
           />
           <button
             type="button"
             onClick={clearImage}
-            className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-[#E94560] text-white flex items-center justify-center hover:bg-red-700 transition-colors"
+            className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-primary-accent text-text-heading flex items-center justify-center hover:bg-destructive transition-colors"
           >
             <X className="h-3 w-3" />
           </button>
@@ -117,21 +117,21 @@ export default function ImageUpload({ value, onChange }: ImageUploadProps) {
           onDragLeave={onDragLeave}
           className={`
             border-2 border-dashed rounded-lg p-6 cursor-pointer text-center transition-colors
-            ${isDragging ? "border-[#0F3460] bg-[#F8F9FA]" : "border-[#E9ECEF] hover:border-[#0F3460] hover:bg-[#F8F9FA]"}
+            ${isDragging ? "border-accent bg-surface-hover" : "border-border hover:border-accent hover:bg-surface-hover"}
           `}
         >
           {isLoading ? (
             <div className="flex flex-col items-center gap-2">
-              <Loader2 className="h-6 w-6 animate-spin text-[#0F3460]" />
-              <p className="text-sm text-[#6C757D]">Uploading...</p>
+              <Loader2 className="h-6 w-6 animate-spin text-accent" />
+              <p className="text-sm text-text-muted">Uploading...</p>
             </div>
           ) : (
             <div className="flex flex-col items-center gap-2">
-              <ImageIcon className="h-6 w-6 text-[#6C757D]" />
-              <p className="text-sm text-[#6C757D]">
+              <ImageIcon className="h-6 w-6 text-text-muted" />
+              <p className="text-sm text-text-muted">
                 Click or drag & drop an image here
               </p>
-              <p className="text-xs text-[#6C757D]">JPG, PNG, WebP — max 5MB</p>
+              <p className="text-xs text-text-muted">JPG, PNG, WebP — max 5MB</p>
             </div>
           )}
         </div>
@@ -145,7 +145,7 @@ export default function ImageUpload({ value, onChange }: ImageUploadProps) {
         className="hidden"
       />
 
-      {error && <p className="text-xs text-[#E94560]">{error}</p>}
+      {error && <p className="text-xs text-primary-accent">{error}</p>}
     </div>
   );
 }

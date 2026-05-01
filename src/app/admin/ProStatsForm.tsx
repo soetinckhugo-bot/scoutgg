@@ -20,22 +20,17 @@ interface ProStatsData {
   gpm: string;
   dpm: string;
   kpPercent: string;
-  visionScore: string;
   wpm: string;
   wcpm: string;
   fbParticipation: string;
   fbVictim: string;
-  deathsUnder15: string;
   damagePercent: string;
   goldPercent: string;
   soloKills: string;
-  proximityJungle: string;
-  championPool: string;
-  poolSize: string;
-  otpScore: string;
-  winRateByChampion: string;
   gamesPlayed: string;
   season: string;
+  split: string;
+  winRate: string;
 }
 
 const defaultStats: ProStatsData = {
@@ -47,22 +42,17 @@ const defaultStats: ProStatsData = {
   gpm: "",
   dpm: "",
   kpPercent: "",
-  visionScore: "",
   wpm: "",
   wcpm: "",
   fbParticipation: "",
   fbVictim: "",
-  deathsUnder15: "",
   damagePercent: "",
   goldPercent: "",
   soloKills: "",
-  proximityJungle: "",
-  championPool: "",
-  poolSize: "",
-  otpScore: "",
-  winRateByChampion: "",
   gamesPlayed: "",
-  season: "2026 Spring",
+  season: "2026",
+  split: "Winter",
+  winRate: "",
 };
 
 function toNumber(val: string): number | null {
@@ -100,22 +90,17 @@ export default function ProStatsForm({ playerId }: ProStatsFormProps) {
           gpm: data.gpm?.toString() || "",
           dpm: data.dpm?.toString() || "",
           kpPercent: data.kpPercent?.toString() || "",
-          visionScore: data.visionScore?.toString() || "",
           wpm: data.wpm?.toString() || "",
           wcpm: data.wcpm?.toString() || "",
-          fbParticipation: data.fbParticipation?.toString() || "",
+          fbParticipation: data.fbPercent?.toString() || "",
           fbVictim: data.fbVictim?.toString() || "",
-          deathsUnder15: data.deathsUnder15?.toString() || "",
           damagePercent: data.damagePercent?.toString() || "",
           goldPercent: data.goldPercent?.toString() || "",
           soloKills: data.soloKills?.toString() || "",
-          proximityJungle: data.proximityJungle?.toString() || "",
-          championPool: data.championPool || "",
-          poolSize: data.poolSize?.toString() || "",
-          otpScore: data.otpScore?.toString() || "",
-          winRateByChampion: data.winRateByChampion || "",
           gamesPlayed: data.gamesPlayed?.toString() || "",
-          season: data.season || "2026 Spring",
+          season: data.season || "2026",
+          split: data.split || "Winter",
+          winRate: data.winRate?.toString() || "",
         });
       }
     } catch (error) {
@@ -132,14 +117,12 @@ export default function ProStatsForm({ playerId }: ProStatsFormProps) {
 
       const numberFields: (keyof ProStatsData)[] = [
         "kda", "csdAt15", "gdAt15", "xpdAt15", "cspm", "gpm", "dpm",
-        "kpPercent", "visionScore", "wpm", "wcpm",
-        "fbParticipation", "fbVictim", "deathsUnder15",
-        "damagePercent", "goldPercent", "soloKills", "proximityJungle", "otpScore",
+        "kpPercent", "wpm", "wcpm",
+        "fbParticipation", "fbVictim",
+        "damagePercent", "goldPercent", "soloKills", "winRate",
       ];
-      const intFields: (keyof ProStatsData)[] = ["poolSize", "gamesPlayed"];
-      const stringFields: (keyof ProStatsData)[] = [
-        "championPool", "winRateByChampion", "season",
-      ];
+      const intFields: (keyof ProStatsData)[] = ["gamesPlayed"];
+      const stringFields: (keyof ProStatsData)[] = ["season", "split"];
 
       for (const field of numberFields) {
         const val = toNumber(stats[field]);
@@ -179,8 +162,8 @@ export default function ProStatsForm({ playerId }: ProStatsFormProps) {
   if (loading) {
     return (
       <div className="py-8 text-center">
-        <Loader2 className="h-6 w-6 animate-spin mx-auto text-[#6C757D]" />
-        <p className="text-sm text-[#6C757D] mt-2">Loading stats...</p>
+        <Loader2 className="h-6 w-6 animate-spin mx-auto text-text-muted" />
+        <p className="text-sm text-text-muted mt-2">Loading stats...</p>
       </div>
     );
   }
@@ -188,79 +171,64 @@ export default function ProStatsForm({ playerId }: ProStatsFormProps) {
   return (
     <div className="space-y-4 py-4">
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        {/* Early Game */}
+        {/* Identification */}
         <div className="col-span-full">
-          <h4 className="text-sm font-semibold text-[#1A1A2E] dark:text-white mb-2">Early Game</h4>
+          <h4 className="text-sm font-semibold text-text-heading mb-2">Season / Split</h4>
+        </div>
+        <div className="space-y-1">
+          <Label className="text-xs">Season</Label>
+          <Input
+            value={stats.season}
+            onChange={(e) => updateField("season", e.target.value)}
+            placeholder="2026"
+            className="h-8 text-sm"
+          />
+        </div>
+        <div className="space-y-1">
+          <Label className="text-xs">Split</Label>
+          <Input
+            value={stats.split}
+            onChange={(e) => updateField("split", e.target.value)}
+            placeholder="Winter"
+            className="h-8 text-sm"
+          />
+        </div>
+        <NumberField label="Games Played" value={stats.gamesPlayed} onChange={(v) => updateField("gamesPlayed", v)} />
+
+        {/* Fight */}
+        <div className="col-span-full mt-2">
+          <h4 className="text-sm font-semibold text-text-heading mb-2">Fight</h4>
+        </div>
+        <NumberField label="KDA" value={stats.kda} onChange={(v) => updateField("kda", v)} />
+        <NumberField label="KP% (0-1)" value={stats.kpPercent} onChange={(v) => updateField("kpPercent", v)} />
+        <NumberField label="FB Participation% (0-1)" value={stats.fbParticipation} onChange={(v) => updateField("fbParticipation", v)} />
+        <NumberField label="FB Victim% (0-1)" value={stats.fbVictim} onChange={(v) => updateField("fbVictim", v)} />
+        <NumberField label="Solo Kills" value={stats.soloKills} onChange={(v) => updateField("soloKills", v)} />
+        <NumberField label="Damage% (0-1)" value={stats.damagePercent} onChange={(v) => updateField("damagePercent", v)} />
+        <NumberField label="Gold% (0-1)" value={stats.goldPercent} onChange={(v) => updateField("goldPercent", v)} />
+
+        {/* Ressources */}
+        <div className="col-span-full mt-2">
+          <h4 className="text-sm font-semibold text-text-heading mb-2">Ressources</h4>
         </div>
         <NumberField label="CSD@15" value={stats.csdAt15} onChange={(v) => updateField("csdAt15", v)} />
         <NumberField label="GD@15" value={stats.gdAt15} onChange={(v) => updateField("gdAt15", v)} />
         <NumberField label="XPD@15" value={stats.xpdAt15} onChange={(v) => updateField("xpdAt15", v)} />
-        <NumberField label="FB Participation" value={stats.fbParticipation} onChange={(v) => updateField("fbParticipation", v)} />
-        <NumberField label="FB Victim" value={stats.fbVictim} onChange={(v) => updateField("fbVictim", v)} />
-        <NumberField label="Deaths under 15min" value={stats.deathsUnder15} onChange={(v) => updateField("deathsUnder15", v)} />
-
-        {/* Base Stats */}
-        <div className="col-span-full mt-2">
-          <h4 className="text-sm font-semibold text-[#1A1A2E] dark:text-white mb-2">Base Stats</h4>
-        </div>
-        <NumberField label="KDA" value={stats.kda} onChange={(v) => updateField("kda", v)} />
         <NumberField label="CSPM" value={stats.cspm} onChange={(v) => updateField("cspm", v)} />
         <NumberField label="GPM" value={stats.gpm} onChange={(v) => updateField("gpm", v)} />
         <NumberField label="DPM" value={stats.dpm} onChange={(v) => updateField("dpm", v)} />
-        <NumberField label="KP% (0-1)" value={stats.kpPercent} onChange={(v) => updateField("kpPercent", v)} />
-        <NumberField label="Vision Score" value={stats.visionScore} onChange={(v) => updateField("visionScore", v)} />
+        <NumberField label="Win Rate% (0-1)" value={stats.winRate} onChange={(v) => updateField("winRate", v)} />
+
+        {/* Vision */}
+        <div className="col-span-full mt-2">
+          <h4 className="text-sm font-semibold text-text-heading mb-2">Vision</h4>
+        </div>
         <NumberField label="WPM" value={stats.wpm} onChange={(v) => updateField("wpm", v)} />
         <NumberField label="WCPM" value={stats.wcpm} onChange={(v) => updateField("wcpm", v)} />
-
-        {/* Advanced */}
-        <div className="col-span-full mt-2">
-          <h4 className="text-sm font-semibold text-[#1A1A2E] dark:text-white mb-2">Advanced</h4>
-        </div>
-        <NumberField label="Damage% (0-1)" value={stats.damagePercent} onChange={(v) => updateField("damagePercent", v)} />
-        <NumberField label="Gold% (0-1)" value={stats.goldPercent} onChange={(v) => updateField("goldPercent", v)} />
-        <NumberField label="Solo Kills" value={stats.soloKills} onChange={(v) => updateField("soloKills", v)} />
-        <NumberField label="Proximity Jungle% (0-1)" value={stats.proximityJungle} onChange={(v) => updateField("proximityJungle", v)} />
-
-        {/* Champion Pool */}
-        <div className="col-span-full mt-2">
-          <h4 className="text-sm font-semibold text-[#1A1A2E] dark:text-white mb-2">Champion Pool</h4>
-        </div>
-        <div className="col-span-2">
-          <Label>Champion Pool (comma-separated)</Label>
-          <Input
-            value={stats.championPool}
-            onChange={(e) => updateField("championPool", e.target.value)}
-            placeholder="Garen, Olaf, Darius"
-          />
-        </div>
-        <NumberField label="Pool Size" value={stats.poolSize} onChange={(v) => updateField("poolSize", v)} />
-        <NumberField label="OTP Score (0-100)" value={stats.otpScore} onChange={(v) => updateField("otpScore", v)} />
-        <div className="col-span-2">
-          <Label>Win Rate by Champion (JSON)</Label>
-          <Input
-            value={stats.winRateByChampion}
-            onChange={(e) => updateField("winRateByChampion", e.target.value)}
-            placeholder='{"Garen": 0.65, "Olaf": 0.52}'
-          />
-        </div>
-
-        {/* Misc */}
-        <div className="col-span-full mt-2">
-          <h4 className="text-sm font-semibold text-[#1A1A2E] dark:text-white mb-2">Misc</h4>
-        </div>
-        <NumberField label="Games Played" value={stats.gamesPlayed} onChange={(v) => updateField("gamesPlayed", v)} />
-        <div className="col-span-2">
-          <Label>Season</Label>
-          <Input
-            value={stats.season}
-            onChange={(e) => updateField("season", e.target.value)}
-            placeholder="2026 Spring"
-          />
-        </div>
       </div>
 
       <Button
-        className="bg-[#1A1A2E] text-white hover:bg-[#16213E]"
+        className="bg-surface-elevated text-text-heading hover:bg-secondary"
         onClick={saveStats}
         disabled={saving}
       >
@@ -293,4 +261,3 @@ function NumberField({
     </div>
   );
 }
-

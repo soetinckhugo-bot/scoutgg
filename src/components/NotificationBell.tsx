@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Bell, Check, AlertCircle, FileText, TrendingUp, Briefcase } from "lucide-react";
+import ScoutIcon from "./ScoutIcon";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -55,15 +56,15 @@ export default function NotificationBell() {
   function getIcon(type: string) {
     switch (type) {
       case "status_change":
-        return <AlertCircle className="h-4 w-4 text-blue-500" aria-hidden="true" />;
+        return <ScoutIcon icon={AlertCircle} size="md" variant="info" aria-hidden="true" />;
       case "new_report":
-        return <FileText className="h-4 w-4 text-purple-500" aria-hidden="true" />;
+        return <ScoutIcon icon={FileText} size="md" variant="purple" aria-hidden="true" />;
       case "rank_up":
-        return <TrendingUp className="h-4 w-4 text-green-500" aria-hidden="true" />;
+        return <ScoutIcon icon={TrendingUp} size="md" variant="success" aria-hidden="true" />;
       case "transfer":
-        return <Briefcase className="h-4 w-4 text-orange-500" aria-hidden="true" />;
+        return <ScoutIcon icon={Briefcase} size="md" variant="warning" aria-hidden="true" />;
       default:
-        return <Bell className="h-4 w-4 text-gray-400" aria-hidden="true" />;
+        return <ScoutIcon icon={Bell} size="md" variant="default" aria-hidden="true" />;
     }
   }
 
@@ -78,10 +79,10 @@ export default function NotificationBell() {
         aria-expanded={open}
         aria-haspopup="true"
       >
-        <Bell className="h-5 w-5 text-[#6C757D] dark:text-gray-400" aria-hidden="true" />
+        <ScoutIcon icon={Bell} size="lg" variant="default" aria-hidden="true" />
         {unreadCount > 0 && (
           <span
-            className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-[#E94560] text-white text-xs font-bold flex items-center justify-center"
+            className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary-accent text-text-heading text-xs font-bold flex items-center justify-center"
             aria-hidden="true"
           >
             {unreadCount > 9 ? "9+" : unreadCount}
@@ -95,15 +96,15 @@ export default function NotificationBell() {
             className="fixed inset-0 z-40"
             onClick={() => setOpen(false)}
           />
-          <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-[#1e293b] rounded-lg border border-[#E9ECEF] dark:border-gray-700 shadow-lg z-50 overflow-hidden">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-[#E9ECEF] dark:border-gray-700">
-              <h3 className="font-semibold text-sm text-[#1A1A2E] dark:text-white">
+          <div className="absolute right-0 top-full mt-2 w-80 bg-card rounded-lg border border-border shadow-lg z-50 overflow-hidden">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+              <h3 className="font-semibold text-sm text-text-heading">
                 Notifications
               </h3>
               {unreadCount > 0 && (
                 <button
                   onClick={() => markAsRead()}
-                  className="text-xs text-[#0F3460] hover:text-[#1A1A2E] dark:text-gray-400 dark:hover:text-white flex items-center gap-1"
+                  className="text-xs text-accent hover:text-text-heading text-text-body hover:text-text-heading flex items-center gap-1"
                 >
                   <Check className="h-3 w-3" />
                   Mark all read
@@ -114,8 +115,8 @@ export default function NotificationBell() {
             <div className="max-h-80 overflow-y-auto">
               {notifications.length === 0 ? (
                 <div className="px-4 py-8 text-center">
-                  <Bell className="h-8 w-8 text-[#E9ECEF] dark:text-gray-700 mx-auto mb-2" />
-                  <p className="text-sm text-[#6C757D] dark:text-gray-400">
+                  <ScoutIcon icon={Bell} size="xl" variant="muted" />
+                  <p className="text-sm text-text-body">
                     No notifications yet
                   </p>
                 </div>
@@ -123,8 +124,8 @@ export default function NotificationBell() {
                 notifications.map((notif) => (
                   <div
                     key={notif.id}
-                    className={`px-4 py-3 border-b border-[#E9ECEF] dark:border-gray-700 hover:bg-[#F8F9FA] dark:hover:bg-[#0f172a] cursor-pointer transition-colors ${
-                      !notif.read ? "bg-blue-50/50 dark:bg-blue-900/10" : ""
+                    className={`px-4 py-3 border-b border-border hover:bg-surface-hover cursor-pointer transition-colors ${
+                      !notif.read ? "bg-blue-50/50 bg-blue-500/10" : ""
                     }`}
                     onClick={() => {
                       if (!notif.read) markAsRead(notif.id);
@@ -136,18 +137,18 @@ export default function NotificationBell() {
                     <div className="flex items-start gap-3">
                       <div className="shrink-0 mt-0.5">{getIcon(notif.type)}</div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-[#1A1A2E] dark:text-white">
+                        <p className="text-sm font-medium text-text-heading">
                           {notif.title}
                         </p>
-                        <p className="text-xs text-[#6C757D] dark:text-gray-400 mt-0.5">
+                        <p className="text-xs text-text-body mt-0.5">
                           {notif.message}
                         </p>
-                        <p className="text-xs text-[#6C757D] dark:text-gray-500 mt-1">
+                        <p className="text-xs text-text-muted text-text-muted mt-1">
                           {new Date(notif.createdAt).toLocaleDateString()}
                         </p>
                       </div>
                       {!notif.read && (
-                        <div className="shrink-0 w-2 h-2 rounded-full bg-[#E94560] mt-1.5" />
+                        <div className="shrink-0 w-2 h-2 rounded-full bg-primary-accent mt-1.5" />
                       )}
                     </div>
                   </div>

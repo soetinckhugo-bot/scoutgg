@@ -27,15 +27,16 @@ export default function Avatar({ src, alt, fallback, size = "md", className = ""
         alt={alt}
         width={config.px}
         height={config.px}
-        className={`rounded-full object-cover shrink-0 ${className}`}
+        loading="lazy"
+        className={`${config.className} rounded-full object-cover shrink-0 ${className}`}
       />
     );
   }
 
   return (
     <div
-      className={`${config.className} rounded-full bg-[#F8F9FA] dark:bg-[#1e293b] flex items-center justify-center font-bold text-[#1A1A2E] dark:text-white shrink-0 ${className}`}
-      aria-label={`Avatar de ${alt}`}
+      className={`${config.className} rounded-full bg-card flex items-center justify-center font-bold text-text-heading shrink-0 ${className}`}
+      aria-label={`${alt} avatar`}
     >
       {(fallback?.[0] ?? "?").toUpperCase()}
     </div>

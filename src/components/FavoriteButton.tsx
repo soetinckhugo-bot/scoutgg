@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
 
 interface FavoriteButtonProps {
   playerId: string;
@@ -16,8 +17,11 @@ export default function FavoriteButton({
 }: FavoriteButtonProps) {
   const [isFavorited, setIsFavorited] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { data: session } = useSession();
+  const isAuthenticated = !!session?.user;
 
   const checkFavoriteStatus = useCallback(async () => {
+    if (!isAuthenticated) return;
     try {
       const res = await fetch("/api/favorites");
       if (res.ok) {
@@ -30,13 +34,17 @@ export default function FavoriteButton({
     } catch (error) {
       console.error("Error checking favorite status:", error);
     }
-  }, [playerId]);
+  }, [playerId, isAuthenticated]);
 
   useEffect(() => {
     checkFavoriteStatus();
   }, [checkFavoriteStatus]);
 
   const toggleFavorite = async () => {
+    if (!isAuthenticated) {
+      toast.error("Please sign in to add favorites");
+      return;
+    }
     if (isLoading) return;
 
     setIsLoading(true);
@@ -85,14 +93,14 @@ export default function FavoriteButton({
           toggleFavorite();
         }}
         disabled={isLoading}
-        className="p-1.5 rounded-full bg-white/90 dark:bg-[#0f172a]/90 hover:bg-white dark:hover:bg-[#0f172a] shadow-sm border border-[#E9ECEF] dark:border-gray-700 transition-colors disabled:opacity-50"
+        className="p-1.5 rounded-full bg-background/90 hover:bg-card shadow-sm border border-border transition-colors disabled:opacity-50"
         aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}
       >
         <Heart
           className={`h-4 w-4 transition-colors ${
             isFavorited
-              ? "fill-[#E94560] text-[#E94560]"
-              : "text-[#6C757D] hover:text-[#E94560]"
+              ? "fill-primary-accent text-primary-accent"
+              : "text-text-muted hover:text-primary-accent"
           }`}
         />
       </button>
@@ -107,12 +115,12 @@ export default function FavoriteButton({
       size="sm"
       className={`gap-2 ${
         isFavorited
-          ? "border-[#E94560] text-[#E94560] hover:bg-[#E94560]/10"
-          : "border-[#E9ECEF] text-[#6C757D] hover:text-[#E94560] hover:border-[#E94560]"
+          ? "border-primary-accent text-primary-accent hover:bg-primary-accent/10"
+          : "border-border text-text-muted hover:text-primary-accent hover:border-primary-accent"
       }`}
     >
       <Heart
-        className={`h-4 w-4 ${isFavorited ? "fill-[#E94560]" : ""}`}
+        className={`h-4 w-4 ${isFavorited ? "fill-primary-accent" : ""}`}
       />
       {isFavorited ? "Favorited" : "Add to Watchlist"}
     </Button>

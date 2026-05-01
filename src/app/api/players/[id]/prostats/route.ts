@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/server/db";
 import { ProStatsUpdateSchema } from "@/lib/schemas";
 import { requireAdmin } from "@/lib/server/auth";
+import { logger } from "@/lib/logger";
 
 export async function PUT(
   request: Request,
@@ -28,10 +29,9 @@ export async function PUT(
     const data: Record<string, unknown> = {};
     const fields = [
       "kda", "csdAt15", "gdAt15", "xpdAt15", "cspm", "gpm", "dpm",
-      "kpPercent", "visionScore", "wpm", "wcpm",
-      "fbParticipation", "fbVictim", "deathsUnder15",
-      "damagePercent", "goldPercent", "soloKills", "proximityJungle",
-      "championPool", "poolSize", "otpScore", "winRateByChampion",
+      "kpPercent", "wpm", "wcpm",
+      "fbParticipation", "fbVictim",
+      "damagePercent", "goldPercent", "soloKills", "winRate",
       "gamesPlayed", "season", "split",
     ] as const;
 
@@ -54,7 +54,7 @@ export async function PUT(
 
     return NextResponse.json(proStats);
   } catch (error) {
-    console.error("Error updating pro stats:", error);
+    logger.error("Error updating pro stats:", { error });
     return NextResponse.json(
       { error: "Failed to update pro stats" },
       { status: 500 }
@@ -68,6 +68,28 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
+    const { searchParams } = new URL(request.url);
+    const season = searchParams.get("season");
+    const split = searchParams.get("split");
+
+    // If season+split specified, fetch from ProStatsSplit
+    if (season && split) {
+      const proStatsSplit = await db.proStatsSplit.findUnique({
+        where: {
+          playerId_season_split: {
+            playerId: id,
+            season,
+            split,
+          },
+        },
+      });
+
+      if (proStatsSplit) {
+        return NextResponse.json(proStatsSplit);
+      }
+    }
+
+    // Default: fetch active ProStats
     const [proStats, player] = await Promise.all([
       db.proStats.findFirst({ where: { playerId: id }, orderBy: [{ season: "desc" }, { split: "desc" }] }),
       db.player.findUnique({ where: { id }, select: { pseudo: true, league: true, tier: true, role: true } }),
@@ -79,7 +101,7 @@ export async function GET(
 
     return NextResponse.json({ proStats, player });
   } catch (error) {
-    console.error("Error fetching pro stats:", error);
+    logger.error("Error fetching pro stats:", { error });
     return NextResponse.json(
       { error: "Failed to fetch pro stats" },
       { status: 500 }

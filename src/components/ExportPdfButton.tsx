@@ -4,6 +4,7 @@ import { useState } from "react";
 import { FileDown, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
 
 interface SoloqStats {
   currentRank: string;
@@ -75,6 +76,8 @@ interface ExportPdfButtonProps {
 
 export default function ExportPdfButton({ playerId }: ExportPdfButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const { data: session } = useSession();
+  const isAuthenticated = !!session?.user;
 
   const fetchPlayer = async (): Promise<Player | null> => {
     try {
@@ -87,6 +90,10 @@ export default function ExportPdfButton({ playerId }: ExportPdfButtonProps) {
   };
 
   const generatePdf = async () => {
+    if (!isAuthenticated) {
+      toast.error("Please sign in to export PDF");
+      return;
+    }
     setIsLoading(true);
     try {
       const player = await fetchPlayer();
@@ -96,11 +103,8 @@ export default function ExportPdfButton({ playerId }: ExportPdfButtonProps) {
         return;
       }
 
-      console.log("Export PDF: player data loaded", player.pseudo);
-
       const jsPDF = (await import("jspdf")).jsPDF;
       const doc = new jsPDF({ unit: "pt", format: "a4" });
-      console.log("Export PDF: jsPDF initialized");
       const pageWidth = doc.internal.pageSize.getWidth();
       const pageHeight = doc.internal.pageSize.getHeight();
       const margin = 40;
@@ -477,7 +481,7 @@ export default function ExportPdfButton({ playerId }: ExportPdfButtonProps) {
       disabled={isLoading}
       variant="outline"
       size="sm"
-      className="gap-2 border-[#E9ECEF] dark:border-gray-700 text-[#6C757D] dark:text-gray-400 hover:text-[#1A1A2E] dark:hover:text-white hover:border-[#1A1A2E] dark:hover:border-white"
+      className="gap-2 border-border text-text-body hover:text-text-heading hover:border-white"
     >
       {isLoading ? (
         <Loader2 className="h-4 w-4 animate-spin" />

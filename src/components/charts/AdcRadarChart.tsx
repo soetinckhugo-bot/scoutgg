@@ -60,7 +60,7 @@ function getRankColor(rank: number, total: number): string {
   if (pct <= 10) return "text-yellow-400";
   if (pct <= 25) return "text-green-400";
   if (pct <= 50) return "text-blue-400";
-  return "text-gray-400";
+  return "text-text-body";
 }
 
 function getRankBg(rank: number, total: number): string {
@@ -68,7 +68,7 @@ function getRankBg(rank: number, total: number): string {
   if (pct <= 10) return "bg-yellow-500/20 text-yellow-400";
   if (pct <= 25) return "bg-green-500/20 text-green-400";
   if (pct <= 50) return "bg-blue-500/20 text-blue-400";
-  return "bg-gray-500/20 text-gray-400";
+  return "bg-gray-500/20 text-text-body";
 }
 
 export default function AdcRadarChart({ playerId }: AdcRadarChartProps) {
@@ -188,14 +188,14 @@ export default function AdcRadarChart({ playerId }: AdcRadarChartProps) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-[#E94560]" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary-accent" />
       </div>
     );
   }
 
   if (!player) {
     return (
-      <div className="text-center py-8 text-[#6C757D] dark:text-gray-400">
+      <div className="text-center py-8 text-text-body">
         No pro stats available for comparison.
       </div>
     );
@@ -211,7 +211,7 @@ export default function AdcRadarChart({ playerId }: AdcRadarChartProps) {
           {player.pseudo}&apos;s Performances
         </h3>
         <Select value={compareMode} onValueChange={(v) => setCompareMode(v as CompareMode)}>
-          <SelectTrigger className="w-[200px] h-8 text-xs bg-[#1e293b] border-gray-700">
+          <SelectTrigger className="w-[200px] h-8 text-xs bg-card border-border">
             <SelectValue placeholder={compareLabel} />
           </SelectTrigger>
           <SelectContent>
@@ -270,7 +270,7 @@ export default function AdcRadarChart({ playerId }: AdcRadarChartProps) {
             </div>
           )}
           <div className="pt-2 space-y-1">
-            <div className="text-xs text-gray-500 uppercase">Percentiles</div>
+            <div className="text-xs text-text-muted uppercase">Percentiles</div>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-yellow-400" />
               <span className="text-yellow-400">Top 10%</span>
@@ -285,7 +285,7 @@ export default function AdcRadarChart({ playerId }: AdcRadarChartProps) {
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-gray-400" />
-              <span className="text-gray-400">Bottom 50%</span>
+              <span className="text-text-body">Bottom 50%</span>
             </div>
           </div>
         </div>
@@ -293,7 +293,7 @@ export default function AdcRadarChart({ playerId }: AdcRadarChartProps) {
 
       {/* Comparison Table */}
       {!hasComparison && (
-        <div className="text-center py-4 text-sm text-gray-500 bg-white/5 rounded">
+        <div className="text-center py-4 text-sm text-text-muted bg-card/5 rounded">
           Not enough players in {compareLabel} for comparison.
           <br />
           <span className="text-xs">Try &quot;All ADCs&quot; or a different group.</span>
@@ -301,7 +301,7 @@ export default function AdcRadarChart({ playerId }: AdcRadarChartProps) {
       )}
       <div className="space-y-1">
         {/* Column headers */}
-        <div className="flex items-center gap-3 py-1 px-3 text-xs text-gray-500 uppercase tracking-wider border-b border-gray-800">
+        <div className="flex items-center gap-3 py-1 px-3 text-xs text-text-muted uppercase tracking-wider border-b border-border">
           <div className="w-10" />
           <div className="w-24" />
           <div className="flex-1 text-left">{player.pseudo}</div>
@@ -311,19 +311,19 @@ export default function AdcRadarChart({ playerId }: AdcRadarChartProps) {
         {metricsData.map((m) => (
           <div
             key={m.key}
-            className="flex items-center gap-3 py-2 px-3 rounded hover:bg-white/5 transition-colors"
+            className="flex items-center gap-3 py-2 px-3 rounded hover:bg-card/5 transition-colors"
           >
             {/* Rank badge */}
-            <div className={`w-10 h-6 rounded text-xs font-bold flex items-center justify-center tabular-nums ${hasComparison ? getRankBg(m.rank, m.total) : "bg-gray-500/20 text-gray-400"}`}>
+            <div className={`w-10 h-6 rounded text-xs font-bold flex items-center justify-center tabular-nums ${hasComparison ? getRankBg(m.rank, m.total) : "bg-gray-500/20 text-text-body"}`}>
               {hasComparison ? `${m.rank}/${m.total}` : "—"}
             </div>
 
             {/* Metric name */}
-            <span className="w-24 text-sm text-gray-400">{m.metric}</span>
+            <span className="w-24 text-sm text-text-body">{m.metric}</span>
 
             {/* Player value */}
             <div className="flex-1">
-              <span className={`text-sm font-bold tabular-nums ${hasComparison ? getRankColor(m.rank, m.total) : "text-white"}`}>
+              <span className={`text-sm font-bold tabular-nums ${hasComparison ? getRankColor(m.rank, m.total) : "text-text-heading"}`}>
                 {m.format(m.playerValue)}
               </span>
             </div>

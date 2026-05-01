@@ -64,7 +64,7 @@ function highlightMatch(text: string, query: string): React.ReactNode {
   const parts = text.split(regex);
   return parts.map((part, i) =>
     regex.test(part) ? (
-      <mark key={i} className="bg-[#E94560]/30 text-[#E94560] rounded px-0.5">
+      <mark key={i} className="bg-primary-accent/30 text-primary-accent rounded px-0.5">
         {part}
       </mark>
     ) : (
@@ -201,15 +201,15 @@ export default function CommandPalette() {
       <CommandList>
         <CommandEmpty>
           {loading ? (
-            <div className="py-4 text-center text-sm text-[#6C757D] dark:text-gray-400">
+            <div className="py-4 text-center text-sm text-text-body">
               Searching...
             </div>
           ) : query.length >= 2 ? (
-            <div className="py-4 text-center text-sm text-[#6C757D] dark:text-gray-400">
+            <div className="py-4 text-center text-sm text-text-body">
               No results found.
             </div>
           ) : (
-            <div className="py-4 text-center text-sm text-[#6C757D] dark:text-gray-400">
+            <div className="py-4 text-center text-sm text-text-body">
               Start typing to search players...
             </div>
           )}
@@ -229,7 +229,7 @@ export default function CommandPalette() {
                     e.stopPropagation();
                     clearRecentSearches();
                   }}
-                  className="text-xs text-[#6C757D] hover:text-[#E94560] flex items-center gap-1 transition-colors"
+                  className="text-xs text-text-muted hover:text-primary-accent flex items-center gap-1 transition-colors"
                 >
                   <Trash2 className="h-3 w-3" />
                   Clear
@@ -243,7 +243,7 @@ export default function CommandPalette() {
                 onSelect={() => handleRecentSelect(search)}
                 className="flex items-center gap-2 cursor-pointer"
               >
-                <Clock className="h-4 w-4 text-[#6C757D] dark:text-gray-400" />
+                <Clock className="h-4 w-4 text-text-body" />
                 <span className="text-sm">{search}</span>
               </CommandItem>
             ))}
@@ -259,7 +259,7 @@ export default function CommandPalette() {
               <span className="flex items-center gap-2">
                 <Users className="h-3 w-3" />
                 Players
-                <span className="text-xs text-[#6C757D] ml-1">
+                <span className="text-xs text-text-muted ml-1">
                   ({resultCount})
                 </span>
               </span>
@@ -271,16 +271,16 @@ export default function CommandPalette() {
                 onSelect={() => handlePlayerSelect(player)}
                 className="flex items-center gap-2 cursor-pointer"
               >
-                <User className="h-4 w-4 text-[#6C757D] dark:text-gray-400" />
+                <User className="h-4 w-4 text-text-body" />
                 <span className="font-medium">
                   {highlightMatch(player.pseudo, query)}
                 </span>
                 {player.realName && (
-                  <span className="text-xs text-[#6C757D] dark:text-gray-400">
+                  <span className="text-xs text-text-body">
                     ({player.realName})
                   </span>
                 )}
-                <span className="text-xs text-[#6C757D] dark:text-gray-400 ml-auto">
+                <span className="text-xs text-text-body ml-auto">
                   {player.role}
                 </span>
               </CommandItem>
@@ -298,9 +298,9 @@ export default function CommandPalette() {
               onSelect={() => handleSelect(page.href)}
               className="flex items-center gap-2 cursor-pointer"
             >
-              <page.icon className="h-4 w-4 text-[#6C757D] dark:text-gray-400" />
+              <page.icon className="h-4 w-4 text-text-body" />
               <span>{page.label}</span>
-              <kbd className="ml-auto text-xs bg-[#F8F9FA] dark:bg-[#1e293b] px-2 py-1 rounded text-[#6C757D] dark:text-gray-400">
+              <kbd className="ml-auto text-xs bg-card px-2 py-1 rounded text-text-body">
                 ⌘{page.shortcut}
               </kbd>
             </CommandItem>
@@ -309,15 +309,15 @@ export default function CommandPalette() {
       </CommandList>
 
       {/* Footer */}
-      <div className="flex items-center justify-between px-4 py-2 border-t border-white/5 text-xs text-[#6C757D] dark:text-gray-500">
+      <div className="flex items-center justify-between px-4 py-2 border-t border-white/5 text-xs text-text-muted">
         <div className="flex items-center gap-3">
           <span className="flex items-center gap-1">
-            <kbd className="bg-[#F8F9FA] dark:bg-[#1e293b] px-1 rounded">↑</kbd>
-            <kbd className="bg-[#F8F9FA] dark:bg-[#1e293b] px-1 rounded">↓</kbd>
+            <kbd className="bg-card px-1 rounded">↑</kbd>
+            <kbd className="bg-card px-1 rounded">↓</kbd>
             <span>navigate</span>
           </span>
           <span className="flex items-center gap-1">
-            <kbd className="bg-[#F8F9FA] dark:bg-[#1e293b] px-1 rounded">↵</kbd>
+            <kbd className="bg-card px-1 rounded">↵</kbd>
             <span>select</span>
           </span>
         </div>
@@ -328,8 +328,8 @@ export default function CommandPalette() {
             </span>
           ) : (
             <span className="flex items-center gap-1">
-              <kbd className="bg-[#F8F9FA] dark:bg-[#1e293b] px-1 rounded">⌘</kbd>
-              <kbd className="bg-[#F8F9FA] dark:bg-[#1e293b] px-1 rounded">K</kbd>
+              <kbd className="bg-card px-1 rounded">⌘</kbd>
+              <kbd className="bg-card px-1 rounded">K</kbd>
               <span>toggle</span>
             </span>
           )}

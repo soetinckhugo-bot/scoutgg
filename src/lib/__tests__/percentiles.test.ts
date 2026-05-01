@@ -117,13 +117,13 @@ describe("percentiles", () => {
 
   describe("getTierFromPercentile", () => {
     it("returns S tier for elite percentiles", () => {
+      expect(getTierFromPercentile(95).tier).toBe("S");
       expect(getTierFromPercentile(90).tier).toBe("S");
-      expect(getTierFromPercentile(85).tier).toBe("S");
     });
 
     it("returns A tier for excellent percentiles", () => {
+      expect(getTierFromPercentile(85).tier).toBe("A");
       expect(getTierFromPercentile(75).tier).toBe("A");
-      expect(getTierFromPercentile(70).tier).toBe("A");
     });
 
     it("returns B tier for good percentiles", () => {
@@ -144,20 +144,20 @@ describe("percentiles", () => {
 
   describe("getCentileColor", () => {
     it("returns correct colors", () => {
-      expect(getCentileColor(90)).toBe("#00D9C0"); // S
-      expect(getCentileColor(75)).toBe("#00E676"); // A
-      expect(getCentileColor(65)).toBe("#FFD93D"); // B
-      expect(getCentileColor(55)).toBe("#FF9F43"); // C
-      expect(getCentileColor(40)).toBe("#FF6B6B"); // D
+      expect(getCentileColor(90)).toBe("#3B82F6"); // S
+      expect(getCentileColor(75)).toBe("#22C55E"); // A
+      expect(getCentileColor(65)).toBe("#EAB308"); // B
+      expect(getCentileColor(55)).toBe("#F97316"); // C
+      expect(getCentileColor(40)).toBe("#EF4444"); // D
       expect(getCentileColor(null)).toBe("#888888");
     });
   });
 
   describe("getCentileClass", () => {
     it("returns Tailwind classes", () => {
-      expect(getCentileClass(90)).toContain("text-[#00D9C0]");
-      expect(getCentileClass(40)).toContain("text-[#FF6B6B]");
-      expect(getCentileClass(null)).toContain("text-gray-400");
+      expect(getCentileClass(90)).toContain("text-blue-400");
+      expect(getCentileClass(40)).toContain("text-red-400");
+      expect(getCentileClass(null)).toContain("text-[#A0AEC0]");
     });
   });
 

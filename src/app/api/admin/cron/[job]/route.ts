@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/server/auth";
+import { logger } from "@/lib/logger";
 
 /**
  * POST /api/admin/cron/:job
@@ -40,7 +41,7 @@ export async function POST(
     const data = await res.json().catch(() => ({ success: res.ok }));
     return NextResponse.json(data, { status: res.status });
   } catch (error) {
-    console.error(`Cron proxy error for ${job}:`, error);
+    logger.error(`Cron proxy error for ${job}:`, { error });
     return NextResponse.json(
       { error: "Failed to trigger cron job" },
       { status: 500 }

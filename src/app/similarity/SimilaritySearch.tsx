@@ -110,22 +110,22 @@ export default function SimilaritySearch() {
   return (
     <div className="space-y-6">
       {/* Step 1: Select Source Player */}
-      <div className="rounded-xl border border-border bg-muted p-4">
-        <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-          <User className="h-5 w-5 text-primary" />
+      <div className="rounded-xl border border-border bg-card p-4">
+        <h2 className="text-lg font-semibold text-text-heading mb-4 flex items-center gap-2">
+          <User className="h-5 w-5 text-text-heading" />
           Step 1: Select Player
         </h2>
 
         {!selectedPlayer ? (
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
             <Input
               type="search"
               placeholder="Search player..."
               aria-label="Search for a player"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="pl-10 bg-card border-border text-white placeholder:text-muted-foreground"
+              className="pl-10 bg-card border-border text-text-heading placeholder:text-text-muted"
             />
             {results.length > 0 && (
               <div className="absolute top-full left-0 right-0 mt-2 rounded-xl border border-border bg-card overflow-hidden z-50">
@@ -137,7 +137,7 @@ export default function SimilaritySearch() {
                       setQuery("");
                       setResults([]);
                     }}
-                    className="flex items-center gap-3 w-full px-4 py-3 hover:bg-accent transition-colors text-left"
+                    className="flex items-center gap-3 w-full px-4 py-3 hover:bg-surface-hover transition-colors text-left"
                   >
                     {player.photoUrl ? (
                       <Image
@@ -148,26 +148,26 @@ export default function SimilaritySearch() {
                         className="rounded-full object-cover"
                       />
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs font-bold text-muted-foreground">
+                      <div className="w-8 h-8 rounded-full bg-card flex items-center justify-center text-xs font-bold text-text-muted">
                         {(player.pseudo?.[0] ?? "?").toUpperCase()}
                       </div>
                     )}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium text-foreground">{player.pseudo}</span>
+                        <span className="text-sm font-medium text-text-heading">{player.pseudo}</span>
                         <Badge className={`text-xs h-4 px-1 ${ROLE_COLORS[player.role] || ""}`}>
                           {player.role}
                         </Badge>
                       </div>
-                      <p className="text-xs text-muted-foreground">{player.league} {player.currentTeam && `• ${player.currentTeam}`}</p>
+                      <p className="text-xs text-text-muted">{player.league} {player.currentTeam && `• ${player.currentTeam}`}</p>
                     </div>
-                    <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                    <ArrowRight className="h-4 w-4 text-text-muted" />
                   </button>
                 ))}
               </div>
             )}
             {loading && query.trim().length >= 2 && (
-              <div className="mt-2 text-sm text-muted-foreground">Loading...</div>
+              <div className="mt-2 text-sm text-text-muted">Loading...</div>
             )}
           </div>
         ) : (
@@ -181,25 +181,25 @@ export default function SimilaritySearch() {
                 className="rounded-full object-cover"
               />
             ) : (
-              <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-sm font-bold text-muted-foreground">
+              <div className="w-10 h-10 rounded-full bg-card flex items-center justify-center text-sm font-bold text-text-muted">
                 {(selectedPlayer.pseudo?.[0] ?? "?").toUpperCase()}
               </div>
             )}
             <div className="flex-1">
               <div className="flex items-center gap-2">
-                <span className="font-semibold text-foreground">{selectedPlayer.pseudo}</span>
+                <span className="font-semibold text-text-heading">{selectedPlayer.pseudo}</span>
                 <Badge className={`text-xs h-4 px-1 ${ROLE_COLORS[selectedPlayer.role] || ""}`}>
                   {selectedPlayer.role}
                 </Badge>
               </div>
-              <p className="text-xs text-muted-foreground">{selectedPlayer.league} {selectedPlayer.currentTeam && `• ${selectedPlayer.currentTeam}`}</p>
+              <p className="text-xs text-text-muted">{selectedPlayer.league} {selectedPlayer.currentTeam && `• ${selectedPlayer.currentTeam}`}</p>
             </div>
             <button
               onClick={() => {
                 setSelectedPlayer(null);
                 setSimilarityResults([]);
               }}
-              className="text-muted-foreground hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded px-2 py-1"
+              className="text-text-muted hover:text-text-heading transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E94560] rounded px-2 py-1"
               aria-label="Change selected player"
             >
               Change
@@ -210,9 +210,9 @@ export default function SimilaritySearch() {
 
       {/* Step 2: Select Target */}
       {selectedPlayer && (
-        <div className="rounded-xl border border-border bg-muted p-4">
-          <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-            <Users className="h-5 w-5 text-primary" />
+        <div className="rounded-xl border border-border bg-card p-4">
+          <h2 className="text-lg font-semibold text-text-heading mb-4 flex items-center gap-2">
+            <Users className="h-5 w-5 text-text-heading" />
             Step 2: Compare Against
           </h2>
 
@@ -221,10 +221,10 @@ export default function SimilaritySearch() {
             <button
               onClick={() => setMode("scope")}
               aria-pressed={mode === "scope"}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E94560] ${
                 mode === "scope"
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-card text-muted-foreground hover:text-foreground"
+                  ? "bg-primary text-text-heading-foreground"
+                  : "bg-card text-text-muted hover:text-text-heading"
               }`}
             >
               By Scope
@@ -232,10 +232,10 @@ export default function SimilaritySearch() {
             <button
               onClick={() => setMode("player")}
               aria-pressed={mode === "player"}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E94560] ${
                 mode === "player"
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-card text-muted-foreground hover:text-foreground"
+                  ? "bg-primary text-text-heading-foreground"
+                  : "bg-card text-text-muted hover:text-text-heading"
               }`}
             >
               Specific Player
@@ -250,10 +250,10 @@ export default function SimilaritySearch() {
                   onClick={() => setComparisonScope(scope)}
                   aria-pressed={comparisonScope === scope}
                   aria-label={`Compare by ${getScopeLabel(scope)}`}
-                  className={`flex items-center justify-center gap-2 px-3 py-3 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                  className={`flex items-center justify-center gap-2 px-3 py-3 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E94560] ${
                     comparisonScope === scope
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-card text-muted-foreground hover:bg-accent"
+                      ? "bg-primary text-text-heading-foreground"
+                      : "bg-card text-text-muted hover:bg-surface-hover"
                   }`}
                 >
                   {getScopeIcon(scope)}
@@ -263,14 +263,14 @@ export default function SimilaritySearch() {
             </div>
           ) : (
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
               <Input
                 type="search"
                 placeholder="Search target player..."
                 aria-label="Search for a target player to compare"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className="pl-10 bg-card border-border text-white placeholder:text-muted-foreground"
+                className="pl-10 bg-card border-border text-text-heading placeholder:text-text-muted"
               />
               {results.length > 0 && (
                 <div className="absolute top-full left-0 right-0 mt-2 rounded-xl border border-border bg-card overflow-hidden z-50">
@@ -282,31 +282,31 @@ export default function SimilaritySearch() {
                         setQuery("");
                         setResults([]);
                       }}
-                      className="flex items-center gap-3 w-full px-4 py-3 hover:bg-accent transition-colors text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg"
+                      className="flex items-center gap-3 w-full px-4 py-3 hover:bg-surface-hover transition-colors text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E94560] rounded-lg"
                       aria-label={`Select target player ${player.pseudo}`}
                     >
-                      <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs font-bold text-muted-foreground">
+                      <div className="w-8 h-8 rounded-full bg-card flex items-center justify-center text-xs font-bold text-text-muted">
                         {(player.pseudo?.[0] ?? "?").toUpperCase()}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium text-foreground">{player.pseudo}</span>
+                          <span className="text-sm font-medium text-text-heading">{player.pseudo}</span>
                           <Badge className={`text-xs h-4 px-1 ${ROLE_COLORS[player.role] || ""}`}>
                             {player.role}
                           </Badge>
                         </div>
-                        <p className="text-xs text-muted-foreground">{player.league}</p>
+                        <p className="text-xs text-text-muted">{player.league}</p>
                       </div>
                     </button>
                   ))}
                 </div>
               )}
               {targetPlayer && (
-                <div className="mt-2 flex items-center gap-2 p-2 bg-muted rounded-lg">
-                  <span className="text-sm text-foreground">{targetPlayer.pseudo}</span>
+                <div className="mt-2 flex items-center gap-2 p-2 bg-card rounded-lg">
+                  <span className="text-sm text-text-heading">{targetPlayer.pseudo}</span>
                   <button
                     onClick={() => setTargetPlayer(null)}
-                    className="text-muted-foreground hover:text-primary text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded px-1"
+                    className="text-text-muted hover:text-text-heading text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E94560] rounded px-1"
                     aria-label="Remove selected target player"
                   >
                     Remove
@@ -318,7 +318,7 @@ export default function SimilaritySearch() {
 
           <Button
             onClick={handleFindSimilar}
-            className="w-full mt-4 bg-primary text-primary-foreground hover:bg-primary/90"
+            className="w-full mt-4 bg-primary text-text-heading-foreground hover:bg-primary/90"
           >
             Find Similar Players
             <ArrowRight className="h-4 w-4 ml-2" />
@@ -328,10 +328,10 @@ export default function SimilaritySearch() {
 
       {/* Results */}
       {similarityResults.length > 0 && (
-        <div className="rounded-xl border border-border bg-muted p-4">
-          <h2 className="text-lg font-semibold text-foreground mb-4">
+        <div className="rounded-xl border border-border bg-card p-4">
+          <h2 className="text-lg font-semibold text-text-heading mb-4">
             Similar Players
-            <span className="text-sm font-normal text-muted-foreground ml-2">
+            <span className="text-sm font-normal text-text-muted ml-2">
               ({getScopeLabel(comparisonScope)} • {similarityResults.length} results)
             </span>
           </h2>
@@ -361,25 +361,25 @@ export default function SimilaritySearch() {
                         className="rounded-full object-cover"
                       />
                     ) : (
-                      <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center text-lg font-bold text-muted-foreground">
+                      <div className="w-12 h-12 rounded-full bg-card flex items-center justify-center text-lg font-bold text-text-muted">
                         {(result.player.pseudo?.[0] ?? "?").toUpperCase()}
                       </div>
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold text-foreground">{result.player.pseudo}</span>
+                      <span className="font-semibold text-text-heading">{result.player.pseudo}</span>
                       <Badge className={`text-xs h-4 px-1 ${ROLE_COLORS[result.player.role] || ""}`}>
                         {result.player.role}
                       </Badge>
                     </div>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-text-muted">
                       {result.player.league} {result.player.tier && `• ${result.player.tier}`} {result.player.currentTeam && `• ${result.player.currentTeam}`}
                     </p>
                   </div>
                   <div className="text-right">
-                    <div className="text-2xl font-bold text-primary">{result.similarity}%</div>
-                    <div className="text-xs text-muted-foreground">similarity</div>
+                    <div className="text-2xl font-bold text-text-heading">{result.similarity}%</div>
+                    <div className="text-xs text-text-muted">similarity</div>
                   </div>
                   <button
                     onClick={(e) => {
@@ -389,7 +389,7 @@ export default function SimilaritySearch() {
                     aria-pressed={expandedBreakdown === result.player.id}
                     aria-expanded={expandedBreakdown === result.player.id}
                     aria-label={`${expandedBreakdown === result.player.id ? 'Collapse' : 'Expand'} similarity breakdown for ${result.player.pseudo}`}
-                    className="p-1 text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+                    className="p-1 text-text-muted hover:text-text-heading focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E94560] rounded"
                   >
                     {expandedBreakdown === result.player.id ? (
                       <ChevronUp className="h-4 w-4" />
@@ -402,7 +402,7 @@ export default function SimilaritySearch() {
                 {/* Breakdown */}
                 {expandedBreakdown === result.player.id && result.breakdown && (
                   <div className="mt-2 p-4 bg-card rounded-lg border border-border">
-                    <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+                    <h4 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">
                       Metric Breakdown
                     </h4>
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
@@ -411,10 +411,10 @@ export default function SimilaritySearch() {
                         .map(([metric, data]) => (
                           <div
                             key={metric}
-                            className="p-2 rounded bg-muted border border-border"
+                            className="p-2 rounded bg-card border border-border"
                           >
                             <div className="flex items-center justify-between mb-1">
-                              <span className="text-xs text-muted-foreground font-medium">{metric}</span>
+                              <span className="text-xs text-text-muted font-medium">{metric}</span>
                               <span
                                 className={`text-xs font-bold ${
                                   data.similarity >= 80
@@ -427,7 +427,7 @@ export default function SimilaritySearch() {
                                 {data.similarity}%
                               </span>
                             </div>
-                            <div className="h-1 bg-muted rounded-full overflow-hidden">
+                            <div className="h-1 bg-card rounded-full overflow-hidden">
                               <div
                                 className="h-full rounded-full transition-all"
                                 style={{
@@ -442,8 +442,8 @@ export default function SimilaritySearch() {
                               />
                             </div>
                             <div className="flex justify-between mt-1">
-                              <span className="text-xs text-muted-foreground">{data.rawA}</span>
-                              <span className="text-xs text-muted-foreground">{data.rawB}</span>
+                              <span className="text-xs text-text-muted">{data.rawA}</span>
+                              <span className="text-xs text-text-muted">{data.rawB}</span>
                             </div>
                           </div>
                         ))}

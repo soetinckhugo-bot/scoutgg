@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/server/db";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/server/auth-options";
+import { rateLimit } from "@/lib/server/rate-limit";
+import { logger } from "@/lib/logger";
 
 export async function GET(request: NextRequest) {
   // Require authentication for CSV export
@@ -10,6 +12,15 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       { error: "Authentication required" },
       { status: 401 }
+    );
+  }
+
+  const ip = request.headers.get("x-forwarded-for") || "unknown";
+  const limit = rateLimit(`export-players:${ip}`, 10, 60 * 1000);
+  if (!limit.success) {
+    return NextResponse.json(
+      { error: "Rate limit exceeded. Try again later." },
+      { status: 429 }
     );
   }
 
@@ -93,7 +104,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("Export error:", error);
+    logger.error("Export error:", { error });
     return NextResponse.json(
       { error: "Failed to export players" },
       { status: 500 }

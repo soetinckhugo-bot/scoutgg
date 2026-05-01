@@ -4,6 +4,7 @@ import { db } from "@/lib/server/db";
 import { authOptions } from "@/lib/server/auth-options";
 import { z } from "zod";
 import crypto from "crypto";
+import { logger } from "@/lib/logger";
 
 function getUserId(session: any): string | null {
   return session?.user?.email || null;
@@ -77,7 +78,7 @@ export async function GET() {
 
     return NextResponse.json({ org });
   } catch (error) {
-    console.error("Org fetch error:", error);
+    logger.error("Org fetch error:", { error });
     return NextResponse.json({ error: "Failed" }, { status: 500 });
   }
 }
@@ -141,7 +142,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(org, { status: 201 });
   } catch (error) {
-    console.error("Org create error:", error);
+    logger.error("Org create error:", { error });
     return NextResponse.json({ error: "Failed" }, { status: 500 });
   }
 }
@@ -216,7 +217,7 @@ export async function PATCH(request: Request) {
 
     return NextResponse.json({ error: "Unknown action" }, { status: 400 });
   } catch (error) {
-    console.error("Org patch error:", error);
+    logger.error("Org patch error:", { error });
     return NextResponse.json({ error: "Failed" }, { status: 500 });
   }
 }

@@ -1,0 +1,860 @@
+# Joueurs sans photo
+
+Total: 801 joueurs
+
+## AL [45]
+
+- thomasjalbi | No team
+- Silva | 3BL Esports
+- VAEII | 3BL Esports
+- ShizuOo | 3BL Esports
+- Claww | 3BL Esports
+- choego | 3BL Esports
+- Improver | Anubis Gaming
+- Aeru | Anubis Gaming
+- Color | Anubis Gaming
+- Zaremba | 3BL Esports
+- marlon | Anubis Gaming
+- Moe | BAAM Esports
+- Slayder | BAAM Esports
+- Warner | BAAM Esports
+- Shanks2 | Anubis Gaming
+- handm | BAAM Esports
+- Jalleba | Dragons Esports
+- Akashii | Dragons Esports
+- sas | BAAM Esports
+- Ihebic | Dragons Esports
+- Juzu | Dragons Esports
+- Krest | FN Esports
+- Shlatan | Dragons Esports
+- B Butcher | FN Esports
+- Random | FN Esports
+- Aymen | GnG Amazigh
+- Kobs | GnG Amazigh
+- Robenong | GnG Amazigh
+- Stormax | FN Esports
+- Xicor | FN Esports
+- Septico1 | GnG Amazigh
+- Fr0zen | NextGeneration Esports
+- Goliah | NextGeneration Esports
+- Skream | GnG Amazigh
+- Deceiving | NextGeneration Esports
+- Libra | NextGeneration Esports
+- Iheb | One More Esports
+- Baca | One More Esports
+- Ajwad | One More Esports
+- Lelouch2 | NextGeneration Esports
+- Jasten | One More Esports
+- Zankiller | One More Esports
+- Sivvy | One More Esports
+- Nawaf | One More Esports
+- Loading | One More Esports
+
+## CBLOL [1]
+
+- BAO | Fluxo W7M
+
+## EBL [49]
+
+- CKSS | No team
+- Danilo | No team
+- Draxo5 | No team
+- Durk0 | No team
+- CROmpir | No team
+- Enoch | No team
+- Diva | BeFive
+- Yuki | No team
+- Coli | BeFive
+- Sikterr | No team
+- Falleo | BeFive
+- bakisa | BeFive
+- DoubleAiM | BeFive
+- Mali Mrav | Crvena zvezda Esports
+- Flif | Crvena zvezda Esports
+- Nazgul | Crvena zvezda Esports
+- Saintsu | Crvena zvezda Esports
+- Bala | Lenovo Legion Honvéd
+- Shone | Crvena zvezda Esports
+- Passzi | Lenovo Legion Honvéd
+- Dehaste | Lupus Esports
+- Lagolinas | Lenovo Legion Honvéd
+- Lotuss | Lupus Esports
+- Endless | Lenovo Legion Honvéd
+- PatkicaA | Lupus Esports
+- Erdote | Partizan Sangal
+- Chan | Partizan Sangal
+- Panj | Lupus Esports
+- Rayito | Lupus Esports
+- Ferret | Partizan Sangal
+- Alessio | REDPack Esports
+- ShyCarry | Partizan Sangal
+- Davyyyy | REDPack Esports
+- Ruby | Partizan Sangal
+- Zarcon | REDPack Esports
+- Mood | SPIKE Syndicate
+- Monk | SPIKE Syndicate
+- Domaschlous | RO
+- flini | REDPack Esports
+- Phaxi | SPIKE Syndicate
+- Colamax | The Secret Club
+- monster | SPIKE Syndicate
+- Robi | SPIKE Syndicate
+- burningstar | SPIKE Syndicate
+- ZaFiR | The Secret Club
+- Ronaldo | The Secret Club
+- Ryu | The Secret Club
+- kaylem | The Secret Club
+- mihai | The Secret Club
+
+## HLL [41]
+
+- alishor | ALMO Players
+- Azu | ALMO Players
+- hammerul | ALMO Players
+- Abagnale | GOAL
+- Faded2 | ALMO Players
+- Drofan | GOAL
+- Druxy | GOAL
+- kPr | GOAL
+- C7 | GOAL
+- Kuroneel | GOAL
+- Fame | Gamespace Mediterranean College Esports
+- Shakur | Gamespace Mediterranean College Esports
+- Alvanai | Gamespace Mediterranean College Esports
+- Benaset | Gamespace Mediterranean College Esports
+- Shourdy | Gamespace Mediterranean College Esports
+- D1verse | Howl Esports
+- S M | Howl Esports
+- Kartso | Howl Esports
+- Nikolex | Howl Esports
+- Dafnis | Howl Esports
+- Mentos | Team Insidious
+- noname | Team Insidious
+- Nsurr | Team Insidious
+- Nikiyas | Team Insidious
+- Nenad | Team Insidious
+- Peppe | Team Phantasma
+- Booshi | Team Phantasma
+- Rames | Team Phantasma
+- PapiTeero | Team Phantasma
+- REAVER | Team Phantasma
+- Vaynedeta | Team Phantasma
+- AERO | The ParadOx
+- Jimsnop | The ParadOx
+- K1NG1 | The ParadOx
+- Paparotis | The ParadOx
+- TheSerius | The ParadOx
+- Unkn0wn | WLGaming Esports
+- Pallet | WLGaming Esports
+- Tsiper | WLGaming Esports
+- Speedy1 | WLGaming Esports
+- iBo | WLGaming Esports
+
+## HM [82]
+
+- Cherry | Andromeda Gaming
+- Zelvicka | Andromeda Gaming
+- TalentLess | Andromeda Gaming
+- Metys | Andromeda Gaming
+- Pongo | Andromeda Gaming
+- Esko | BRUTE
+- Twight | BRUTE
+- Peto | BRUTE
+- Darkeszy | BRUTE
+- stanik | BRUTE
+- Krosak | CITA Kaizen
+- minedomoles | CITA Kaizen
+- oki1 | CITA Kaizen
+- MinePiwek | CITA Kaizen
+- behave | CITA Kaizen
+- DON WAGOD | CZ
+- Drannarith | CZ
+- AAdaMM | Divernex
+- Dawerko | Divernex
+- Tichoslapek | CZ
+- Lays | Divernex
+- GoDirr | Diversion Gaming
+- Pulzer | Divernex
+- SGooB | Divernex
+- Ad1s | Diversion Gaming
+- Nade | Diversion Gaming
+- Dzeffry | EXILE esports
+- Yakko | Diversion Gaming
+- Skodix | Diversion Gaming
+- Deepe | EXILE esports
+- JJirkos | Ethereal Enigmas
+- Lexendo | Ethereal Enigmas
+- N3znamy | EXILE esports
+- Marco | EXILE esports
+- Kneza | EXILE esports
+- kobe67 | Ethereal Enigmas
+- SLIDE | Gity Meavedronu
+- didie | Ethereal Enigmas
+- LoLpop | Gity Meavedronu
+- Tada | Gity Meavedronu
+- Kadlicek | Inside Games
+- Reddy | Inside Games
+- Koudys | Inside Games
+- Fejkyy | Inside Games
+- Keksik | Inside Games
+- Doge | KIA.eSuba Academy
+- Baro | Meavedron
+- Etoo | KIA.eSuba Academy
+- Vlaren | KIA.eSuba Academy
+- Rajed | KIA.eSuba Academy
+- Kokos | Meavedron
+- DVLK | Meavedron
+- Only | Meavedron
+- SiroN1 | Meavedron
+- Denyk | Nightbirds
+- Strode | Nightbirds
+- Vasco | Nightbirds
+- SLT | Nightbirds
+- Jackson | Nightbirds
+- Danos | Observant Force
+- Exiled Wolf | Observant Force
+- Arp | Priority
+- Lolkol | Observant Force
+- M0ra | Observant Force
+- Gewrix | Observant Force
+- Drzemik | Priority
+- VOPI | Priority
+- Inspireeeee | Priority
+- Koresh | Priority
+- NikiBombka | Priority
+- Busvicke | SPAXFAMILY
+- Kenrix | SPAXFAMILY
+- Dyego | SPAXFAMILY
+- miraclee | Priority
+- Lelouch | SPAXFAMILY
+- Ludas Matyi | SPAXFAMILY
+- DON ADY | eSuba
+- Tyrant | SPAXFAMILY
+- Mita | eSuba
+- Bobsik | eSuba
+- Raining | eSuba
+- qualzy | eSuba
+
+## LCP [40]
+
+- 2274 | CTBC Flying Oyster
+- Rest | CTBC Flying Oyster
+- Shad0w | CTBC Flying Oyster
+- Pungyeon | CTBC Flying Oyster
+- Doggo | CTBC Flying Oyster
+- Feng | Deep Cross Gaming
+- Flauren | Deep Cross Gaming
+- POP9 | Deep Cross Gaming
+- ShiauC | Deep Cross Gaming
+- HongSuo | Deep Cross Gaming
+- Citrus | DetonatioN FocusMe
+- Gaeng | DetonatioN FocusMe
+- Kakkun | DetonatioN FocusMe
+- Momo | DetonatioN FocusMe
+- Keine | DetonatioN FocusMe
+- Aria | Fukuoka SoftBank HAWKS gaming
+- Marble | Fukuoka SoftBank HAWKS gaming
+- Evi | Fukuoka SoftBank HAWKS gaming
+- Vsta | Fukuoka SoftBank HAWKS gaming
+- Van | Fukuoka SoftBank HAWKS gaming
+- Aress | GAM Esports
+- Draktharr | GAM Esports
+- Artemis | GAM Esports
+- Taki | GAM Esports
+- Kiaya | GAM Esports
+- 1Jiang | Ground Zero Gaming
+- JimieN | Ground Zero Gaming
+- Shunn | Ground Zero Gaming
+- Orca | Ground Zero Gaming
+- Husha | Ground Zero Gaming
+- Elio | MVK Esports
+- Kratos | MVK Esports
+- Kati | MVK Esports
+- Shogun | MVK Esports
+- Gury | MVK Esports
+- Dire | Team Secret Whales
+- Pun | Team Secret Whales
+- Eddie | Team Secret Whales
+- Bie | Team Secret Whales
+- Hizto | Team Secret Whales
+
+## LES [40]
+
+- Macaquinho | Barça eSports
+- Legolas | Barça eSports
+- Selenex | Barça eSports
+- KoIdo | Barça eSports
+- Oscure | Barça eSports
+- Ethe | Falke Esports
+- Midnight | Falke Esports
+- Abner | Falke Esports
+- Naau | Falke Esports
+- Rito | Falke Esports
+- Attila | GIANTX iTero
+- ManoloGap | GIANTX iTero
+- Th3Antonio | GIANTX iTero
+- Flakked | GIANTX iTero
+- Miniduke | GIANTX iTero
+- Kaii1 | LUA Gaming
+- Hydra | LUA Gaming
+- TIMR | LUA Gaming
+- Dani | LUA Gaming
+- Pegaso | LUA Gaming
+- 13 | Movistar KOI Fénix
+- Fresskowy | Movistar KOI Fénix
+- Time | Movistar KOI Fénix
+- NightSlayer | Movistar KOI Fénix
+- Myrtus | Movistar KOI Fénix
+- Daglas | Team Heretics Academy
+- Mercy9 | Team Heretics Academy
+- Mihile | Team Heretics Academy
+- Batuuu | Team Heretics Academy
+- Lure | Team Heretics Academy
+- Simpy | UB Alma Mater
+- Pauporter | UB Alma Mater
+- adrianlanei | UB Alma Mater
+- Skiler99 | UB Alma Mater
+- Ivama | UB Alma Mater
+- Andariel | UCAM Esports
+- Escik | UCAM Esports
+- iLevi | UCAM Esports
+- bluerzor | UCAM Esports
+- Kozi | UCAM Esports
+
+## LFL [51]
+
+- Adam | French Flair
+- 3XA | French Flair
+- Axelent | TLN Pirates
+- Addusto | Lille Esport
+- Aetinoth | Solary
+- Carlsen | Galions
+- Boda | BK ROG Esports
+- Comp | Joblife
+- Czekolad | Joblife
+- Czajek | Vitality.Bee
+- Dawciu | Vitality.Bee
+- Doss | BK ROG Esports
+- Dekap | Vitality.Bee
+- Deadly | Skillcamp
+- H1ro | ZYB Esport
+- Harpoon | Galions
+- Jool | Solary
+- Jezu | ZYB Esport
+- HungryPanda | Joblife
+- Jeykup | BK ROG Esports
+- Koussay | Lille Esport
+- Nafkelah | Skillcamp
+- Manaty | ZYB Esport
+- Kryze | Solary
+- Karim KT | Lille Esport
+- NattyNatt | French Flair
+- OMON | Galions
+- Piero | Solary
+- Potent | Vitality.Bee
+- Nisqy | ZYB Esport
+- Sayn | BK ROG Esports
+- Shift | Joblife
+- Saken | French Flair
+- Riippp | ZYB Esport
+- Seneca | Lille Esport
+- Sleyer | ZYB Esport
+- Spooky | Skillcamp
+- Steeelback | Skillcamp
+- Stefan | TLN Pirates
+- Spooder | TLN Pirates
+- Toffe | TLN Pirates
+- Thayger | Galions
+- UNF0RGIVEN | BK ROG Esports
+- Thomas | TLN Pirates
+- Targamas | French Flair
+- Vertigo | Joblife
+- Vizzpers | Vitality.Bee
+- Yeti | Skillcamp
+- Zicssi | Solary
+- Vespa | Lille Esport
+- Zoelys | Galions
+
+## LIT [45]
+
+- Cripple | Axolotl
+- Padawii | Axolotl
+- Tigrot | Axolotl
+- Shack | Axolotl
+- Elix1r | Axolotl
+- Centu | Colossal Gaming
+- Bisgaard | Colossal Gaming
+- Fragola | Colossal Gaming
+- Piskhello | Colossal Gaming
+- TheMountain | Colossal Gaming
+- Kyte | Deacoy
+- Sharon | Deacoy
+- Fornari | Deacoy
+- Fratellin | Deacoy
+- Hamudis | Deacoy
+- Balyy | EKO Esports
+- Iobellan | EKO Esports
+- S1d | EKO Esports
+- Divine | EKO Esports
+- Sheeesh | Deacoy
+- Toti | EKO Esports
+- Rharesh | GMBLERS Esports
+- Dadan | GMBLERS Esports
+- Mario | GMBLERS Esports
+- DejaVu | GMBLERS Esports
+- APP | HMBLE
+- Vigil | HMBLE
+- SHREDDER | GMBLERS Esports
+- Click | HMBLE
+- Tyrone | HMBLE
+- Downfall | P11 Esports
+- Haruhiro | P11 Esports
+- Corri | P11 Esports
+- adi1 | HMBLE
+- Iso99 | P11 Esports
+- Izo | P11 Esports
+- Pericolo | P11 Esports
+- Showman | P11 Esports
+- Xen0gan | P11 Esports
+- Xero | P11 Esports
+- Raffy | Zena Esports
+- Jekko | Zena Esports
+- RaptoSauros | Zena Esports
+- Sadaz | Zena Esports
+- OrthoZero | Zena Esports
+
+## LPL [71]
+
+- Flandre | Anyone's Legend
+- Hope | Anyone's Legend
+- Tarzan | Anyone's Legend
+- Shanks | Anyone's Legend
+- Kael | Anyone's Legend
+- Bin | Bilibili Gaming
+- Knight | Bilibili Gaming
+- ON | Bilibili Gaming
+- XUN | Bilibili Gaming
+- Viper | Bilibili Gaming
+- Leave | EDward Gaming
+- Angel | EDward Gaming
+- Xiaohao | EDward Gaming
+- Parukia | EDward Gaming
+- Zdz | EDward Gaming
+- Jwei | Invictus Gaming
+- Wei | Invictus Gaming
+- Soboro | Invictus Gaming
+- RooKie | Invictus Gaming
+- Photic | Invictus Gaming
+- GALA | JD Gaming
+- Xiaoxu | JD Gaming
+- Vampire | JD Gaming
+- HongQ | JD Gaming
+- JunJia | JD Gaming
+- sasi | LGD Gaming
+- Tangyuan | LGD Gaming
+- Heng | LGD Gaming
+- Shaoye | LGD Gaming
+- Ycx | LGD Gaming
+- 1xn | LNG Esports
+- sheer | LNG Esports
+- Croco | LNG Esports
+- Missing | LNG Esports
+- Bulldog | LNG Esports
+- Assum | Ninjas in Pyjamas
+- Zhuo | Ninjas in Pyjamas
+- Guwon | Ninjas in Pyjamas
+- Hoya | Ninjas in Pyjamas
+- Care | Ninjas in Pyjamas
+- Hery | Oh My God
+- Haichao | Oh My God
+- Moham | Oh My God
+- Starry | Oh My God
+- Juhan | Oh My God
+- About | Team WE
+- Karis | Team WE
+- re0 | Oh My God
+- Cube | Team WE
+- Monki | Team WE
+- Feather | ThunderTalk Gaming
+- Keshi | ThunderTalk Gaming
+- Junhao | ThunderTalk Gaming
+- yaoyao | Team WE
+- Heru | ThunderTalk Gaming
+- Ryan3 | ThunderTalk Gaming
+- fengyue | Top Esports
+- Creme | Top Esports
+- 369 | Top Esports
+- JiaQi | Top Esports
+- naiyou | Top Esports
+- Liangchen | Ultra Prime
+- Saber | Ultra Prime
+- Hena | Ultra Prime
+- Grizzly | Ultra Prime
+- Xiaoxia | Ultra Prime
+- Zika | Weibo Gaming
+- Erha | Weibo Gaming
+- Elk | Weibo Gaming
+- Jiejie | Weibo Gaming
+- xiaohu | Weibo Gaming
+
+## LPLOL [40]
+
+- ALPX | No team
+- Chambel | No team
+- D4SH | No team
+- D4rtaine | No team
+- Demonadc | No team
+- KappaKarma | No team
+- LVS | No team
+- Furukisu | No team
+- Luckmeow | No team
+- Dreampull | No team
+- Noma | No team
+- Ozgur | No team
+- RealR | No team
+- Rozpier | No team
+- Nomanz | No team
+- Vibzz | No team
+- tomaspal | No team
+- Wuis | No team
+- Semide | No team
+- costy | No team
+- Hosto | Crusaders
+- Cape | Crusaders
+- Lostboy | Crusaders
+- Flashpowa | Crusaders
+- Kaplica | Crusaders
+- Jeyrus | Otter Side
+- Camana | Otter Side
+- Ze Luis | Otter Side
+- bicas | Otter Side
+- Aytekn | Otter Side
+- Ace | Vantex Esports
+- Tochas | Vantex Esports
+- GreatGary | Vantex Esports
+- Inzuh | Vantex Esports
+- Renewal | Vantex Esports
+- Degla | ZeroZone Gaming
+- JoKozz | ZeroZone Gaming
+- Lumity | ZeroZone Gaming
+- vladichich | ZeroZone Gaming
+- salgueiro | ZeroZone Gaming
+
+## NLC [47]
+
+- Bobik | Ruddy Corporation
+- bobista | Verdant
+- Boltox | Arctic Pandas
+- Calmsky | DMG Esports
+- Boatish | La BOMBAS
+- CLEARS | Lundqvist Lightside
+- dibu | Arctic Pandas
+- Cyclops | La BOMBAS
+- Don Ponk | LEO
+- Cast | LEO
+- Faetski | DMG Esports
+- Druttut | 4 Swines & A Bum
+- Elijah | Lundqvist Lightside
+- Fantomisto | DMG Esports
+- Exile1 | Deer Gaming
+- Forsen | 4 Swines & A Bum
+- Furby | LEO
+- guggu | Verdant
+- Furuy | Verdant
+- Goldmen | DMG Esports
+- Hunt | Bulldog Esports
+- Kehvo | Arctic Pandas
+- Leks | Bulldog Esports
+- KaSing | Bulldog Esports
+- Jackspektra | 4 Swines & A Bum
+- Mafro | Verdant
+- MathisV | Lundqvist Lightside
+- Lulas | DMG Esports
+- Luke1 | La BOMBAS
+- Mans | LEO
+- Mishi | Verdant
+- Noodle | Bulldog Esports
+- Pobelter | 4 Swines & A Bum
+- Nille | Arctic Pandas
+- Miella | La BOMBAS
+- Royeq | Lundqvist Lightside
+- Simpli | Arctic Pandas
+- RustySniper | LEO
+- Sebrej | Ruddy Corporation
+- Scuffed | Deer Gaming
+- Soul2 | Lundqvist Lightside
+- Syzyfek | Bulldog Esports
+- Virtuso | Deer Gaming
+- Sloppy W | La BOMBAS
+- uden | Deer Gaming
+- Wasey | Ruddy Corporation
+- Yakkey | Deer Gaming
+
+## PRM [50]
+
+- Artoria | A One Man Army Prime
+- Xay | A One Man Army Prime
+- Dome | A One Man Army Prime
+- Smurfe | A One Man Army Prime
+- Urban | A One Man Army Prime
+- Fun K3y | Berlin International Gaming
+- Kaiser | Berlin International Gaming
+- Habubu | Berlin International Gaming
+- Reeker | Berlin International Gaming
+- Irrelevant | Berlin International Gaming
+- Vizicsacsi | E WIE EINFACH E-SPORTS
+- noz2k | E WIE EINFACH E-SPORTS
+- Wildenbruch | E WIE EINFACH E-SPORTS
+- Relative | E WIE EINFACH E-SPORTS
+- Afroboi | E WIE EINFACH E-SPORTS
+- Notiko | Eintracht Frankfurt
+- Mietek | Eintracht Frankfurt
+- Farfetch | Eintracht Frankfurt
+- D4nKa | Eintracht Frankfurt
+- Sencux | Eintracht Frankfurt
+- Jenax | Eintracht Spandau
+- Keduii | Eintracht Spandau
+- Seaz | Eintracht Spandau
+- PowerOfEvil | Eintracht Spandau
+- Xagog | Eintracht Spandau
+- Markoon | G2 NORD
+- Rin | G2 NORD
+- Tockimo | G2 NORD
+- Shelfmade | G2 NORD
+- Toasty | G2 NORD
+- Abbedagge | Kaufland Hangry Knights
+- Pyrka | Kaufland Hangry Knights
+- Lurox | Kaufland Hangry Knights
+- Venour | Kaufland Hangry Knights
+- Exofeng | Kaufland Hangry Knights
+- Devn | ROSSMANN Centaurs
+- Pasu | ROSSMANN Centaurs
+- Smarty | ROSSMANN Centaurs
+- Fooneses | ROSSMANN Centaurs
+- CPM | ROSSMANN Centaurs
+- Lilipp | TeamOrangeGaming
+- zorenous | TeamOrangeGaming
+- Ryuk | TeamOrangeGaming
+- Woldjo | TeamOrangeGaming
+- Sajator | TeamOrangeGaming
+- DenVoksne | Unicorns of Love Sexy Edition
+- Kanin | Unicorns of Love Sexy Edition
+- Twiizt | Unicorns of Love Sexy Edition
+- Fornoreason | Unicorns of Love Sexy Edition
+- White | Unicorns of Love Sexy Edition
+
+## PRM2 [84]
+
+- Robocop | 6GPA
+- Afriibi | 6GPA
+- Zazee | 6GPA
+- Mahonix | 6GPA
+- jokaa | 6GPA
+- Bambii | AceGaming
+- Remix | AceGaming
+- Hadonski | AceGaming
+- Daksider | All for One Gaming
+- Menesis | AceGaming
+- Lorenz | All for One Gaming
+- Flamer | All for One Gaming
+- Marbirius | All for One Gaming
+- owlonsky | All for One Gaming
+- Eyliph | Babos Gaming
+- Poro | Babos Gaming
+- Marth | Babos Gaming
+- JustInTime | Babos Gaming
+- Lumi | Babos Gaming
+- Blueboar | Broke
+- Ragnax | Broke
+- Valenjin | Broke
+- WCD | Broke
+- nite | Broke
+- Lucky | CGN Esports
+- Raider | CGN Esports
+- Reptile | CGN Esports
+- Send0o | CGN Esports
+- Dreilix | DKB XPERION NXT
+- Phantasm | CGN Esports
+- NIQKL | DKB XPERION NXT
+- Richu | DKB XPERION NXT
+- c0st0m | DKB XPERION NXT
+- Xeonerr | DKB XPERION NXT
+- DizL | MT1 Esports
+- Jonny227 | MT1 Esports
+- Techoteco | MT1 Esports
+- Universal | MT1 Esports
+- Pesho | MT1 Esports
+- Vin | MT1 Esports
+- BrotherLuis | NICE GUYS
+- Fogzy | NICE GUYS
+- Varry | NICE GUYS
+- NGB | NICE GUYS
+- Fallen | NICE GUYS
+- Broeki | No Need Orga
+- Tolkin | No Need Orga
+- Karni | No Need Orga
+- Obsess | No Need Orga
+- NoWay | No Need Orga
+- IvanDragovic | Regnum4games
+- Zyres | Regnum4games
+- Twendddy | Regnum4games
+- Alex | Regnum4games
+- Spy | Regnum4games
+- Matislaw | Reveal Multigaming
+- Sojo | Reveal Multigaming
+- PsYcraw | Reveal Multigaming
+- Archfiend | Reveal Multigaming
+- Antonio | Reveal Multigaming
+- Effortless | Second Time Alive
+- bbma | Second Time Alive
+- Staargazing | Second Time Alive
+- Grigagon | Second Time Alive
+- Peaker | Second Time Alive
+- Akre | Spongecord prime
+- INDD | Spongecord prime
+- CROSSOVER | Spongecord prime
+- PRDGY | Spongecord prime
+- VENTAIR | Spongecord prime
+- Creal | TeamOrangeGaming
+- Qlibali | TeamOrangeGaming
+- Dova | TeamOrangeGaming
+- Nilsog | TeamOrangeGaming
+- Raiin | TeamOrangeGaming
+- Satto | TeamOrangeGaming
+- Luke | VfB eSports
+- Agurin | Unicorns of Love Sexy Edition
+- Jakobobbi | VfB eSports
+- Honest | VfB eSports
+- Zwickl | VfB eSports
+- Tazaku | VfB eSports
+- Sven | VfB eSports
+- Tayto | VfB eSports
+
+## RL [35]
+
+- HeSSZero | Anonymo Esports
+- Joki37 | Anonymo Esports
+- Raxxo | Anonymo Esports
+- Ejsner | Anonymo Esports
+- Sobek | Anonymo Esports
+- jactroll | Barcząca Esports
+- Woolite | Barcząca Esports
+- Tenshi | Barcząca Esports
+- Agresivoo | Barcząca Esports
+- Mikusik | Barcząca Esports
+- Mrozku | Bomba Team
+- Guli | Bomba Team
+- minemaciek | Bomba Team
+- frajgo | Bomba Team
+- odi11 | Bomba Team
+- Anyone | DOCISK
+- FullClear | DOCISK
+- Birkyy | DOCISK
+- Huron | DOCISK
+- PmK | DOCISK
+- Cinkrof | Forsaken
+- Zamulek | Forsaken
+- Sinmivak | Forsaken
+- Secrett | Forsaken
+- Kaseko | Forsaken
+- Makk | LODIS
+- lee sang | LODIS
+- Belit | LODIS
+- Klorell | LODIS
+- Robertoos | LODIS
+- Envy1 | Onion Team
+- Sidav | Onion Team
+- Syzyf | Onion Team
+- Zora | Onion Team
+- ShazQ | Onion Team
+
+## ROL [41]
+
+- Bisk | The Bandits
+- bbmuffin | The Bandits
+- AwerpiS | The Bandits
+- Baumeef | Once Upon A Team
+- Asza | mCon esports
+- Cboi | Frites Esports Club
+- BunnyBeast | Myth Esports
+- CaviaVampier | The Bandits
+- Dovendyr | Myth Esports
+- Dolis | ZennIT
+- Enkil | Senshi eSports
+- Fishue | Dynasty
+- Floris56 | Once Upon A Team
+- FlickeR | Frites Esports Club
+- Ferrari | Myth Esports
+- Guertas | Senshi eSports
+- Hatred | ZennIT
+- Henry Snow | Dynasty
+- HandiDog | Dynasty
+- Franky | Myth Esports
+- Ilyxøu | Senshi eSports
+- Jamie | ZennIT
+- jjs156 | Once Upon A Team
+- Joekie | mCon esports
+- John P | mCon esports
+- Kruimel | mCon esports
+- Luncafoer | The Bandits
+- Praxmax | Once Upon A Team
+- NuQ | Frites Esports Club
+- Nightmares | mCon esports
+- Seal | Frites Esports Club
+- Ranorr | Dynasty
+- Smart | ZennIT
+- Someone | Once Upon A Team
+- Slyv3r | Senshi eSports
+- Sprotte | Myth Esports
+- Unchained | Dynasty
+- Zhergoth | mCon esports
+- Sïgma | ZennIT
+- Wolorz | Frites Esports Club
+- Zuhy | Senshi eSports
+
+## TCL [39]
+
+- AzizYıldırım | BoostGate Esports
+- Mean | BoostGate Esports
+- Yikesuo | BoostGate Esports
+- Cha0s | BoostGate Esports
+- Varin | BoostGate Esports
+- Kenal | Bushido Wildcats
+- alix | Bushido Wildcats
+- Elramir | Bushido Wildcats
+- Lekcyc | Bushido Wildcats
+- StarScreen | Bushido Wildcats
+- Kireas | Dark Passage
+- Atat | Dark Passage
+- KSAEZ | Dark Passage
+- Neramin | Dark Passage
+- Sukru | Dark Passage
+- Hype | Misa Esports
+- SlowQ | Misa Esports
+- Way | Misa Esports
+- 113 | Misa Esports
+- Ragner | Misa Esports
+- Ersin | PCIFIC Esports
+- Kurama | PCIFIC Esports
+- Joexy | PCIFIC Esports
+- Kakarot | PCIFIC Esports
+- FireAscept | PCIFIC Esports
+- DnDn | S2G Esports
+- Scorth | S2G Esports
+- Kofte | S2G Esports
+- Mersa | S2G Esports
+- Bonnie | S2G Esports
+- Carry | SU Esports
+- Grave | SU Esports
+- XnS | SU Esports
+- Fade | SU Esports
+- Dionelux | SU Esports
+- Turtle | Team Phoenix
+- Fluffy | Team Phoenix
+- ardaffler | Team Phoenix
+- Daskhai | Team Phoenix
+
+
+## Joueurs r�cemment import�s sans photo
+- GAENG | DetonatioN FocusMe | LCP
+
