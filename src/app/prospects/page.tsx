@@ -333,10 +333,12 @@ export default async function ProspectsPage(props: {
         </p>
         <p className="text-text-muted text-xs mt-1 max-w-md mx-auto">
           Top prospects from regional leagues who haven't played in a major
-          league yet, ranked by our scouting algorithm. Youth is a major force
-          multiplier — the younger and more performant a player is, the higher
-          their potential coefficient. Combined with SoloQ peak, pro results,
-          competitive level, and scout eye test.
+          league yet, ranked by our scouting algorithm. Each prospect is scored
+          out of <strong>100 points</strong> combining SoloQ peak, pro results,
+          age potential, league level, overall performance, and scout evaluation.{" "}
+          <Link href="/scoring" className="text-primary-accent hover:underline">
+            Learn more →
+          </Link>
         </p>
       </div>
 
@@ -380,18 +382,6 @@ export default async function ProspectsPage(props: {
           ))}
         </div>
       )}
-
-      {/* Scoring explanation */}
-      <div className="max-w-2xl mx-auto mb-10">
-        <div className="rounded-lg border border-border bg-card p-4">
-          <p className="text-xs text-text-body">
-            Each prospect is scored out of <strong>100 points</strong> combining SoloQ peak, pro results, age potential, league level, overall performance, and scout evaluation.{" "}
-            <Link href="/scoring" className="text-primary-accent hover:underline">
-              Learn more →
-            </Link>
-          </p>
-        </div>
-      </div>
 
       {/* List */}
       <div className="rounded-lg border border-border overflow-hidden">
