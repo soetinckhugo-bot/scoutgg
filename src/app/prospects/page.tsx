@@ -49,6 +49,7 @@ const REGIONS = [
 const getProspects = cache(async (searchParams: {
     role?: string;
     region?: string;
+    sort?: string;
   }) => {
     const where: any = {
       isProspect: true,
@@ -59,6 +60,15 @@ const getProspects = cache(async (searchParams: {
     if (searchParams.role) where.role = searchParams.role;
     if (searchParams.region) where.nationality = searchParams.region;
 
+    let orderBy: any = { prospectScore: "desc" };
+    if (searchParams.sort === "age") {
+      orderBy = { age: "asc" };
+    } else if (searchParams.sort === "nationality") {
+      orderBy = { nationality: "asc" };
+    } else if (searchParams.sort === "role") {
+      orderBy = { role: "asc" };
+    }
+
     const players = await db.player.findMany({
       where,
       include: {
@@ -66,13 +76,13 @@ const getProspects = cache(async (searchParams: {
         proStats: true,
         prospectMetrics: true,
       },
-      orderBy: { prospectScore: "desc" },
+      orderBy,
       take: PROSPECT_LIMIT,
     });
 
     const ranked = players.map((p, i) => ({
       ...p,
-      displayRank: p.prospectRank ?? i + 1,
+      displayRank: i + 1,
     }));
 
     return ranked;
@@ -264,6 +274,13 @@ function ProspectRow({
           )}
         </div>
 
+        {/* Age */}
+        <div className="w-10 text-center shrink-0">
+          <span className="text-xs text-text-body tabular-nums">
+            {player.age ?? "—"}
+          </span>
+        </div>
+
         {/* Name */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
@@ -284,7 +301,7 @@ function ProspectRow({
         </div>
 
         {/* Score */}
-        <div className="text-right shrink-0">
+        <div className="text-right shrink-0 w-14">
           {player.prospectScore != null ? (
             <>
               <span className="text-sm font-bold text-primary-accent tabular-nums">
@@ -305,6 +322,7 @@ export default async function ProspectsPage(props: {
   searchParams: Promise<{
     role?: string;
     region?: string;
+    sort?: string;
   }>;
 }) {
   const searchParams = await props.searchParams;
@@ -343,14 +361,14 @@ export default async function ProspectsPage(props: {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap justify-center gap-2 mb-8">
+      <div className="flex flex-wrap justify-center gap-2 mb-4">
         <Link href="/prospects">
           <Badge
             variant={
-              !searchParams.role && !searchParams.region ? "default" : "outline"
+              !searchParams.role && !searchParams.region && !searchParams.sort ? "default" : "outline"
             }
             className={`cursor-pointer text-xs ${
-              !searchParams.role && !searchParams.region
+              !searchParams.role && !searchParams.region && !searchParams.sort
                 ? "bg-primary-accent text-text-heading border-0"
                 : "border-border text-text-body hover:bg-surface-hover"
             }`}
@@ -374,8 +392,39 @@ export default async function ProspectsPage(props: {
         ))}
       </div>
 
+      {/* Sort */}
+      <div className="flex flex-wrap justify-center gap-2 mb-8">
+        <span className="text-xs text-text-muted self-center mr-1">Sort:</span>
+        {[
+          { key: "", label: "Score" },
+          { key: "age", label: "Age" },
+          { key: "nationality", label: "Nationality" },
+          { key: "role", label: "Role" },
+        ].map((s) => (
+          <Link
+            key={s.key || "score"}
+            href={`/prospects?${new URLSearchParams({
+              ...(searchParams.role ? { role: searchParams.role } : {}),
+              ...(searchParams.region ? { region: searchParams.region } : {}),
+              ...(s.key ? { sort: s.key } : {}),
+            }).toString()}`}
+          >
+            <Badge
+              variant={searchParams.sort === s.key || (!searchParams.sort && !s.key) ? "default" : "outline"}
+              className={`cursor-pointer text-xs ${
+                searchParams.sort === s.key || (!searchParams.sort && !s.key)
+                  ? "bg-surface-hover text-text-heading border-border"
+                  : "border-border text-text-body hover:bg-surface-hover"
+              }`}
+            >
+              {s.label}
+            </Badge>
+          </Link>
+        ))}
+      </div>
+
       {/* Podium */}
-      {top3.length > 0 && !searchParams.role && !searchParams.region && (
+      {top3.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto mb-10">
           {top3.map((player, i) => (
             <PodiumCard key={player.id} player={player} rank={i + 1} />
@@ -391,6 +440,7 @@ export default async function ProspectsPage(props: {
           <div className="w-12"></div>
           <div className="w-6"></div>
           <div className="w-9"></div>
+          <div className="w-10 text-center">Age</div>
           <div className="flex-1">Player</div>
           <div className="text-right shrink-0 w-14">Score</div>
         </div>
