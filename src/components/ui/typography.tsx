@@ -16,12 +16,15 @@ export function SectionTitle({ children, className }: { children: React.ReactNod
   return <h2 className={cn("text-2xl font-bold font-heading", className)}>{children}</h2>;
 }
 
-// Section header (label) — uppercase, muted, for subsections
+// Section header (label) — uppercase, with red accent underline
 export function SectionHeader({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <span className={cn("text-xs font-semibold uppercase tracking-wider text-text-muted", className)}>
-      {children}
-    </span>
+    <div className="flex flex-col items-start">
+      <span className={cn("text-xs font-semibold uppercase tracking-wider text-text-muted", className)}>
+        {children}
+      </span>
+      <div className="h-0.5 w-6 bg-primary-accent mt-1 rounded-full" />
+    </div>
   );
 }
 
