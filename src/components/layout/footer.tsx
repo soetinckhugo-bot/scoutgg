@@ -5,6 +5,7 @@ const footerLinks = {
     { href: "/about", label: "About" },
     { href: "/contact", label: "Contact" },
     { href: "/pricing", label: "Pricing" },
+    { href: "/scoring", label: "Scoring" },
     { href: "/feedback", label: "Feedback" },
   ],
   Legal: [
