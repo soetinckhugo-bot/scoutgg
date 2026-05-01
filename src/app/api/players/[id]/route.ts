@@ -84,6 +84,7 @@ export async function PUT(
         ...(body.behaviorTags !== undefined && { behaviorTags: body.behaviorTags }),
         ...(body.signatureChampion !== undefined && { signatureChampion: body.signatureChampion }),
         ...(body.isFeatured !== undefined && { isFeatured: body.isFeatured }),
+        ...(body.isProspect !== undefined && { isProspect: body.isProspect }),
       },
     });
 

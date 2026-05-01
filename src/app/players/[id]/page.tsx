@@ -201,7 +201,7 @@ export default async function PlayerPage(props: {
             {/* League · Role · Team · Status */}
             <div className="flex flex-wrap items-center justify-center gap-2 mt-3 text-sm">
               {player.nationality && <Flag code={player.nationality} className="inline-block" />}
-              {player.currentTeam && (
+              {player.currentTeam && player.status !== "FREE_AGENT" && (
                 <span className="font-semibold text-text-heading">{player.currentTeam}</span>
               )}
               <Badge className={`${ROLE_COLORS[player.role] || "bg-surface-hover"} font-semibold`}>

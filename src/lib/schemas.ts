@@ -55,6 +55,7 @@ export const PlayerUpdateSchema = z.object({
   behaviorTags: z.string().optional().nullable(),
   signatureChampion: z.string().max(100).optional().nullable(),
   isFeatured: z.boolean().optional(),
+  isProspect: z.boolean().optional(),
   contractEndDate: z.string().optional().nullable(),
 }).strip();
 

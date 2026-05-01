@@ -12,6 +12,34 @@
 // • Eye Test (scout)         10%  — Appréciation personnelle du scout (0-5)
 // ============================================================================
 
+// --- Best Pro Result options (for admin UI) ---
+export const BEST_PRO_RESULT_OPTIONS = [
+  { value: "Champion", label: "Champion / Winner", t3Points: 25, t4Points: 12.5 },
+  { value: "Final", label: "Final", t3Points: 20, t4Points: 10 },
+  { value: "Semi", label: "Semi / 3-4", t3Points: 16.25, t4Points: 6.25 },
+  { value: "Quarter", label: "Quarter / 5-8", t3Points: 12.5, t4Points: 2.5 },
+  { value: "", label: "No result", t3Points: 2.5, t4Points: 2.5 },
+];
+
+export function getBestProResultPoints(value: string, league: string): number {
+  const opt = BEST_PRO_RESULT_OPTIONS.find((o) => o.value === value);
+  if (!opt) return 2.5;
+  const tier3 = ["LFL", "LES", "TCL", "PRM", "NACL", "LDL", "LCK CL"];
+  const isT3 = tier3.includes(league);
+  return isT3 ? opt.t3Points : opt.t4Points;
+}
+
+// --- Peak LP options (for admin UI) ---
+export const PEAK_LP_OPTIONS = [
+  { value: 1500, label: "Top 100 EUW — 1500+ LP", points: 25 },
+  { value: 1350, label: "1200-1500 LP — 20-25 pts", points: 22.5 },
+  { value: 1050, label: "900-1199 LP — 15-20 pts", points: 17.5 },
+  { value: 750, label: "600-899 LP — 10-15 pts", points: 12.5 },
+  { value: 450, label: "300-599 LP — 5-10 pts", points: 7.5 },
+  { value: 150, label: "0-299 LP — 0-5 pts", points: 2.5 },
+  { value: 0, label: "Unknown", points: 0 },
+];
+
 // --- 25% Peak LP ELO (2 years) ---
 function scorePeakLp(peakLp: number): number {
   // 0 LP → 0 pts | 1500 LP → 25 pts (linear)

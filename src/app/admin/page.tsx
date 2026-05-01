@@ -95,6 +95,7 @@ interface Player {
   bestProResult: string | null;
   eyeTestRating: number | null;
   isFeatured: boolean;
+  isProspect: boolean;
   soloqStats?: {
     currentRank: string;
     peakLp: number;
@@ -224,6 +225,7 @@ export default function AdminPage() {
       bestProResult: "",
       eyeTestRating: null,
       isFeatured: false,
+      isProspect: false,
     });
     setIsAddDialogOpen(true);
   }, []);
@@ -254,6 +256,7 @@ export default function AdminPage() {
         peakElo2Years: formData.peakElo2Years ?? null,
         bestProResult: formData.bestProResult || null,
         eyeTestRating: formData.eyeTestRating ?? null,
+        isProspect: formData.isProspect ?? false,
       };
       const res = await fetch(url, {
         method,
@@ -713,6 +716,8 @@ export default function AdminPage() {
                                       setFormData={setFormData}
                                       onSave={savePlayer}
                                       onCancel={() => setEditingPlayer(null)}
+                                      playerId={player.id}
+                                      onSyncSoloq={syncSoloq}
                                     />
                                   </TabsContent>
                                   <TabsContent value="prostats">
@@ -980,11 +985,15 @@ function PlayerForm({
   setFormData,
   onSave,
   onCancel,
+  playerId,
+  onSyncSoloq,
 }: {
   formData: Partial<Player>;
   setFormData: (data: Partial<Player>) => void;
   onSave: () => void;
   onCancel: () => void;
+  playerId?: string;
+  onSyncSoloq?: (id: string) => void;
 }) {
   return (
     <div className="space-y-4 py-4">
@@ -1103,7 +1112,22 @@ function PlayerForm({
       </div>
 
       <div className="space-y-2">
-        <Label>Riot Account</Label>
+        <div className="flex items-center justify-between">
+          <Label>Riot Account</Label>
+          {playerId && onSyncSoloq && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="gap-1 text-xs h-7"
+              disabled={!formData.riotId}
+              onClick={() => onSyncSoloq(playerId)}
+            >
+              <Zap className="h-3 w-3" />
+              Sync SoloQ
+            </Button>
+          )}
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
             value={formData.riotId || ""}
@@ -1161,28 +1185,102 @@ function PlayerForm({
         </div>
       </div>
 
+      {/* Prospect Toggle */}
+      <div className="flex items-center gap-2 pb-2 border-b border-border">
+        <Checkbox
+          id="isProspect"
+          checked={formData.isProspect || false}
+          onCheckedChange={(checked) => setFormData({ ...formData, isProspect: checked === true })}
+        />
+        <Label htmlFor="isProspect" className="cursor-pointer font-medium text-text-heading">
+          Prospect
+        </Label>
+        <span className="text-xs text-text-muted">
+          Mark as prospect to include in prospects page
+        </span>
+      </div>
+
       {/* Prospect Scoring Fields */}
       <div className="space-y-2">
         <Label>Prospect Scoring</Label>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="peakElo2Years" className="text-xs text-text-muted">Peak ELO (last 2 years)</Label>
-            <Input
-              id="peakElo2Years"
-              type="number"
-              value={formData.peakElo2Years || ""}
-              onChange={(e) => setFormData({ ...formData, peakElo2Years: e.target.value ? parseInt(e.target.value) : null })}
-              placeholder="e.g. 1200"
-            />
+            <div className="flex items-center justify-between">
+              <Label htmlFor="peakElo2Years" className="text-xs text-text-muted">Peak ELO (last 2 years)</Label>
+              <span className="text-xs text-text-muted">
+                {formData.peakElo2Years ? `→ ${Math.min((formData.peakElo2Years / 1500) * 25, 25).toFixed(1)} / 25 pts` : ""}
+              </span>
+            </div>
+            <div className="flex items-center gap-2 mb-2">
+              <Checkbox
+                id="peakEloTop100"
+                checked={formData.peakElo2Years === 1500}
+                onCheckedChange={(checked) => {
+                  if (checked) {
+                    setFormData({ ...formData, peakElo2Years: 1500 });
+                  } else {
+                    setFormData({ ...formData, peakElo2Years: null });
+                  }
+                }}
+              />
+              <Label htmlFor="peakEloTop100" className="text-xs text-text-muted cursor-pointer">
+                Top 100 EUW (max 25 pts)
+              </Label>
+            </div>
+            {formData.peakElo2Years !== 1500 && (
+              <Select
+                value={formData.peakElo2Years?.toString() || ""}
+                onValueChange={(v) => setFormData({ ...formData, peakElo2Years: v ? parseInt(v) : null })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select LP range..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Unknown</SelectItem>
+                  <SelectItem value="1350">1200-1500 LP — 20-25 pts</SelectItem>
+                  <SelectItem value="1050">900-1199 LP — 15-20 pts</SelectItem>
+                  <SelectItem value="750">600-899 LP — 10-15 pts</SelectItem>
+                  <SelectItem value="450">300-599 LP — 5-10 pts</SelectItem>
+                  <SelectItem value="150">0-299 LP — 0-5 pts</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="bestProResult" className="text-xs text-text-muted">Best Pro Result</Label>
-            <Input
-              id="bestProResult"
+            <div className="flex items-center justify-between">
+              <Label htmlFor="bestProResult" className="text-xs text-text-muted">Best Pro Result</Label>
+              {(() => {
+                const tier3 = ["LFL", "LES", "TCL", "PRM", "NACL", "LDL", "LCK CL"];
+                const isT3 = tier3.includes(formData.league || "");
+                const opt = [
+                  { value: "Champion", label: "Champion / Winner", t3: 25, t4: 12.5 },
+                  { value: "Final", label: "Final", t3: 20, t4: 10 },
+                  { value: "Semi", label: "Semi / 3-4", t3: 16.25, t4: 6.25 },
+                  { value: "Quarter", label: "Quarter / 5-8", t3: 12.5, t4: 2.5 },
+                ].find((o) => o.value === formData.bestProResult);
+                if (!opt) return null;
+                return (
+                  <span className="text-xs text-primary-accent font-medium">
+                    → {isT3 ? opt.t3 : opt.t4} pts
+                  </span>
+                );
+              })()}
+            </div>
+            <Select
               value={formData.bestProResult || ""}
-              onChange={(e) => setFormData({ ...formData, bestProResult: e.target.value })}
-              placeholder="e.g. Winner, Final, Semi..."
-            />
+              onValueChange={(v) => setFormData({ ...formData, bestProResult: v || null })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select result..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">No result — 2.5 pts</SelectItem>
+                <SelectItem value="Champion">Champion / Winner — 25 pts (T3) / 12.5 pts (T4)</SelectItem>
+                <SelectItem value="Final">Final — 20 pts (T3) / 10 pts (T4)</SelectItem>
+                <SelectItem value="Semi">Semi / 3-4 — 16.25 pts (T3) / 6.25 pts (T4)</SelectItem>
+                <SelectItem value="Quarter">Quarter / 5-8 — 12.5 pts (T3) / 2.5 pts (T4)</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div className="space-y-2">
             <Label htmlFor="eyeTestRating" className="text-xs text-text-muted">Eye Test (0-5)</Label>
