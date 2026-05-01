@@ -53,18 +53,18 @@ interface PlayerCardProps {
 }
 
 function getScoreColor(value: number) {
-  if (value >= 90) return "text-blue-400";
-  if (value >= 75) return "text-green-400";
-  if (value >= 60) return "text-yellow-400";
-  if (value >= 50) return "text-orange-400";
-  return "text-red-400";
+  if (value >= 90) return "text-tier-s";
+  if (value >= 75) return "text-tier-a";
+  if (value >= 60) return "text-tier-b";
+  if (value >= 50) return "text-tier-c";
+  return "text-tier-d";
 }
 
 function getWinrateColor(winRate: number): string {
   const pct = winRate * 100;
-  if (pct >= 60) return "text-emerald-400";
-  if (pct >= 40) return "text-yellow-400";
-  return "text-red-400";
+  if (pct >= 60) return "text-tier-a";
+  if (pct >= 40) return "text-tier-b";
+  return "text-tier-d";
 }
 
 function getTierLabel(player: Player): string | null {
