@@ -580,7 +580,7 @@ export default function DashboardPage() {
                 { href: "/leaderboards", icon: TrendingUp, label: "Leaderboards" },
                 { href: "/compare", icon: Zap, label: "Compare Players" },
                 { href: "/watchlist", icon: Heart, label: "My Watchlist" },
-                { href: "/tierlists", icon: Star, label: "Tier Lists" },
+                { href: "/pipeline", icon: ClipboardList, label: "Scouting Pipeline" },
               ].map((link) => (
                 <Link
                   key={link.href}

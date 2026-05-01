@@ -561,7 +561,6 @@ export default async function PlayerPage(props: {
           </div>
         </div>
       </div>
-      </div>
     </>
   );
 }
