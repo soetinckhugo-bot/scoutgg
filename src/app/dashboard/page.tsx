@@ -276,10 +276,10 @@ export default function DashboardPage() {
           <div className="rounded-lg border border-border overflow-hidden">
             <div className="px-4 py-3 border-b border-border bg-surface-hover">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold flex items-center gap-2 text-text-heading">
+                <h2 className="text-lg font-semibold flex items-center gap-2 text-text-heading">
                   <ScoutIcon icon={Heart} size="lg" variant="accent" glow />
                   My Watchlist
-                </h3>
+                </h2>
                 <Link href="/watchlist">
                   <Button variant="ghost" size="default" className="text-xs">
                     View All
@@ -317,7 +317,7 @@ export default function DashboardPage() {
           <div className="rounded-lg border border-border overflow-hidden">
             <div className="px-4 py-3 border-b border-border bg-surface-hover">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold flex items-center gap-2 text-text-heading">
+                <h2 className="text-lg font-semibold flex items-center gap-2 text-text-heading">
                   <ScoutIcon icon={Bell} size="lg" variant="info" glow />
                   Recent Activity
                   {unreadCount > 0 && (
@@ -325,7 +325,7 @@ export default function DashboardPage() {
                       {unreadCount} new
                     </Badge>
                   )}
-                </h3>
+                </h2>
               </div>
             </div>
             <div className="p-0">
@@ -372,10 +372,10 @@ export default function DashboardPage() {
           <div className="rounded-lg border border-border overflow-hidden">
             <div className="px-4 py-3 border-b border-border bg-surface-hover">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold flex items-center gap-2 text-text-heading">
+                <h2 className="text-lg font-semibold flex items-center gap-2 text-text-heading">
                   <ScoutIcon icon={Crown} size="lg" variant="gold" glow />
                   Top Prospects
-                </h3>
+                </h2>
                 <Link href="/prospects">
                   <Button variant="ghost" size="default" className="text-xs">
                     View All
@@ -507,10 +507,10 @@ export default function DashboardPage() {
           <div className="rounded-lg border border-border overflow-hidden">
             <div className="px-4 py-3 border-b border-border bg-surface-hover">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold flex items-center gap-2 text-text-heading">
+                <h2 className="text-lg font-semibold flex items-center gap-2 text-text-heading">
                   <ScoutIcon icon={FileText} size="lg" variant="purple" glow />
                   Latest Reports
-                </h3>
+                </h2>
                 <Link href="/reports">
                   <Button variant="ghost" size="default" className="text-xs">
                     All

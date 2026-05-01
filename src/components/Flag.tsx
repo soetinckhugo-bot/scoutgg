@@ -211,7 +211,7 @@ export default function Flag({ code, className = "" }: FlagProps) {
     return (
       <span className={`inline-flex items-center gap-0.5 ${className}`}>
         {code.map((c, i) => (
-          <SingleFlag key={i} code={c} />
+          <SingleFlag key={`flag-${c}-${i}`} code={c} />
         ))}
       </span>
     );

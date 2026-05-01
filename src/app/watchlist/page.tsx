@@ -109,7 +109,7 @@ function formatNotes(text: string): React.ReactElement {
         });
 
         return (
-          <p key={i} className="mb-1 last:mb-0">
+          <p key={`line-${i}`} className="mb-1 last:mb-0">
             {italicized.length > 0 ? italicized : line}
           </p>
         );

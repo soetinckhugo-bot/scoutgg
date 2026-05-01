@@ -171,9 +171,9 @@ Adam,Team BDS,TOP,15,45,23,89,5.8,12.5,850,720...`}
                 </thead>
                 <tbody>
                   {preview.map((row, i) => (
-                    <tr key={i} className="border-b border-border">
+                    <tr key={`row-${i}`} className="border-b border-border">
                       {Object.values(row).map((val: any, j) => (
-                        <td key={j} className="p-2 text-text-heading">
+                        <td key={`cell-${i}-${j}`} className="p-2 text-text-heading">
                           {val}
                         </td>
                       ))}

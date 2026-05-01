@@ -64,11 +64,11 @@ function highlightMatch(text: string, query: string): React.ReactNode {
   const parts = text.split(regex);
   return parts.map((part, i) =>
     regex.test(part) ? (
-      <mark key={i} className="bg-primary-accent/30 text-primary-accent rounded px-0.5">
+      <mark key={`mark-${part}-${i}`} className="bg-primary-accent/30 text-primary-accent rounded px-0.5">
         {part}
       </mark>
     ) : (
-      <span key={i}>{part}</span>
+      <span key={`span-${part}-${i}`}>{part}</span>
     )
   );
 }

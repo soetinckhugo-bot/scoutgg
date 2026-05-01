@@ -172,9 +172,9 @@ function PodiumCard({
           {/* Flag + Name */}
           <div className="flex items-center gap-2 mb-1">
             <Flag code={player.nationality?.toLowerCase()} />
-            <h3 className="font-bold text-text-heading text-base">
+            <h2 className="font-bold text-text-heading text-base">
               {player.pseudo}
-            </h3>
+            </h2>
           </div>
 
           <p className="text-xs text-text-body mb-1">
@@ -303,7 +303,7 @@ function ProspectRow({
 
         {/* Score */}
         <div className="text-right shrink-0 w-14">
-          {player.prospectScore != null ? (
+          {player.prospectScore !== null && player.prospectScore !== undefined ? (
             <>
               <span className="text-sm font-bold text-primary-accent tabular-nums">
                 {Math.round(player.prospectScore)}

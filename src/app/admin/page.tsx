@@ -242,7 +242,7 @@ export default function AdminPage() {
 
       const payload = {
         ...formData,
-        age: formData.age ? parseInt(formData.age as any, 10) : null,
+        age: formData.age ? parseInt(String(formData.age), 10) : null,
         tier: formData.tier || null,
         // Convert empty strings to null for URL fields to pass Zod validation
         opggUrl: formData.opggUrl || null,

@@ -235,7 +235,7 @@ export default function MatchHistory({ playerId }: { playerId: string }) {
               {/* Summoner Spells */}
               <div className="flex items-center gap-0.5">
                 {[match.summoner1Id, match.summoner2Id].map((spellId, i) => (
-                  <div key={i} className="relative w-5 h-5 rounded overflow-hidden flex-shrink-0">
+                  <div key={`spell-${spellId}-${i}`} className="relative w-5 h-5 rounded overflow-hidden flex-shrink-0">
                     <Image
                       src={getSummonerSpellIconUrlById(spellId)}
                       alt={`spell-${i}`}
@@ -283,7 +283,7 @@ export default function MatchHistory({ playerId }: { playerId: string }) {
               <div className="flex items-center gap-px">
                 {match.items.map((itemId, i) => (
                   <div
-                    key={i}
+                    key={`item-${itemId}-${i}`}
                     className="relative w-6 h-6 rounded overflow-hidden bg-background ring-1 ring-border"
                   >
                     {itemId && itemId > 0 ? (
