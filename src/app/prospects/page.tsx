@@ -389,25 +389,27 @@ export default async function ProspectsPage(props: {
             <h3 className="text-sm font-semibold text-text-heading">How prospect scoring works</h3>
           </div>
           <p className="text-xs text-text-body mb-3">
-            Each prospect is scored out of <strong>100 points</strong> based on 6 weighted criteria.
+            Each prospect is scored out of <strong>100 points</strong> based on multiple criteria combining SoloQ peak, pro results, age potential, league level, overall performance, and scout evaluation.
             The higher the score, the stronger the prospect profile.
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
             {[
-              { label: "Peak SoloQ LP", pct: "25%", desc: "Highest LP reached in 2 years" },
-              { label: "Best Pro Result", pct: "25%", desc: "Tournament placement in their league" },
-              { label: "Age", pct: "20%", desc: "Younger = higher potential (16 = max)" },
-              { label: "League Tier", pct: "10%", desc: "T1/T2/T3/T4 competitive level" },
-
-              { label: "Global Score", pct: "10%", desc: "Overall performance rating" },
-              { label: "Eye Test", pct: "10%", desc: "Scout rating (0–5 scale)" },
+              { label: "Peak SoloQ LP", desc: "Highest LP reached in 2 years" },
+              { label: "Best Pro Result", desc: "Tournament placement in their league" },
+              { label: "Age", desc: "Younger = higher potential (16 = max)" },
+              { label: "League Tier", desc: "T1/T2/T3/T4 competitive level" },
+              { label: "Global Score", desc: "Overall performance rating" },
+              { label: "Eye Test", desc: "Scout rating (0–5 scale)" },
             ].map((item) => (
               <div key={item.label} className="bg-surface-hover rounded px-2 py-1.5">
-                <div className="font-medium text-text-heading">{item.label} <span className="text-primary-accent">{item.pct}</span></div>
+                <div className="font-medium text-text-heading">{item.label}</div>
                 <div className="text-text-muted text-[10px]">{item.desc}</div>
               </div>
             ))}
           </div>
+          <Link href="/scoring" className="text-xs text-primary-accent hover:underline mt-3 inline-block">
+            Learn more about our scoring methodology →
+          </Link>
         </div>
       </div>
 
