@@ -384,32 +384,12 @@ export default async function ProspectsPage(props: {
       {/* Scoring explanation */}
       <div className="max-w-2xl mx-auto mb-10">
         <div className="rounded-lg border border-border bg-card p-4">
-          <div className="flex items-center gap-2 mb-3">
-            <Info className="h-4 w-4 text-primary-accent" />
-            <h3 className="text-sm font-semibold text-text-heading">How prospect scoring works</h3>
-          </div>
-          <p className="text-xs text-text-body mb-3">
-            Each prospect is scored out of <strong>100 points</strong> based on multiple criteria combining SoloQ peak, pro results, age potential, league level, overall performance, and scout evaluation.
-            The higher the score, the stronger the prospect profile.
+          <p className="text-xs text-text-body">
+            Each prospect is scored out of <strong>100 points</strong> combining SoloQ peak, pro results, age potential, league level, overall performance, and scout evaluation.{" "}
+            <Link href="/scoring" className="text-primary-accent hover:underline">
+              Learn more →
+            </Link>
           </p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
-            {[
-              { label: "Peak SoloQ LP", desc: "Highest LP reached in 2 years" },
-              { label: "Best Pro Result", desc: "Tournament placement in their league" },
-              { label: "Age", desc: "Younger = higher potential (16 = max)" },
-              { label: "League Tier", desc: "T1/T2/T3/T4 competitive level" },
-              { label: "Global Score", desc: "Overall performance rating" },
-              { label: "Eye Test", desc: "Scout rating (0–5 scale)" },
-            ].map((item) => (
-              <div key={item.label} className="bg-surface-hover rounded px-2 py-1.5">
-                <div className="font-medium text-text-heading">{item.label}</div>
-                <div className="text-text-muted text-[10px]">{item.desc}</div>
-              </div>
-            ))}
-          </div>
-          <Link href="/scoring" className="text-xs text-primary-accent hover:underline mt-3 inline-block">
-            Learn more about our scoring methodology →
-          </Link>
         </div>
       </div>
 
