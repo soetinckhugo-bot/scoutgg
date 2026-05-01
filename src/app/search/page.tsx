@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import type { Metadata } from "next";
 import PlayerCard from "@/components/PlayerCard";
 import { ROLES, LEAGUES, STATUSES } from "@/lib/constants";
+import { unstable_cache } from "next/cache";
 
 export const metadata: Metadata = {
   title: "Search",
@@ -16,50 +17,81 @@ export const metadata: Metadata = {
   },
 };
 
-async function searchPlayers(params: {
-  q?: string;
-  role?: string;
-  league?: string;
-  status?: string;
-  minLp?: string;
-  maxAge?: string;
-}) {
-  const where: any = {};
+const searchPlayers = unstable_cache(
+  async (params: {
+    q?: string;
+    role?: string;
+    league?: string;
+    status?: string;
+    minLp?: string;
+    maxAge?: string;
+  }) => {
+    const where: any = {};
 
-  // Full-text search on pseudo, realName, team, bio
-  if (params.q) {
-    const q = params.q;
-    where.OR = [
-      { pseudo: { contains: q } },
-      { realName: { contains: q } },
-      { currentTeam: { contains: q } },
-      { bio: { contains: q } },
-    ];
-  }
+    // Full-text search on pseudo, realName, team, bio
+    if (params.q) {
+      const q = params.q;
+      where.OR = [
+        { pseudo: { contains: q } },
+        { realName: { contains: q } },
+        { currentTeam: { contains: q } },
+        { bio: { contains: q } },
+      ];
+    }
 
-  // Filters
-  if (params.role) where.role = params.role;
-  if (params.league) where.league = params.league;
-  if (params.status) where.status = params.status;
-  if (params.maxAge) where.age = { lte: parseInt(params.maxAge) };
+    // Filters
+    if (params.role) where.role = params.role;
+    if (params.league) where.league = params.league;
+    if (params.status) where.status = params.status;
+    if (params.maxAge) where.age = { lte: parseInt(params.maxAge) };
 
-  // SoloQ LP filter
-  if (params.minLp) {
-    where.soloqStats = {
-      peakLp: { gte: parseInt(params.minLp) },
-    };
-  }
+    // SoloQ LP filter
+    if (params.minLp) {
+      where.soloqStats = {
+        peakLp: { gte: parseInt(params.minLp) },
+      };
+    }
 
-  return db.player.findMany({
-    where,
-    include: {
-      soloqStats: true,
-      proStats: true,
-    },
-    orderBy: { pseudo: "asc" },
-    take: 30,
-  });
-}
+    return db.player.findMany({
+      where,
+      select: {
+        id: true,
+        pseudo: true,
+        realName: true,
+        role: true,
+        league: true,
+        status: true,
+        currentTeam: true,
+        photoUrl: true,
+        age: true,
+        nationality: true,
+        tier: true,
+        soloqStats: {
+          select: {
+            currentRank: true,
+            peakLp: true,
+            winrate: true,
+            totalGames: true,
+          },
+        },
+        proStats: {
+          select: {
+            kda: true,
+            dpm: true,
+            gamesPlayed: true,
+            globalScore: true,
+            tierScore: true,
+            winRate: true,
+          },
+        },
+      },
+      orderBy: { pseudo: "asc" },
+      take: 30,
+    });
+  },
+  ["player-search"],
+  { revalidate: 60, tags: ["player-search"] }
+);
 
 function buildQueryString(
   base: Record<string, string | undefined>,

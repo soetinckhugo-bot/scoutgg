@@ -184,21 +184,18 @@ export default function DashboardPage() {
   async function loadDashboard() {
     setLoading(true);
     try {
-      const [favRes, notifRes, prospectRes, reportRes, potwRes, boardRes] = await Promise.all([
-        fetch("/api/favorites").then((r) => (r.ok ? r.json() : [])),
-        fetch("/api/notifications").then((r) => (r.ok ? r.json() : { notifications: [] })),
-        fetch("/api/prospects?limit=5").then((r) => (r.ok ? r.json() : { prospects: [] })),
-        fetch("/api/reports?limit=5").then((r) => (r.ok ? r.json() : { reports: [] })),
-        fetch("/api/soloq-potw").then((r) => (r.ok ? r.json() : null)),
-        fetch("/api/scouting").then((r) => (r.ok ? r.json() : { cards: [] })),
-      ]);
+      const res = await fetch("/api/dashboard");
+      if (!res.ok) {
+        throw new Error(`Dashboard API error: ${res.status}`);
+      }
+      const data = await res.json();
 
-      setFavorites(favRes || []);
-      setNotifications(notifRes.notifications || []);
-      setProspects(prospectRes.prospects || []);
-      setReports(reportRes.reports || []);
-      setPotw(potwRes?.potw || null);
-      setBoardCount(boardRes?.cards?.length || 0);
+      setFavorites(data.favorites || []);
+      setNotifications(data.notifications || []);
+      setProspects(data.prospects || []);
+      setReports(data.reports || []);
+      setPotw(data.potw || null);
+      setBoardCount(data.boardCount || 0);
     } catch (err) {
       console.error("Dashboard load error:", err);
       toast.error("Failed to load dashboard");

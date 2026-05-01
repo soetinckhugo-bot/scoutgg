@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Search, ChevronLeft, ChevronRight, Download, Filter, ChevronDown, X } from "lucide-react";
 import { EmptyState } from "@/components/ui/empty-state";
-import { cache } from "react";
+import { unstable_cache } from "next/cache";
 import type { Metadata } from "next";
 import PlayerGrid from "./PlayerGrid";
 import { PageTitle, DataLabel } from "@/components/ui/typography";
@@ -34,18 +34,19 @@ export const metadata: Metadata = {
 
 const PLAYERS_PER_PAGE = 9;
 
-const getPlayers = cache(async (
-  searchParams: {
-    q?: string;
-    role?: string;
-    league?: string;
-    status?: string;
-    tier?: string;
-    contract?: string;
-    sort?: string;
-    page?: string;
-  }
-) => {
+const getPlayers = unstable_cache(
+  async (
+    searchParams: {
+      q?: string;
+      role?: string;
+      league?: string;
+      status?: string;
+      tier?: string;
+      contract?: string;
+      sort?: string;
+      page?: string;
+    }
+  ) => {
     const where: any = {};
 
     if (searchParams.q) {
@@ -138,7 +139,9 @@ const getPlayers = cache(async (
     ]);
 
     return { players, totalCount, page, totalPages: Math.ceil(totalCount / PLAYERS_PER_PAGE) };
-  }
+  },
+  ["players-list"],
+  { revalidate: 60, tags: ["players-list"] }
 );
 
 function buildQueryString(
