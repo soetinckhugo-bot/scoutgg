@@ -12,11 +12,8 @@ import {
   TrendingDown,
   Minus,
   Sparkles,
-  Trophy,
-  Medal,
-  Award,
+  Info,
 } from "lucide-react";
-import ScoutIcon from "@/components/ScoutIcon";
 import { ROLES } from "@/lib/constants";
 import Flag from "@/components/Flag";
 
@@ -119,12 +116,19 @@ function PodiumCard({
   const isSecond = rank === 2;
   const isThird = rank === 3;
 
-  const rankVariant = isFirst ? "gold" : isSecond ? "default" : "warning" as const;
   const rankBg = isFirst
     ? "bg-yellow-500/10 border-yellow-500/30"
     : isSecond
-    ? "bg-surface-hover/50 border-border"
+    ? "bg-slate-400/10 border-slate-400/30"
     : "bg-amber-500/10 border-amber-500/30";
+  const rankText = isFirst
+    ? "text-yellow-500"
+    : isSecond
+    ? "text-slate-400"
+    : "text-amber-400";
+
+  const score = player.prospectScore;
+  const scoreDisplay = score != null ? `${Math.round(score)}/100` : "—";
 
   return (
     <Link href={`/players/${player.id}`} className="group block">
@@ -132,9 +136,9 @@ function PodiumCard({
         className={`border-2 ${rankBg} transition-all duration-200 group-hover:shadow-md h-full`}
       >
         <CardContent className="p-5 flex flex-col items-center text-center">
-          {/* Rank */}
-          <div className="mb-3">
-            <ScoutIcon icon={isFirst ? Trophy : isSecond ? Medal : Award} size="xl" variant={rankVariant} />
+          {/* Rank number */}
+          <div className={`text-2xl font-bold ${rankText} mb-2`}>
+            #{rank}
           </div>
 
           {/* Photo */}
@@ -162,8 +166,17 @@ function PodiumCard({
             </h3>
           </div>
 
-          <p className="text-xs text-text-body mb-2">
+          <p className="text-xs text-text-body mb-1">
             {player.realName || "—"}
+          </p>
+
+          {/* Age • Team • League */}
+          <p className="text-xs text-text-muted mb-2">
+            {player.age ? `${player.age} yo` : "—"}
+            {" · "}
+            {player.currentTeam || "Free agent"}
+            {" · "}
+            {player.league}
           </p>
 
           {/* Role + Score */}
@@ -175,7 +188,7 @@ function PodiumCard({
               {player.role}
             </Badge>
             <span className="text-xs font-bold text-primary-accent tabular-nums">
-              {player.prospectScore?.toFixed(0)}/100
+              {scoreDisplay}
             </span>
           </div>
 
@@ -272,12 +285,16 @@ function ProspectRow({
 
         {/* Score */}
         <div className="text-right shrink-0">
-          <span className="text-sm font-bold text-primary-accent tabular-nums">
-            {player.prospectScore?.toFixed(0)}
-          </span>
-          <span className="text-xs text-text-muted ml-0.5">
-            /100
-          </span>
+          {player.prospectScore != null ? (
+            <>
+              <span className="text-sm font-bold text-primary-accent tabular-nums">
+                {Math.round(player.prospectScore)}
+              </span>
+              <span className="text-xs text-text-muted ml-0.5">/100</span>
+            </>
+          ) : (
+            <span className="text-xs text-text-muted">—</span>
+          )}
         </div>
       </div>
     </Link>
@@ -302,7 +319,7 @@ export default async function ProspectsPage(props: {
       {/* Header */}
       <div className="text-center mb-8">
         <div className="flex items-center justify-center gap-2 mb-3">
-          <ScoutIcon icon={Star} size="xl" variant="accent" glow />
+          <Star className="h-6 w-6 text-primary-accent" />
           <h1 className="text-3xl font-bold text-text-heading tracking-tight">
             Top 30 Prospects
           </h1>
@@ -364,6 +381,36 @@ export default async function ProspectsPage(props: {
         </div>
       )}
 
+      {/* Scoring explanation */}
+      <div className="max-w-2xl mx-auto mb-10">
+        <div className="rounded-lg border border-border bg-card p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Info className="h-4 w-4 text-primary-accent" />
+            <h3 className="text-sm font-semibold text-text-heading">How prospect scoring works</h3>
+          </div>
+          <p className="text-xs text-text-body mb-3">
+            Each prospect is scored out of <strong>100 points</strong> based on 7 weighted criteria.
+            The higher the score, the stronger the prospect profile.
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+            {[
+              { label: "Peak SoloQ LP", pct: "25%", desc: "Highest LP reached in 2 years" },
+              { label: "Best Pro Result", pct: "25%", desc: "Tournament placement in their league" },
+              { label: "Age", pct: "20%", desc: "Younger = higher potential (14 = max)" },
+              { label: "League Tier", pct: "10%", desc: "T1/T2/T3/T4 competitive level" },
+              { label: "Pro Winrate", pct: "10%", desc: "Season winrate in pro matches" },
+              { label: "Global Score", pct: "10%", desc: "Overall performance rating" },
+              { label: "Eye Test", pct: "10%", desc: "Scout rating (0–5 scale)" },
+            ].map((item) => (
+              <div key={item.label} className="bg-surface-hover rounded px-2 py-1.5">
+                <div className="font-medium text-text-heading">{item.label} <span className="text-primary-accent">{item.pct}</span></div>
+                <div className="text-text-muted text-[10px]">{item.desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* List */}
       <div className="rounded-lg border border-border overflow-hidden">
         {/* Header row */}
@@ -386,7 +433,7 @@ export default async function ProspectsPage(props: {
 
       {players.length === 0 && (
         <div className="text-center py-16">
-          <ScoutIcon icon={Star} size="xl" variant="muted" />
+          <Star className="h-8 w-8 text-text-muted mx-auto mb-3" />
           <p className="text-text-body text-lg">
             No prospects found.
           </p>
