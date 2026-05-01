@@ -31,7 +31,6 @@ export const metadata: Metadata = {
 };
 
 const MAJOR_LEAGUES = ["LEC", "LCS", "LCK", "LPL"];
-const MAX_AGE = 25;
 const PROSPECT_LIMIT = 30;
 
 const REGIONS = [
@@ -57,7 +56,6 @@ const getProspects = cache(async (searchParams: {
     const where: any = {
       isProspect: true,
       hasPlayedInMajorLeague: false,
-      age: { lte: MAX_AGE },
       NOT: { league: { in: MAJOR_LEAGUES } },
     };
 

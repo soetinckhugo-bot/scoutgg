@@ -3,16 +3,13 @@ import { db } from "@/lib/server/db";
 import { computeProspectScore } from "@/lib/prospect-scoring";
 
 const MAJOR_LEAGUES = ["LEC", "LCS", "LCK", "LPL"];
-const MAX_AGE = 22;
 const PROSPECT_LIMIT = 30;
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
 
   const role = searchParams.get("role") || undefined;
-  const maxAge = searchParams.get("maxAge")
-    ? parseInt(searchParams.get("maxAge")!, 10)
-    : MAX_AGE;
+
   const region = searchParams.get("region") || undefined;
   const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
   const limit = Math.min(
@@ -24,7 +21,6 @@ export async function GET(request: NextRequest) {
   const where: any = {
     isProspect: true,
     hasPlayedInMajorLeague: false,
-    age: { lte: maxAge },
     NOT: { league: { in: MAJOR_LEAGUES } },
   };
 
