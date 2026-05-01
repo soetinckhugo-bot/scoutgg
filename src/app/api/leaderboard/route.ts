@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/server/db";
 import { logger } from "@/lib/logger";
+import { rateLimit } from "@/lib/server/rate-limit";
 import { z } from "zod";
 
 const VALID_METRICS = [
@@ -31,6 +32,16 @@ const LeaderboardQuerySchema = z.object({
 });
 
 export async function GET(request: Request) {
+  // Rate limit: 60 requests per minute per IP
+  const ip = request.headers.get("x-forwarded-for") || "unknown";
+  const limit = rateLimit(`leaderboard:${ip}`, 60, 60 * 1000);
+  if (!limit.success) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again later." },
+      { status: 429 }
+    );
+  }
+
   try {
     const { searchParams } = new URL(request.url);
     const parsed = LeaderboardQuerySchema.safeParse(Object.fromEntries(searchParams));

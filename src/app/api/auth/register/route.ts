@@ -2,9 +2,20 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { db } from "@/lib/server/db";
 import { RegisterSchema } from "@/lib/schemas";
+import { rateLimit } from "@/lib/server/rate-limit";
 import { logger } from "@/lib/logger";
 
 export async function POST(request: Request) {
+  // Rate limit: 5 registrations per minute per IP
+  const ip = request.headers.get("x-forwarded-for") || "unknown";
+  const limit = rateLimit(`register:${ip}`, 5, 60 * 1000);
+  if (!limit.success) {
+    return NextResponse.json(
+      { error: "Too many registration attempts. Please try again later." },
+      { status: 429 }
+    );
+  }
+
   try {
     const body = await request.json();
     const parsed = RegisterSchema.safeParse(body);

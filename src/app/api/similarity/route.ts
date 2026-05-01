@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/server/db";
 import { logger } from "@/lib/logger";
+import { rateLimit } from "@/lib/server/rate-limit";
 import { ROLE_METRICS } from "@/lib/radar-metrics";
 
 const METRIC_TO_DB_FIELD: Record<string, string> = {
@@ -101,6 +102,16 @@ function calculateSimilarity(
 }
 
 export async function GET(request: Request) {
+  // Rate limit: 30 requests per minute per IP (computationally expensive)
+  const ip = request.headers.get("x-forwarded-for") || "unknown";
+  const limit = rateLimit(`similarity:${ip}`, 30, 60 * 1000);
+  if (!limit.success) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again later." },
+      { status: 429 }
+    );
+  }
+
   try {
     const { searchParams } = new URL(request.url);
     const playerId = searchParams.get("playerId");
