@@ -213,6 +213,7 @@ export async function GET(request: Request) {
         proStats: { isNot: null },
       },
       include: { proStats: true },
+      take: 500,
     });
 
     // Build percentile maps for each metric

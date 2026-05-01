@@ -28,6 +28,7 @@ export async function GET() {
 
   const cards = await db.scoutingCard.findMany({
     where: { userId: user.id },
+    take: 100,
     include: {
       player: {
         select: {

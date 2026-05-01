@@ -44,15 +44,18 @@ export async function GET() {
         players: {
           include: {
             player: {
-              include: {
-                soloqStats: true,
-                proStats: true,
+              select: {
+                id: true, pseudo: true, realName: true, role: true, league: true,
+                currentTeam: true, status: true, photoUrl: true, age: true,
+                soloqStats: { select: { currentRank: true, peakLp: true, winrate: true } },
+                proStats: { select: { kda: true, dpm: true, globalScore: true } },
               },
             },
           },
         },
       },
       orderBy: { updatedAt: "desc" },
+      take: 50,
     });
 
     return NextResponse.json(lists);

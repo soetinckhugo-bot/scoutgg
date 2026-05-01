@@ -126,6 +126,7 @@ export async function GET() {
           },
         },
         orderBy: { createdAt: "desc" },
+        take: 50,
       }),
 
       // Notifications

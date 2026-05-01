@@ -15,6 +15,7 @@ async function generateNotifications(userId: string) {
         },
       },
     },
+    take: 100,
   });
 
   const cutoff = new Date(Date.now() - NOTIFICATION_WINDOW_MS);
