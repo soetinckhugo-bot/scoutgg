@@ -33,7 +33,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { toast } from "sonner";
 import { ROLE_COLORS } from "@/lib/constants";
 import PlayerCard from "@/components/PlayerCard";
-import ScoutingBoard from "@/components/ScoutingBoard";
+// ScoutingBoard moved to /pipeline page
 import { PageTitle, DataLabel, DataValue } from "@/components/ui/typography";
 
 interface Favorite {
@@ -152,7 +152,7 @@ function QuickStatItem({
       <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${color}`}>
         <Icon className="size-5" />
       </div>
-      <div>
+      <div className="flex flex-col">
         <DataValue highlight className="text-text-heading">{value}</DataValue>
         <DataLabel className="normal-case">{label}</DataLabel>
       </div>
@@ -261,20 +261,19 @@ export default function DashboardPage() {
           value={reports.length}
           color="bg-purple-500/20 text-purple-400"
         />
-        <QuickStatItem
-          icon={ClipboardList}
-          label="Pipeline"
-          value={boardCount}
-          color="bg-primary-accent/20 text-primary-accent"
-        />
+        <Link href="/pipeline" className="contents">
+          <QuickStatItem
+            icon={ClipboardList}
+            label="Pipeline"
+            value={boardCount}
+            color="bg-primary-accent/20 text-primary-accent"
+          />
+        </Link>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column — 2/3 */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Scouting Pipeline */}
-          <ScoutingBoard />
-
           {/* Watchlist */}
           <div className="rounded-lg border border-border overflow-hidden">
             <div className="px-4 py-3 border-b border-border bg-surface-hover">

@@ -31,7 +31,7 @@ const navLinks = [
   { href: "/prospects", label: "Prospects" },
   { href: "/compare", label: "Comparison" },
   { href: "/similarity", label: "Similarity" },
-  { href: "/tierlists", label: "Tiers" },
+  { href: "/soloq", label: "SoloQ" },
   { href: "/pricing", label: "Pricing" },
 ];
 

@@ -301,7 +301,7 @@ export default async function PlayerPage(props: {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_240px] gap-6">
           <div className="space-y-6">
             {/* Bio */}
             {player.bio && (
@@ -313,12 +313,12 @@ export default async function PlayerPage(props: {
             {/* Tabs */}
             <Tabs defaultValue="overview" className="space-y-6">
               <div className="flex items-center justify-between gap-4 flex-wrap">
-                <TabsList className="bg-card border border-border overflow-x-auto scrollbar-hide flex-nowrap">
-                  <TabsTrigger value="overview">Overview</TabsTrigger>
-                  <TabsTrigger value="soloq">SoloQ</TabsTrigger>
-                  <TabsTrigger value="pro">Pro</TabsTrigger>
-                  <TabsTrigger value="analysis">Analysis</TabsTrigger>
-                  <TabsTrigger value="vods">VODs</TabsTrigger>
+                <TabsList className="bg-card border border-border overflow-x-auto scrollbar-hide flex-nowrap h-12 p-1">
+                  <TabsTrigger value="overview" className="px-5 py-2 text-sm font-semibold data-[state=active]:bg-primary-accent data-[state=active]:text-white data-[state=active]:shadow-none">Overview</TabsTrigger>
+                  <TabsTrigger value="soloq" className="px-5 py-2 text-sm font-semibold data-[state=active]:bg-primary-accent data-[state=active]:text-white data-[state=active]:shadow-none">SoloQ</TabsTrigger>
+                  <TabsTrigger value="pro" className="px-5 py-2 text-sm font-semibold data-[state=active]:bg-primary-accent data-[state=active]:text-white data-[state=active]:shadow-none">Pro</TabsTrigger>
+                  <TabsTrigger value="analysis" className="px-5 py-2 text-sm font-semibold data-[state=active]:bg-primary-accent data-[state=active]:text-white data-[state=active]:shadow-none">Analysis</TabsTrigger>
+                  <TabsTrigger value="vods" className="px-5 py-2 text-sm font-semibold data-[state=active]:bg-primary-accent data-[state=active]:text-white data-[state=active]:shadow-none">VODs</TabsTrigger>
                 </TabsList>
                 <SeasonSplitSelector seasons={seasons} splits={splits} />
               </div>
@@ -327,7 +327,7 @@ export default async function PlayerPage(props: {
               <TabsContent value="overview" className="space-y-6 animate-fade-in">
                 <div className="rounded-xl border border-border bg-card overflow-hidden">
                   <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
-                    <SectionHeader className="text-text-heading">Pro Stats</SectionHeader>
+                    <SectionHeader className="text-primary-accent">Pro Stats</SectionHeader>
                   </div>
                   <div className="p-4">
                     <ProStatsFull
@@ -340,7 +340,7 @@ export default async function PlayerPage(props: {
                 </div>
                 <div className="rounded-xl border border-border bg-card overflow-hidden">
                   <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
-                    <SectionHeader className="text-text-heading">Performance Radar — {player.role}</SectionHeader>
+                    <SectionHeader className="text-primary-accent">Performance Radar — {player.role}</SectionHeader>
                   </div>
                   <div className="p-4">
                     <RoleRadar playerId={player.id} />
@@ -348,7 +348,7 @@ export default async function PlayerPage(props: {
                 </div>
                 <div className="rounded-xl border border-border bg-card overflow-hidden">
                   <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
-                    <SectionHeader className="text-text-heading">Percentiles</SectionHeader>
+                    <SectionHeader className="text-primary-accent">Percentiles</SectionHeader>
                   </div>
                   <div className="p-4">
                     <RolePercentiles playerId={player.id} />
@@ -360,7 +360,7 @@ export default async function PlayerPage(props: {
               <TabsContent value="soloq" className="space-y-6 animate-fade-in">
                 <div className="rounded-xl border border-border bg-card overflow-hidden">
                   <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
-                    <SectionHeader className="text-text-heading">SoloQ Accounts</SectionHeader>
+                    <SectionHeader className="text-primary-accent">SoloQ Accounts</SectionHeader>
                   </div>
                   <div className="p-4">
                     <SoloqAccounts playerId={player.id} riotId={player.riotId} soloqStats={player.soloqStats} isAdmin={isAdmin} />
@@ -368,7 +368,7 @@ export default async function PlayerPage(props: {
                 </div>
                 <div className="rounded-xl border border-border bg-card overflow-hidden">
                   <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
-                    <SectionHeader className="text-text-heading">Match History</SectionHeader>
+                    <SectionHeader className="text-primary-accent">Match History</SectionHeader>
                   </div>
                   <div className="p-4">
                     <MatchHistory playerId={player.id} />
@@ -376,7 +376,7 @@ export default async function PlayerPage(props: {
                 </div>
                 <div className="rounded-xl border border-border bg-card overflow-hidden">
                   <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
-                    <SectionHeader className="text-text-heading">Champion Pool</SectionHeader>
+                    <SectionHeader className="text-primary-accent">Champion Pool</SectionHeader>
                   </div>
                   <div className="p-4">
                     {player.soloqStats?.championPool ? (
@@ -392,7 +392,7 @@ export default async function PlayerPage(props: {
                 </div>
                 <div className="rounded-xl border border-border bg-card overflow-hidden">
                   <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
-                    <SectionHeader className="text-text-heading">Rank History</SectionHeader>
+                    <SectionHeader className="text-primary-accent">Rank History</SectionHeader>
                   </div>
                   <div className="p-4">
                     <StatHistoryChart playerId={player.id} />
@@ -405,7 +405,7 @@ export default async function PlayerPage(props: {
                 <ProInsightCards proMatches={player.proMatches} />
                 <div className="rounded-xl border border-border bg-card overflow-hidden">
                   <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
-                    <SectionHeader className="text-text-heading">Pro Champions</SectionHeader>
+                    <SectionHeader className="text-primary-accent">Pro Champions</SectionHeader>
                   </div>
                   <div className="p-4">
                     <ProChampions matches={player.proMatches} />
@@ -413,7 +413,7 @@ export default async function PlayerPage(props: {
                 </div>
                 <div className="rounded-xl border border-border bg-card overflow-hidden">
                   <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
-                    <SectionHeader className="text-text-heading">Pro Matches</SectionHeader>
+                    <SectionHeader className="text-primary-accent">Pro Matches</SectionHeader>
                   </div>
                   <div className="p-4">
                     <ProMatchHistory matches={player.proMatches} />
@@ -430,7 +430,7 @@ export default async function PlayerPage(props: {
                       <div className="rounded-xl border border-border bg-card overflow-hidden">
                         <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
                           <FileText className="h-4 w-4 text-text-muted" />
-                          <SectionHeader className="text-text-heading">Free Reports</SectionHeader>
+                          <SectionHeader className="text-primary-accent">Free Reports</SectionHeader>
                         </div>
                         <div className="divide-y divide-border">
                           {freeReports.map((report) => (
@@ -446,7 +446,7 @@ export default async function PlayerPage(props: {
                       <div className="rounded-xl border border-border bg-card overflow-hidden">
                         <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
                           <FileText className="h-4 w-4 text-text-muted" />
-                          <SectionHeader className="text-text-heading">Premium Reports</SectionHeader>
+                          <SectionHeader className="text-primary-accent">Premium Reports</SectionHeader>
                         </div>
                         <div className="divide-y divide-border">
                           {premiumReports.map((report) => (
@@ -474,7 +474,7 @@ export default async function PlayerPage(props: {
                 {/* Stat History */}
                 <div className="rounded-xl border border-border bg-card overflow-hidden">
                   <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
-                    <SectionHeader className="text-text-heading">Stat History</SectionHeader>
+                    <SectionHeader className="text-primary-accent">Stat History</SectionHeader>
                   </div>
                   <div className="p-4">
                     <StatHistoryChart playerId={player.id} />
@@ -484,7 +484,7 @@ export default async function PlayerPage(props: {
                 {/* Similar Players */}
                 <div className="rounded-xl border border-border bg-card overflow-hidden">
                   <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
-                    <SectionHeader className="text-text-heading">Similar Players</SectionHeader>
+                    <SectionHeader className="text-primary-accent">Similar Players</SectionHeader>
                   </div>
                   <div className="p-4">
                     <SimilarPlayers playerId={player.id} />
@@ -497,7 +497,7 @@ export default async function PlayerPage(props: {
                 <div className="rounded-xl border border-border bg-card overflow-hidden">
                   <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
                     <Play className="h-4 w-4 text-text-muted" />
-                    <SectionHeader className="text-text-heading">VODs ({player.vods.length})</SectionHeader>
+                    <SectionHeader className="text-primary-accent">VODs ({player.vods.length})</SectionHeader>
                   </div>
                   {player.vods.length > 0 ? (
                     <div className="divide-y divide-border">
@@ -562,40 +562,11 @@ export default async function PlayerPage(props: {
           </div>
 
           <aside className="space-y-4 animate-slide-in-right">
-            {/* Socials & Contact */}
-            {(player.twitterUrl || player.twitchUrl || player.opggUrl) && (
-              <div className="rounded-xl border border-border bg-card overflow-hidden">
-                <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
-                  <SectionHeader className="text-text-heading">Socials</SectionHeader>
-                </div>
-                <div className="p-4 flex flex-col gap-2">
-                  {player.twitterUrl && (
-                    <a href={player.twitterUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm text-text-body hover:text-primary-accent transition-colors">
-                      <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                      <span className="truncate">{player.twitterUrl.replace("https://twitter.com/", "").replace("https://x.com/", "")}</span>
-                    </a>
-                  )}
-                  {player.twitchUrl && (
-                    <a href={player.twitchUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm text-text-body hover:text-primary-accent transition-colors">
-                      <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/></svg>
-                      <span className="truncate">{player.twitchUrl.replace("https://twitch.tv/", "").replace("https://www.twitch.tv/", "")}</span>
-                    </a>
-                  )}
-                  {player.opggUrl && (
-                    <a href={player.opggUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm text-text-body hover:text-primary-accent transition-colors">
-                      <span className="text-xs font-bold">OP</span>
-                      <span className="truncate">op.gg</span>
-                    </a>
-                  )}
-                </div>
-              </div>
-            )}
-
             {/* Contract Info */}
             {player.contractEndDate && (
               <div className="rounded-xl border border-border bg-card overflow-hidden">
                 <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
-                  <SectionHeader className="text-text-heading">Contract</SectionHeader>
+                  <SectionHeader className="text-primary-accent">Contract</SectionHeader>
                 </div>
                 <div className="p-4">
                   <DataLabel>Until</DataLabel>
