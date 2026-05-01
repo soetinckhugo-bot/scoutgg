@@ -330,7 +330,7 @@ export default async function ProspectsPage(props: {
   const players = await getProspects(searchParams);
 
   const top3 = players.slice(0, 3);
-  const rest = players.slice(3);
+  const rest = players;
 
   return (
     <div className="min-h-screen bg-background">
