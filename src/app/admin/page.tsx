@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, memo, Suspense, useMemo } from "react";
+import { logger } from "@/lib/logger";
 import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -160,7 +161,7 @@ export default function AdminPage() {
       setPlayersTotalPages(data.pagination.totalPages);
       setPlayersTotal(data.pagination.totalCount);
     } catch (error) {
-      console.error("Error fetching players:", error);
+      logger.error("Error fetching players", { error });
     } finally {
       setLoading(false);
     }
@@ -175,7 +176,7 @@ export default function AdminPage() {
       setReportsTotalPages(data.pagination.totalPages);
       setReportsTotal(data.pagination.totalCount);
     } catch (error) {
-      console.error("Error fetching reports:", error);
+      logger.error("Error fetching reports", { error });
     }
   }, []);
 
@@ -271,11 +272,11 @@ export default function AdminPage() {
         toast.success(editingPlayer ? "Player updated" : "Player added successfully");
       } else {
         const err = await res.json().catch(() => ({ error: "Unknown error" }));
-        console.error("Save player failed:", err);
+        logger.error("Save player failed", { err });
         toast.error(err.error || "Failed to save player");
       }
     } catch (error) {
-      console.error("Error saving player:", error);
+      logger.error("Error saving player", { error });
       toast.error("Failed to save player");
     }
   }, [formData, editingPlayer, fetchPlayers]);
@@ -287,7 +288,7 @@ export default function AdminPage() {
       fetchPlayers();
       toast.success("Player deleted");
     } catch (error) {
-      console.error("Error deleting player:", error);
+      logger.error("Error deleting player", { error });
       toast.error("Failed to delete player");
     }
   }, [fetchPlayers]);
@@ -302,7 +303,7 @@ export default function AdminPage() {
       fetchPlayers();
       toast.success(current ? "POTM removed" : "Player set as POTM");
     } catch (error) {
-      console.error("Error updating POTM:", error);
+      logger.error("Error updating POTM", { error });
       toast.error("Failed to update POTM");
     }
   }, [fetchPlayers]);
@@ -322,7 +323,7 @@ export default function AdminPage() {
         toast.error(data.error || "Failed to sync SoloQ");
       }
     } catch (error) {
-      console.error("Error syncing SoloQ:", error);
+      logger.error("Error syncing SoloQ", { error });
       toast.error("Failed to sync SoloQ");
     }
   }, [fetchPlayers]);
@@ -372,7 +373,7 @@ export default function AdminPage() {
         toast.error("Failed to save report");
       }
     } catch (error) {
-      console.error("Error saving report:", error);
+      logger.error("Error saving report", { error });
       toast.error("Failed to save report");
     }
   }, [reportFormData, editingReport, fetchReports]);
@@ -384,7 +385,7 @@ export default function AdminPage() {
       fetchReports();
       toast.success("Report deleted");
     } catch (error) {
-      console.error("Error deleting report:", error);
+      logger.error("Error deleting report", { error });
       toast.error("Failed to delete report");
     }
   }, [fetchReports]);

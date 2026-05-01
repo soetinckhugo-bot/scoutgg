@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { logger } from "@/lib/logger";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -102,7 +103,7 @@ export default function ProspectsTab() {
       const data = await res.json();
       setProspects(data.prospects || []);
     } catch (error) {
-      console.error("Error fetching prospects:", error);
+      logger.error("Error fetching prospects", { error });
       toast.error("Failed to fetch prospects");
     } finally {
       setLoading(false);

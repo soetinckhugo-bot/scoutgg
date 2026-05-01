@@ -10,6 +10,7 @@ import {
 import { useState, useEffect, useMemo } from "react";
 import { Loader2 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { logger } from "@/lib/logger";
 
 const ADC_METRICS = [
   { key: "kda", label: "KDA", format: (v: number) => v.toFixed(1) },
@@ -108,7 +109,7 @@ export default function AdcRadarChart({ playerId }: AdcRadarChartProps) {
           }));
         setAllAdcs(adcs);
       } catch (e) {
-        console.error("Failed to load ADC comparison", e);
+        logger.error("Failed to load ADC comparison", { error: e });
       } finally {
         setLoading(false);
       }

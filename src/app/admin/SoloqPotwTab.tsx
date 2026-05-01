@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { logger } from "@/lib/logger";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -89,7 +90,7 @@ export default function SoloqPotwTab() {
       const data = await res.json();
       setPlayers(data.players || []);
     } catch {
-      console.error("Failed to fetch players");
+      logger.error("Failed to fetch players");
     }
   }
 

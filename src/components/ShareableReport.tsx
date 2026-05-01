@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Download, Check, Camera } from "lucide-react";
 import { ROLE_COLORS, TIER_COLORS } from "@/lib/constants";
+import { logger } from "@/lib/logger";
 
 interface ShareableReportProps {
   player: {
@@ -344,7 +345,7 @@ export function ShareableReport({ player, stats, verdict }: ShareableReportProps
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
-      console.error("Failed to generate report image:", err);
+      logger.error("Failed to generate report image", { err });
     }
   }, [player, stats, verdict]);
 
@@ -358,7 +359,7 @@ export function ShareableReport({ player, stats, verdict }: ShareableReportProps
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      console.error("Failed to copy report:", err);
+      logger.error("Failed to copy report", { err });
     }
   }, [player, stats, verdict]);
 

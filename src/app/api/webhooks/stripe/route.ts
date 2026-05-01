@@ -20,14 +20,14 @@ export async function POST(request: Request) {
   try {
     event = getStripe().webhooks.constructEvent(payload, sig, endpointSecret);
   } catch (err: any) {
-    logger.error("Stripe webhook signature verification failed:", err.message);
+    logger.error("Stripe webhook signature verification failed", { message: err.message });
     return NextResponse.json(
       { error: `Webhook Error: ${err.message}` },
       { status: 400 }
     );
   }
 
-  console.log(`Stripe webhook received: ${event.type}`);
+  logger.info(`Stripe webhook received: ${event.type}`);
 
   try {
     switch (event.type) {
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
         const customerEmail = session.customer_details?.email;
 
         if (!customerEmail) {
-          console.warn("No customer email in checkout session");
+          logger.warn("No customer email in checkout session");
           break;
         }
 
@@ -64,7 +64,7 @@ export async function POST(request: Request) {
           },
         });
 
-        console.log(`User ${customerEmail} upgraded to premium`);
+        logger.info(`User ${customerEmail} upgraded to premium`);
         break;
       }
 
@@ -82,7 +82,7 @@ export async function POST(request: Request) {
           },
         });
 
-        console.log(`Payment succeeded, premium extended for customer ${customerId}`);
+        logger.info(`Payment succeeded, premium extended for customer ${customerId}`);
         break;
       }
 
@@ -95,7 +95,7 @@ export async function POST(request: Request) {
           data: { subscriptionStatus: "past_due" },
         });
 
-        console.log(`Subscription past_due for customer ${customerId}`);
+        logger.info(`Subscription past_due for customer ${customerId}`);
         break;
       }
 
@@ -116,7 +116,7 @@ export async function POST(request: Request) {
           },
         });
 
-        console.log(`Subscription updated: ${status} for customer ${customerId}`);
+        logger.info(`Subscription updated: ${status} for customer ${customerId}`);
         break;
       }
 
@@ -133,7 +133,7 @@ export async function POST(request: Request) {
           },
         });
 
-        console.log(`Subscription canceled for customer ${customerId}`);
+        logger.info(`Subscription canceled for customer ${customerId}`);
         break;
       }
 
@@ -150,12 +150,12 @@ export async function POST(request: Request) {
           },
         });
 
-        console.log(`Charge refunded for customer ${customerId}`);
+        logger.info(`Charge refunded for customer ${customerId}`);
         break;
       }
 
       default:
-        console.log(`Unhandled event type: ${event.type}`);
+        logger.info(`Unhandled event type: ${event.type}`);
     }
   } catch (err: any) {
     logger.error("Webhook processing error:", { err });

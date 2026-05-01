@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { ChevronDown, Loader2 } from "lucide-react";
 import { getTierFromLeague, type TierLevel } from "@/lib/scoring";
+import { logger } from "@/lib/logger";
 
 interface FullProStats {
   gamesPlayed: number | null;
@@ -263,7 +264,19 @@ function SplitSelector({
 
       {open && (
         <>
-          <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
+          <div
+            className="fixed inset-0 z-10"
+            role="button"
+            tabIndex={0}
+            aria-label="Close dropdown"
+            onClick={() => setOpen(false)}
+            onKeyDown={(e) => {
+              if (e.key === "Escape" || e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setOpen(false);
+              }
+            }}
+          />
           <div className="absolute top-full left-0 mt-1 w-56 bg-surface-hover border border-border rounded-lg shadow-xl z-20 py-1 max-h-64 overflow-y-auto overflow-hidden">
             {seasons.map((season) => (
               <div key={season}>
@@ -338,7 +351,7 @@ export default function ProStatsFull({
           }
         }
       } catch (err) {
-        console.error("Failed to load split stats:", err);
+        logger.error("Failed to load split stats", { err });
       } finally {
         setLoading(false);
       }

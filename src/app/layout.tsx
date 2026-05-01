@@ -133,7 +133,7 @@ export default function RootLayout({
             __html: `
               if (typeof window !== "undefined") {
                 window.addEventListener("unhandledrejection", (event) => {
-                  console.error("Unhandled promise rejection:", event.reason);
+                  // Sentry captures unhandled rejections automatically
                 });
               }
             `,

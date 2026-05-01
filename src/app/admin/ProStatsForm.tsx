@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -104,7 +105,7 @@ export default function ProStatsForm({ playerId }: ProStatsFormProps) {
         });
       }
     } catch (error) {
-      console.error("Error fetching pro stats:", error);
+      logger.error("Error fetching pro stats", { error });
     } finally {
       setLoading(false);
     }
@@ -148,7 +149,7 @@ export default function ProStatsForm({ playerId }: ProStatsFormProps) {
         toast.error("Failed to save pro stats");
       }
     } catch (error) {
-      console.error("Error saving pro stats:", error);
+      logger.error("Error saving pro stats", { error });
       toast.error("Failed to save pro stats");
     } finally {
       setSaving(false);

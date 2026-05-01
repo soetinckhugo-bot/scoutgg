@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback } from "react";
 import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
+import { logger } from "@/lib/logger";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Download, Image as ImageIcon, FileImage } from "lucide-react";
 
@@ -70,7 +71,7 @@ export default function ExportPage() {
         link.href = canvas.toDataURL("image/png");
         link.click();
       } catch (err) {
-        console.error("Export failed:", err);
+        logger.error("Export failed", { err });
       } finally {
         setExporting(false);
       }

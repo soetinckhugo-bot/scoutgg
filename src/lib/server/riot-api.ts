@@ -1,3 +1,5 @@
+import { logger } from "@/lib/logger";
+
 const RIOT_API_KEY = process.env.RIOT_API_KEY;
 const RIOT_REGION = "euw1"; // Europe West for LFL/LEC players
 const RIOT_REGIONAL = "europe"; // For account-v1 API
@@ -118,7 +120,7 @@ async function withRetry<T>(fn: () => Promise<T>, maxRetries: number = 3): Promi
       }
     }
   }
-  console.error(`Request failed after ${maxRetries + 1} attempts:`, lastError);
+  logger.error(`Request failed after ${maxRetries + 1} attempts`, { lastError });
   return null;
 }
 
@@ -152,13 +154,13 @@ async function rateLimitedRequest<T>(url: string, options?: { cacheTtlMs?: numbe
     if (response.status === 429) {
       const retryAfter = response.headers.get("Retry-After");
       const waitMs = retryAfter ? parseInt(retryAfter, 10) * 1000 : 2000;
-      console.warn(`Riot API rate limited (429), waiting ${waitMs}ms...`);
+      logger.warn(`Riot API rate limited (429), waiting ${waitMs}ms`);
       await new Promise((r) => setTimeout(r, waitMs));
       throw new Error("Rate limited");
     }
     if (!response.ok) {
       const text = await response.text();
-      console.error("Riot API error:", response.status, text);
+      logger.error("Riot API error", { status: response.status, text });
       throw new Error(`HTTP ${response.status}: ${text}`);
     }
 

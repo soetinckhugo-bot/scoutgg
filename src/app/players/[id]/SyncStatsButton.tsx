@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
 import { toast } from "sonner";
@@ -30,7 +31,7 @@ export default function SyncStatsButton({ playerId }: SyncStatsButtonProps) {
       toast.success("SoloQ stats synced from Riot API");
       window.location.reload();
     } catch (error) {
-      console.error("Failed to sync stats:", error);
+      logger.error("Failed to sync stats", { error });
       toast.error("Failed to sync stats");
       setIsLoading(false);
     }

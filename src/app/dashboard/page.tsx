@@ -32,6 +32,7 @@ import ScoutIcon from "@/components/ScoutIcon";
 import { EmptyState } from "@/components/ui/empty-state";
 import { toast } from "sonner";
 import { ROLE_COLORS } from "@/lib/constants";
+import { logger } from "@/lib/logger";
 import PlayerCard from "@/components/PlayerCard";
 // ScoutingBoard moved to /pipeline page
 import { PageTitle, DataLabel, DataValue } from "@/components/ui/typography";
@@ -197,7 +198,7 @@ export default function DashboardPage() {
       setPotw(data.potw || null);
       setBoardCount(data.boardCount || 0);
     } catch (err) {
-      console.error("Dashboard load error:", err);
+      logger.error("Dashboard load error", { err });
       toast.error("Failed to load dashboard");
     } finally {
       setLoading(false);

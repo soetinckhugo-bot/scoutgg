@@ -10,6 +10,8 @@
  * Docs: https://lol.fandom.com/wiki/Help:Cargo_Export
  */
 
+import { logger } from "@/lib/logger";
+
 const BASE_URL = "https://lol.fandom.com/wiki/Special:CargoExport";
 const RATE_LIMIT_MS = 1000; // 1 req/sec pour être safe
 
@@ -57,7 +59,7 @@ async function cargoQuery(params: {
 
     return await res.json();
   } catch (error) {
-    console.error("Leaguepedia query failed:", error);
+    logger.error("Leaguepedia query failed", { error });
     throw error;
   }
 }

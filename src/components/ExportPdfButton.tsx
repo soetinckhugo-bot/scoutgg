@@ -4,6 +4,7 @@ import { useState } from "react";
 import { FileDown, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { logger } from "@/lib/logger";
 import { useSession } from "next-auth/react";
 
 interface SoloqStats {
@@ -468,7 +469,7 @@ export default function ExportPdfButton({ playerId }: ExportPdfButtonProps) {
       doc.save(filename);
       toast.success("Scouting report downloaded");
     } catch (error) {
-      console.error("PDF generation error:", error);
+      logger.error("PDF generation error", { error });
       toast.error("Failed to generate PDF");
     } finally {
       setIsLoading(false);

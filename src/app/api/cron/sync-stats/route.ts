@@ -163,7 +163,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    console.log(`[Cron] Starting sync for ${players.length} players`);
+    logger.info(`[Cron] Starting sync for ${players.length} players`);
     const startedAt = new Date().toISOString();
 
     // Sync all players with limited concurrency (respect Riot API rate limit)
@@ -179,7 +179,7 @@ export async function POST(request: NextRequest) {
     const failCount = results.length - successCount;
     const completedAt = new Date().toISOString();
 
-    console.log(
+    logger.info(
       `[Cron] Sync complete: ${successCount} success, ${failCount} failed`
     );
 

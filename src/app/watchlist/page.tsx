@@ -8,6 +8,7 @@ import { Heart, Search, Pencil, Check, X, Loader2, Star } from "lucide-react";
 import { EmptyState } from "@/components/ui/empty-state";
 import PlayerCard from "@/components/PlayerCard";
 import { useSession } from "next-auth/react";
+import { logger } from "@/lib/logger";
 import { toast } from "sonner";
 
 interface Favorite {
@@ -227,7 +228,7 @@ export default function WatchlistPage() {
       const data = await res.json();
       setFavorites(data);
     } catch (err) {
-      console.error("Watchlist fetch error:", err);
+      logger.error("Watchlist fetch error", { err });
       toast.error("Failed to load watchlist");
     } finally {
       setLoading(false);

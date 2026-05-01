@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { logger } from "@/lib/logger";
 import { useSession } from "next-auth/react";
 
 interface FavoriteButtonProps {
@@ -32,7 +33,7 @@ export default function FavoriteButton({
         setIsFavorited(favorited);
       }
     } catch (error) {
-      console.error("Error checking favorite status:", error);
+      logger.error("Error checking favorite status", { error });
     }
   }, [playerId, isAuthenticated]);
 
@@ -77,7 +78,7 @@ export default function FavoriteButton({
         }
       }
     } catch (error) {
-      console.error("Error toggling favorite:", error);
+      logger.error("Error toggling favorite", { error });
       toast.error("Failed to update watchlist");
     } finally {
       setIsLoading(false);

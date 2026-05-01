@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Player not found" }, { status: 404 });
     }
 
-    console.log("[Riot Sync] Player found:", { id: player.id, riotId: player.riotId, riotPuuid: player.riotPuuid, opggUrl: player.opggUrl });
+    logger.info("[Riot Sync] Player found:", { id: player.id, riotId: player.riotId, riotPuuid: player.riotPuuid, opggUrl: player.opggUrl });
 
     // Try to get PUUID from player record
     let puuid = player.riotPuuid;
@@ -81,13 +81,13 @@ export async function POST(request: NextRequest) {
       if (hashIndex > 0) {
         const gameName = player.riotId.slice(0, hashIndex).trim();
         const tagLine = player.riotId.slice(hashIndex + 1).trim();
-        console.log("[Riot Sync] Looking up by Riot ID:", { gameName, tagLine });
+        logger.info("[Riot Sync] Looking up by Riot ID:", { gameName, tagLine });
         const account = await getAccountByRiotId(gameName, tagLine);
         if (account) {
           puuid = account.puuid;
           lookupMethod = "riotId";
         } else {
-          console.log("[Riot Sync] Account not found for Riot ID:", { gameName, tagLine });
+          logger.info("[Riot Sync] Account not found for Riot ID:", { gameName, tagLine });
         }
       }
     }
@@ -106,17 +106,17 @@ export async function POST(request: NextRequest) {
         if (lastDash > 0) {
           const gameName = riotIdFromUrl.slice(0, lastDash);
           const tagLine = riotIdFromUrl.slice(lastDash + 1);
-          console.log("[Riot Sync] Looking up by op.gg URL:", { region, gameName, tagLine, raw: riotIdFromUrl });
+          logger.info("[Riot Sync] Looking up by op.gg URL:", { region, gameName, tagLine, raw: riotIdFromUrl });
           const account = await getAccountByRiotId(gameName, tagLine);
           if (account) {
             puuid = account.puuid;
             lookupMethod = "opgg";
           } else {
-            console.log("[Riot Sync] Account not found for op.gg derived Riot ID:", { gameName, tagLine });
+            logger.info("[Riot Sync] Account not found for op.gg derived Riot ID:", { gameName, tagLine });
           }
         }
       } else {
-        console.log("[Riot Sync] Could not parse op.gg URL:", player.opggUrl);
+        logger.info("[Riot Sync] Could not parse op.gg URL", { opggUrl: player.opggUrl });
       }
     }
 
@@ -138,7 +138,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log("[Riot Sync] PUUID resolved via:", lookupMethod, puuid);
+    logger.info("[Riot Sync] PUUID resolved via", { lookupMethod, puuid });
 
     // Update player with PUUID if we just found it
     if (!player.riotPuuid && puuid) {
@@ -150,7 +150,7 @@ export async function POST(request: NextRequest) {
 
     // Get summoner info
     const summoner = await getSummonerByPuuid(puuid);
-    console.log("[Riot Sync] Summoner:", summoner ? { id: summoner.id, level: summoner.summonerLevel } : null);
+    logger.info("[Riot Sync] Summoner", summoner ? { id: summoner.id, level: summoner.summonerLevel } : {});
     if (!summoner) {
       return NextResponse.json(
         { error: "Summoner not found" },
@@ -161,10 +161,10 @@ export async function POST(request: NextRequest) {
 
     // Get ranked stats (try by-puuid first, fallback to by-summoner)
     let entries = await getLeagueEntriesByPuuid(puuid);
-    console.log("[Riot Sync] League entries by PUUID:", entries);
+    logger.info("[Riot Sync] League entries by PUUID", { entries });
     if (!entries || entries.length === 0) {
       entries = await getLeagueEntries(summonerId);
-      console.log("[Riot Sync] League entries by summonerId:", entries);
+      logger.info("[Riot Sync] League entries by summonerId", { entries });
     }
     const ranked = entries.find((e) => e.queueType === "RANKED_SOLO_5x5");
 

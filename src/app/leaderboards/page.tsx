@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
+import { logger } from "@/lib/logger";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -251,7 +252,7 @@ export default function LeaderboardsPage() {
       setPlayers(data.players || []);
       setTotal(data.total || 0);
     } catch (err) {
-      console.error("Leaderboard fetch error:", err);
+      logger.error("Leaderboard fetch error", { err });
       setPlayers([]);
       setTotal(0);
     } finally {

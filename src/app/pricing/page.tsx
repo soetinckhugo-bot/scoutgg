@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, X, Star, Zap, MessageCircle, Mail, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
+import { logger } from "@/lib/logger";
 
 const tiers: Array<{
   name: string;
@@ -199,7 +200,7 @@ export default function PricingPage() {
         window.location.href = data.url;
       }
     } catch (error) {
-      console.error("Checkout error:", error);
+      logger.error("Checkout error", { error });
       toast.error("Something went wrong. Please try again.");
     } finally {
       setLoadingTier(null);
