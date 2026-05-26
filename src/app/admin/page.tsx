@@ -54,6 +54,7 @@ import {
   Loader2,
   Bell,
   Upload,
+  Film,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
@@ -66,6 +67,7 @@ import OracleImportTab from "./OracleImportTab";
 import ProStatsForm from "./ProStatsForm";
 import BehaviorTagsForm from "./BehaviorTagsForm";
 import ReportForm from "./ReportForm";
+import ClipsTab from "./ClipsTab";
 import { PageTitle, SectionHeader, DataLabel, DataValue } from "@/components/ui/typography";
 
 interface Player {
@@ -526,6 +528,10 @@ export default function AdminPage() {
             <Bell className="h-3.5 w-3.5 mr-1" />
             Alerts
           </TabsTrigger>
+          <TabsTrigger value="clips">
+            <Film className="h-3.5 w-3.5 mr-1" />
+            Clips
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="players">
@@ -942,6 +948,10 @@ export default function AdminPage() {
               )}
             </div>
           </div>
+        </TabsContent>
+
+        <TabsContent value="clips">
+          <ClipsTab />
         </TabsContent>
       </Tabs>
 

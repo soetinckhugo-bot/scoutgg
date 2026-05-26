@@ -560,3 +560,35 @@ model StatHistory {
   @@index([playerId])
   @@index([week, year])
 }
+
+model Clip {
+  id          String     @id @default(cuid())
+  playerName  String
+  playerRole  String     // top/jungle/mid/adc/support
+  title       String
+  youtubeId   String
+  monthPeriod String     // format "YYYY-MM"
+  isActive    Boolean    @default(false)
+  isWinner    Boolean    @default(false)
+  adminNotes  String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  votes       ClipVote[]
+
+  @@index([monthPeriod])
+  @@index([isActive])
+  @@index([isWinner])
+  @@index([playerName])
+}
+
+model ClipVote {
+  id        String   @id @default(cuid())
+  clipId    String
+  ipHash    String
+  score     Int
+  votedAt   DateTime @default(now())
+  clip      Clip     @relation(fields: [clipId], references: [id], onDelete: Cascade)
+
+  @@unique([clipId, ipHash])
+  @@index([clipId])
+}
