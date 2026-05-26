@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/server/db";
 import { computeProspectScore } from "@/lib/prospect-scoring";
+import { calculateAge } from "@/lib/age";
 
 const MAJOR_LEAGUES = ["LEC", "LCS", "LCK", "LPL"];
 const PROSPECT_LIMIT = 30;

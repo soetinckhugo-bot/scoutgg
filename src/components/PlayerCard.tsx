@@ -12,6 +12,7 @@ import Flag from "@/components/Flag";
 import ScoutIcon from "./ScoutIcon";
 import { useState } from "react";
 import { toast } from "sonner";
+import { calculateAge } from "@/lib/age";
 
 interface Player {
   id: string;
@@ -23,6 +24,7 @@ interface Player {
   currentTeam: string | null;
   photoUrl: string | null;
   age?: number | null;
+  dateOfBirth?: Date | string | null;
   nationality?: string | null;
   tier?: string | null;
   soloqStats?: {
@@ -185,8 +187,8 @@ export default function PlayerCard({
                 {player.realName && (
                   <span className="text-xs text-text-muted">{player.realName}</span>
                 )}
-                {player.age && (
-                  <span className="text-xs text-text-muted">· {player.age} yo</span>
+                {(calculateAge(player.dateOfBirth) ?? player.age) && (
+                  <span className="text-xs text-text-muted">· {calculateAge(player.dateOfBirth) ?? player.age} yo</span>
                 )}
               </div>
               <div className="flex items-center gap-2 mt-1.5 flex-wrap">

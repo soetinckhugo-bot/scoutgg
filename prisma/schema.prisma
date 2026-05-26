@@ -15,6 +15,7 @@ model Player {
   role             String
   nationality      String?
   age              Int?
+  dateOfBirth      DateTime?
   currentTeam      String?
   league           String
   tier             String?

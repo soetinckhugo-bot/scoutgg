@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { logger } from "@/lib/logger";
 import { db } from "@/lib/server/db";
 import { PlayerCreateSchema } from "@/lib/schemas";
+import { calculateAge } from "@/lib/age";
 import { requireAdmin } from "@/lib/server/auth";
 import { rateLimit } from "@/lib/server/rate-limit";
 import { z } from "zod";
@@ -127,6 +128,7 @@ export async function GET(request: Request) {
           status: true,
           photoUrl: true,
           age: true,
+          dateOfBirth: true,
           nationality: true,
           bio: true,
           prospectScore: true,
@@ -189,8 +191,13 @@ export async function GET(request: Request) {
       });
     }
 
+    const enrichedPlayers = filteredPlayers.map((p) => ({
+      ...p,
+      age: calculateAge(p.dateOfBirth) ?? p.age,
+    }));
+
     return NextResponse.json({
-      players: filteredPlayers,
+      players: enrichedPlayers,
       pagination: {
         page,
         limit,
@@ -231,7 +238,7 @@ export async function POST(request: Request) {
         realName: body.realName ?? null,
         role: body.role,
         nationality: body.nationality ?? null,
-        age: body.age ?? null,
+        dateOfBirth: body.dateOfBirth ?? null,
         currentTeam: body.currentTeam ?? null,
         league: body.league,
         tier: body.tier ?? null,

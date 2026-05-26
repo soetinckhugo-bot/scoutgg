@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/server/db";
 import { computeProspectScore } from "@/lib/prospect-scoring";
+import { calculateAge } from "@/lib/age";
 import { requireAdmin } from "@/lib/server/auth";
 import { logger } from "@/lib/logger";
 
@@ -28,7 +29,7 @@ export async function POST() {
         peakLp: p.peakElo2Years ?? ss?.peakLp ?? 0,
         currentLeague: p.league,
         bestProResult: p.bestProResult ?? null,
-        age: p.age,
+        age: calculateAge(p.dateOfBirth) ?? p.age ?? null,
         globalScore: ps?.globalScore ?? null,
         eyeTestRating: p.eyeTestRating ?? null,
       });

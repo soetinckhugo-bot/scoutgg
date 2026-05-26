@@ -4,6 +4,7 @@ import { logger } from "@/lib/logger";
 import { calculatePercentile, type PercentileResult } from "@/lib/percentiles";
 import { ROLE_METRICS } from "@/lib/radar-metrics";
 import { getTierFromLeague } from "@/lib/scoring";
+import { calculateAge } from "@/lib/age";
 
 export async function GET(
   request: Request,
@@ -183,6 +184,7 @@ export async function GET(
         pseudo: player.pseudo,
         role: player.role,
         league: player.league,
+        age: calculateAge(player.dateOfBirth) ?? player.age,
         tier: player.tier || getTierFromLeague(player.league),
       },
       comparisonMode,

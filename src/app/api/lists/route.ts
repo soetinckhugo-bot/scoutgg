@@ -3,6 +3,7 @@ import { logger } from "@/lib/logger";
 import { getServerSession } from "next-auth/next";
 import { db } from "@/lib/server/db";
 import { authOptions } from "@/lib/server/auth-options";
+import { calculateAge } from "@/lib/age";
 import { z } from "zod";
 
 function getUserId(session: any): string | null {
@@ -46,7 +47,7 @@ export async function GET() {
             player: {
               select: {
                 id: true, pseudo: true, realName: true, role: true, league: true,
-                currentTeam: true, status: true, photoUrl: true, age: true,
+                currentTeam: true, status: true, photoUrl: true, age: true, dateOfBirth: true,
                 soloqStats: { select: { currentRank: true, peakLp: true, winrate: true } },
                 proStats: { select: { kda: true, dpm: true, globalScore: true } },
               },
@@ -58,7 +59,17 @@ export async function GET() {
       take: 50,
     });
 
-    return NextResponse.json(lists);
+    const enrichedLists = lists.map((list) => ({
+      ...list,
+      players: list.players.map((item) => ({
+        ...item,
+        player: {
+          ...item.player,
+          age: calculateAge(item.player.dateOfBirth) ?? item.player.age,
+        },
+      })),
+    }));
+    return NextResponse.json(enrichedLists);
   } catch (error) {
     logger.error("Error fetching lists", { error: String(error) });
     return NextResponse.json(

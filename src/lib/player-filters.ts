@@ -1,3 +1,5 @@
+import { calculateAge } from "./age";
+
 // ============================================================================
 // PLAYER FILTERS & SORTING — Pure logic extracted for testability
 // ============================================================================
@@ -11,6 +13,7 @@ export interface FilterablePlayer {
   status: string;
   currentTeam: string | null;
   age: number | null;
+  dateOfBirth?: Date | string | null;
   soloqStats?: {
     currentRank: string;
     peakLp: number;
@@ -63,8 +66,8 @@ export function sortPlayers(
       break;
     case "age":
       sorted.sort((a, b) => {
-        const ageA = a.age ?? Infinity;
-        const ageB = b.age ?? Infinity;
+        const ageA = calculateAge(a.dateOfBirth) ?? a.age ?? Infinity;
+        const ageB = calculateAge(b.dateOfBirth) ?? b.age ?? Infinity;
         return ageA - ageB;
       });
       break;

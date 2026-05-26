@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { logger } from "@/lib/logger";
+import { calculateAge } from "@/lib/age";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -47,6 +48,7 @@ interface ProspectPlayer {
   role: string;
   nationality: string;
   age: number | null;
+  dateOfBirth: string | null;
   currentTeam: string | null;
   league: string;
   status: string;
@@ -136,7 +138,7 @@ export default function ProspectsTab() {
       realName: "",
       role: "TOP",
       nationality: "",
-      age: 19,
+      dateOfBirth: "",
       currentTeam: "",
       league: "LFL",
       status: "ACADEMY",
@@ -374,7 +376,7 @@ export default function ProspectsTab() {
                       </Badge>
                     </td>
                     <td className="p-3 text-sm text-text-body">
-                      {player.age || "—"}
+                      {calculateAge(player.dateOfBirth) ?? player.age ?? "—"}
                     </td>
                     <td className="p-3 text-sm text-text-body">
                       {player.currentTeam || "—"}
@@ -510,13 +512,12 @@ function ProspectForm({
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="age">Age</Label>
+          <Label htmlFor="dateOfBirth">Date of Birth</Label>
           <Input
-            id="age"
-            type="number"
-            value={formData.age || ""}
-            onChange={(e) => setFormData({ ...formData, age: parseInt(e.target.value) || null })}
-            placeholder="19"
+            id="dateOfBirth"
+            type="date"
+            value={formData.dateOfBirth || ""}
+            onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
           />
         </div>
         <div className="space-y-2">

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, memo, Suspense, useMemo } from "react";
 import { logger } from "@/lib/logger";
+import { calculateAge } from "@/lib/age";
 import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -77,6 +78,7 @@ interface Player {
   role: string;
   nationality: string;
   age: number | null;
+  dateOfBirth: string | null;
   currentTeam: string | null;
   league: string;
   tier: string | null;
@@ -208,7 +210,7 @@ export default function AdminPage() {
       realName: "",
       role: "TOP",
       nationality: "",
-      age: null,
+      dateOfBirth: "",
       currentTeam: "",
       league: "LEC",
       tier: null,
@@ -244,7 +246,7 @@ export default function AdminPage() {
 
       const payload = {
         ...formData,
-        age: formData.age ? parseInt(String(formData.age), 10) : null,
+        dateOfBirth: formData.dateOfBirth || null,
         tier: formData.tier || null,
         // Convert empty strings to null for URL fields to pass Zod validation
         opggUrl: formData.opggUrl || null,
@@ -1053,13 +1055,12 @@ function PlayerForm({
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="age">Age</Label>
+          <Label htmlFor="dateOfBirth">Date of Birth</Label>
           <Input
-            id="age"
-            type="number"
-            value={formData.age || ""}
-            onChange={(e) => setFormData({ ...formData, age: e.target.value ? parseInt(e.target.value) : null })}
-            placeholder="22"
+            id="dateOfBirth"
+            type="date"
+            value={formData.dateOfBirth || ""}
+            onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
           />
         </div>
         <div className="space-y-2">

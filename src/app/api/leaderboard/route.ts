@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/server/db";
 import { logger } from "@/lib/logger";
 import { rateLimit } from "@/lib/server/rate-limit";
+import { calculateAge } from "@/lib/age";
 import { z } from "zod";
 
 const VALID_METRICS = [
@@ -113,6 +114,7 @@ export async function GET(request: Request) {
 
       players = proStatsList.map((ps) => ({
         ...ps.player,
+        age: calculateAge(ps.player.dateOfBirth) ?? ps.player.age,
         proStats: ps,
       }));
 
@@ -153,6 +155,7 @@ export async function GET(request: Request) {
 
       players = splitStats.map((s) => ({
         ...s.player,
+        age: calculateAge(s.player.dateOfBirth) ?? s.player.age,
         proStats: s,
       }));
 

@@ -19,6 +19,7 @@ interface ShareableReportProps {
     photoUrl?: string | null;
     tier?: string | null;
     age?: number | null;
+    dateOfBirth?: string | null;
     nationality?: string | null;
   };
   stats?: {

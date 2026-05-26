@@ -1,4 +1,5 @@
 import { db } from "@/lib/server/db";
+import { calculateAge } from "@/lib/age";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -275,8 +276,8 @@ export default async function ComparePage({ searchParams }: ComparePageProps) {
           />
           <InfoRow
             label="Age"
-            left={p1.age !== null && p1.age !== undefined ? p1.age : "—"}
-            right={p2.age !== null && p2.age !== undefined ? p2.age : "—"}
+            left={calculateAge(p1.dateOfBirth) ?? p1.age ?? "—"}
+            right={calculateAge(p2.dateOfBirth) ?? p2.age ?? "—"}
           />
           <InfoRow label="Role" left={p1.role} right={p2.role} />
           <InfoRow

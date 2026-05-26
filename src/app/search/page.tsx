@@ -64,6 +64,7 @@ const searchPlayers = unstable_cache(
         currentTeam: true,
         photoUrl: true,
         age: true,
+        dateOfBirth: true,
         nationality: true,
         tier: true,
         soloqStats: {

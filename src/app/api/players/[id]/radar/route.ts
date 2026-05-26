@@ -3,6 +3,7 @@ import { db } from "@/lib/server/db";
 import { logger } from "@/lib/logger";
 import { calculateRankPercentile, type PlayerData, getTierFromLeague } from "@/lib/scoring";
 import { ROLE_METRICS } from "@/lib/radar-metrics";
+import { calculateAge } from "@/lib/age";
 
 const METRIC_TO_DB_FIELD: Record<string, string> = {
   "W%": "gamesPlayed",
@@ -160,6 +161,7 @@ export async function GET(
         pseudo: player.pseudo,
         role: player.role,
         league: player.league,
+        age: calculateAge(player.dateOfBirth) ?? player.age,
         tier: player.tier || getTierFromLeague(player.league),
       },
       comparisonMode,

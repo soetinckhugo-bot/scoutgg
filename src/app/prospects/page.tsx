@@ -1,4 +1,5 @@
 import { db } from "@/lib/server/db";
+import { calculateAge } from "@/lib/age";
 import Link from "next/link";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
@@ -73,7 +74,11 @@ const getProspects = cache(async (searchParams: {
     // Always top 30 by score; sort in-memory for display grouping
     const sorted = [...players];
     if (searchParams.sort === "age") {
-      sorted.sort((a, b) => (a.age ?? 999) - (b.age ?? 999));
+      sorted.sort((a, b) => {
+        const ageA = calculateAge(a.dateOfBirth) ?? a.age ?? 999;
+        const ageB = calculateAge(b.dateOfBirth) ?? b.age ?? 999;
+        return ageA - ageB;
+      });
     } else if (searchParams.sort === "nationality") {
       sorted.sort((a, b) => (a.nationality || "").localeCompare(b.nationality || ""));
     } else if (searchParams.sort === "role") {
@@ -82,6 +87,7 @@ const getProspects = cache(async (searchParams: {
 
     const ranked = sorted.map((p, i) => ({
       ...p,
+      age: calculateAge(p.dateOfBirth) ?? p.age,
       displayRank: i + 1,
     }));
 

@@ -43,7 +43,15 @@ export default function ClipsTab() {
   const [clips, setClips] = useState<Clip[]>([]);
   const [loading, setLoading] = useState(false);
   const [isAddOpen, setIsAddOpen] = useState(false);
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<{
+    playerName: string;
+    playerRole: string;
+    title: string;
+    youtubeId: string;
+    monthPeriod: string;
+    isActive: boolean;
+    adminNotes: string | null;
+  }>({
     playerName: "",
     playerRole: "TOP",
     title: "",
@@ -129,7 +137,7 @@ export default function ClipsTab() {
               </div>
               <div>
                 <Label className="text-text-body">Rôle</Label>
-                <Select value={form.playerRole} onValueChange={(v) => setForm({ ...form, playerRole: v })}>
+                <Select value={form.playerRole} onValueChange={(v) => setForm({ ...form, playerRole: v || "TOP" })}>
                   <SelectTrigger className="bg-surface text-text-heading border-border">
                     <SelectValue />
                   </SelectTrigger>

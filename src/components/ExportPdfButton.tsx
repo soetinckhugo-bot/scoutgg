@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { FileDown, Loader2 } from "lucide-react";
+import { calculateAge } from "@/lib/age";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { logger } from "@/lib/logger";
@@ -60,6 +61,7 @@ interface Player {
   role: string;
   nationality: string;
   age: number | null;
+  dateOfBirth: string | null;
   currentTeam: string | null;
   league: string;
   status: string;
@@ -264,7 +266,7 @@ export default function ExportPdfButton({ playerId }: ExportPdfButtonProps) {
       addSectionTitle("Player Information");
       addTwoColRow(
         "Real Name:", player.realName || "N/A",
-        "Age:", player.age ? `${player.age} years` : "N/A"
+        "Age:", (calculateAge(player.dateOfBirth) ?? player.age) ? `${calculateAge(player.dateOfBirth) ?? player.age} years` : "N/A"
       );
       addTwoColRow(
         "Nationality:", player.nationality,

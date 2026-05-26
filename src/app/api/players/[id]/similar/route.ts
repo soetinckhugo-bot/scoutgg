@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/server/db";
 import { logger } from "@/lib/logger";
+import { calculateAge } from "@/lib/age";
 
 function normalize(value: number | null, min: number, max: number): number {
   if (value === null || value === undefined) return 0.5;
@@ -114,6 +115,7 @@ export async function GET(
         league: s.player.league,
         currentTeam: s.player.currentTeam,
         photoUrl: s.player.photoUrl,
+        age: calculateAge(s.player.dateOfBirth) ?? s.player.age,
         similarity: s.similarity,
         soloqStats: s.player.soloqStats,
         proStats: s.player.proStats,

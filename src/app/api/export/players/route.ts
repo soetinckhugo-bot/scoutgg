@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/server/auth-options";
 import { rateLimit } from "@/lib/server/rate-limit";
 import { logger } from "@/lib/logger";
+import { calculateAge } from "@/lib/age";
 
 export async function GET(request: NextRequest) {
   // Require authentication for CSV export
@@ -76,7 +77,7 @@ export async function GET(request: NextRequest) {
       p.realName || "",
       p.role,
       p.nationality,
-      p.age?.toString() || "",
+      String(calculateAge(p.dateOfBirth) ?? p.age ?? ""),
       p.currentTeam || "",
       p.league,
       p.status,

@@ -66,7 +66,7 @@ export async function POST(request: Request) {
       // Merge player fields: fill nulls on master from dupes
       const updateData: Record<string, any> = {};
       const fieldsToMerge = [
-        "photoUrl", "realName", "nationality", "age", "currentTeam",
+        "photoUrl", "realName", "nationality", "age", "dateOfBirth", "currentTeam",
         "riotPuuid", "riotId", "opggUrl", "golggUrl", "lolprosUrl",
         "twitterUrl", "agentTwitterUrl", "twitchUrl", "leaguepediaUrl",
         "discordTag", "bio", "behaviorTags", "signatureChampion",

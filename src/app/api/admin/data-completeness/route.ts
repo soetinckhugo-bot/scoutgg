@@ -60,6 +60,11 @@ export async function GET() {
       where: { age: null },
     });
 
+    // Players without dateOfBirth
+    const withoutDateOfBirth = await db.player.count({
+      where: { dateOfBirth: null },
+    });
+
     // Players without team
     const withoutTeam = await db.player.count({
       where: { currentTeam: null },
@@ -224,6 +229,7 @@ export async function GET() {
         withoutRealName,
         withoutNationality,
         withoutAge,
+        withoutDateOfBirth,
         withoutTeam,
         withProStats,
         withSoloqStats,

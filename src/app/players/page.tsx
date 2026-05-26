@@ -110,6 +110,7 @@ const getPlayers = unstable_cache(
           status: true,
           photoUrl: true,
           age: true,
+          dateOfBirth: true,
           prospectScore: true,
           soloqStats: {
             select: {

@@ -1,4 +1,5 @@
 import { db } from "@/lib/server/db";
+import { calculateAge } from "@/lib/age";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -53,6 +54,7 @@ const getFeaturedPlayer = unstable_cache(
         pseudo: true,
         realName: true,
         age: true,
+        dateOfBirth: true,
         nationality: true,
         role: true,
         league: true,
@@ -176,6 +178,7 @@ const getSoloqPOTW = unstable_cache(
             pseudo: true,
             realName: true,
             age: true,
+            dateOfBirth: true,
             nationality: true,
             role: true,
             status: true,
@@ -291,7 +294,7 @@ export default async function HomePage() {
                     <h2 className="text-lg font-bold text-text-heading">{featuredPlayer.pseudo}</h2>
                     <p className="text-xs text-text-muted">
                       {featuredPlayer.realName && <span>{featuredPlayer.realName}</span>}
-                      {featuredPlayer.age && <span> • {featuredPlayer.age} yo</span>}
+                      {(calculateAge(featuredPlayer.dateOfBirth) ?? featuredPlayer.age) && <span> • {calculateAge(featuredPlayer.dateOfBirth) ?? featuredPlayer.age} yo</span>}
                       {featuredPlayer.nationality && <span> • {featuredPlayer.nationality}</span>}
                     </p>
                     <div className="flex items-center gap-2 mt-1">
@@ -355,7 +358,7 @@ export default async function HomePage() {
                     <h2 className="text-lg font-bold text-text-heading">{soloqPotw.player.pseudo}</h2>
                     <p className="text-xs text-text-muted">
                       {soloqPotw.player.realName && <span>{soloqPotw.player.realName}</span>}
-                      {soloqPotw.player.age && <span> • {soloqPotw.player.age} yo</span>}
+                      {(calculateAge(soloqPotw.player.dateOfBirth) ?? soloqPotw.player.age) && <span> • {calculateAge(soloqPotw.player.dateOfBirth) ?? soloqPotw.player.age} yo</span>}
                       {soloqPotw.player.nationality && <span> • {soloqPotw.player.nationality}</span>}
                     </p>
                     <div className="flex items-center gap-2 mt-1">

@@ -1,4 +1,5 @@
 import { db } from "@/lib/server/db";
+import { calculateAge } from "@/lib/age";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -191,11 +192,13 @@ export default async function PlayerPage(props: {
             {player.realName && (
               <p className="text-text-muted mt-1">
                 {player.realName}
-                {player.age ? ` · ${player.age} years old` : ""}
+                {(calculateAge(player.dateOfBirth) ?? player.age)
+                  ? ` · ${calculateAge(player.dateOfBirth) ?? player.age} years old`
+                  : ""}
               </p>
             )}
-            {!player.realName && player.age && (
-              <p className="text-text-muted mt-1">{player.age} years old</p>
+            {!player.realName && (calculateAge(player.dateOfBirth) ?? player.age) && (
+              <p className="text-text-muted mt-1">{calculateAge(player.dateOfBirth) ?? player.age} years old</p>
             )}
 
             {/* League · Role · Team · Status */}

@@ -4,6 +4,7 @@ import { PlayerUpdateSchema } from "@/lib/schemas";
 import { requireAdmin } from "@/lib/server/auth";
 import { logger } from "@/lib/logger";
 import { computeProspectScore } from "@/lib/prospect-scoring";
+import { calculateAge } from "@/lib/age";
 
 export async function GET(
   request: Request,
@@ -23,7 +24,7 @@ export async function GET(
     if (!player) {
       return NextResponse.json({ error: "Player not found" }, { status: 404 });
     }
-    return NextResponse.json(player);
+    return NextResponse.json({ ...player, age: calculateAge(player.dateOfBirth) ?? player.age });
   } catch (error) {
     logger.error("Error fetching player:", { error });
     return NextResponse.json(
@@ -61,6 +62,7 @@ export async function PUT(
         ...(body.realName !== undefined && { realName: body.realName }),
         ...(body.role !== undefined && { role: body.role }),
         ...(body.nationality !== undefined && { nationality: body.nationality }),
+        ...(body.dateOfBirth !== undefined && { dateOfBirth: body.dateOfBirth ? new Date(body.dateOfBirth) : null }),
         ...(body.age !== undefined && { age: body.age }),
         ...(body.currentTeam !== undefined && { currentTeam: body.currentTeam }),
         ...(body.league !== undefined && { league: body.league }),
@@ -106,7 +108,7 @@ export async function PUT(
           peakLp: player.peakElo2Years ?? 0,
           bestProResult: player.bestProResult,
           currentLeague: player.league,
-          age: player.age,
+          age: calculateAge(player.dateOfBirth) ?? player.age,
           globalScore: player.proStats?.globalScore ?? null,
           eyeTestRating: player.eyeTestRating,
         });

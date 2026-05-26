@@ -35,6 +35,7 @@ import {
 } from "lucide-react";
 import ScoutIcon from "@/components/ScoutIcon";
 import { ROLE_COLORS } from "@/lib/constants";
+import { calculateAge } from "@/lib/age";
 
 interface Player {
   id: string;
@@ -43,6 +44,7 @@ interface Player {
   role: string;
   nationality: string | null;
   age: number | null;
+  dateOfBirth?: Date | string | null;
   currentTeam: string | null;
   league: string;
   tier: string | null;
@@ -511,7 +513,7 @@ export default function LeaderboardsPage() {
                             </Badge>
                           </div>
                           <div className="text-[10px] text-text-muted truncate">
-                            {player.nationality} {player.age ? `· ${player.age} yrs` : ""}
+                            {player.nationality} {(calculateAge(player.dateOfBirth) ?? player.age) ? `· ${calculateAge(player.dateOfBirth) ?? player.age} yrs` : ""}
                           </div>
                         </div>
                       </div>
