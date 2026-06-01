@@ -6,7 +6,7 @@ import { Trophy } from "lucide-react";
 
 export const metadata = {
   title: "Hall of Fame — LeagueScout",
-  description: "Archive des meilleurs clips du mois.",
+  description: "Archive of the best clips of the month.",
 };
 
 function getEmbedUrl(platform: string, videoId: string): string {
@@ -50,7 +50,7 @@ export default async function HallOfFamePage({
             </h1>
           </div>
           <p className="text-text-body text-sm">
-            Les clips vainqueurs, mois après mois.
+            Winning clips, month after month.
           </p>
         </div>
 
@@ -73,7 +73,7 @@ export default async function HallOfFamePage({
         {clipsWithStats.length === 0 ? (
           <div className="text-center py-16">
             <Trophy className="h-8 w-8 text-text-muted mx-auto mb-3" />
-            <p className="text-text-body text-lg">Aucun gagnant pour le moment.</p>
+            <p className="text-text-body text-lg">No winners yet.</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">

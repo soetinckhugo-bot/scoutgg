@@ -11,14 +11,29 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const monthPeriod = searchParams.get("month") || getCurrentMonthPeriod();
+    const period = searchParams.get("period") || "month";
+    const role = searchParams.get("role");
+    const player = searchParams.get("player");
+    const sort = searchParams.get("sort") || "recent";
+
+    const where: any = { isActive: true };
+    if (period === "month") {
+      where.monthPeriod = monthPeriod;
+    }
+    if (role) {
+      where.playerRole = role;
+    }
+    if (player) {
+      where.playerName = { contains: player, mode: "insensitive" };
+    }
 
     const clips = await db.clip.findMany({
-      where: { isActive: true, monthPeriod },
+      where,
       include: { votes: { select: { score: true } } },
       orderBy: { createdAt: "desc" },
     });
 
-    const clipsWithStats = clips.map((clip) => {
+    let clipsWithStats = clips.map((clip) => {
       const totalVotes = clip.votes.length;
       const avgScore = totalVotes > 0
         ? clip.votes.reduce((sum, v) => sum + v.score, 0) / totalVotes
@@ -39,6 +54,15 @@ export async function GET(request: Request) {
         avgScore: Math.round(avgScore * 10) / 10,
       };
     });
+
+    if (sort === "popular") {
+      clipsWithStats.sort((a, b) => b.totalVotes - a.totalVotes);
+    } else if (sort === "top") {
+      clipsWithStats.sort((a, b) => b.avgScore - a.avgScore || b.totalVotes - a.totalVotes);
+    } else if (sort === "player") {
+      clipsWithStats.sort((a, b) => a.playerName.localeCompare(b.playerName));
+    }
+    // "recent" is default (already sorted by createdAt desc)
 
     return NextResponse.json({ clips: clipsWithStats });
   } catch (error: any) {

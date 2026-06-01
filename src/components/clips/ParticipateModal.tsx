@@ -17,50 +17,50 @@ export default function ParticipateModal() {
       <DialogTrigger>
         <Button className="bg-primary-accent hover:bg-primary-accent/90 text-text-heading">
           <Film className="h-4 w-4 mr-2" />
-          Participer
+          Participate
         </Button>
       </DialogTrigger>
       <DialogContent className="bg-card border-border max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-text-heading text-lg">Comment participer ?</DialogTitle>
+          <DialogTitle className="text-text-heading text-lg">How to participate?</DialogTitle>
           <DialogDescription className="text-text-body text-sm">
-            Envoie ton clip par mail pour apparaître sur le site.
+            Send your clip via email to appear on the site.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 text-sm text-text-body">
           <div className="flex items-start gap-3">
             <Mail className="h-5 w-5 text-primary-accent shrink-0 mt-0.5" />
             <div>
-              <p className="font-semibold text-text-heading">Envoi par mail</p>
-              <p>Envoie ton clip à l&apos;adresse dédiée (à venir) avec ton pseudo, ton rôle, le titre du clip et le lien YouTube Short ou TikTok.</p>
+              <p className="font-semibold text-text-heading">Send by email</p>
+              <p>Send your clip to the dedicated address (coming soon) with your in-game name, role, clip title, and YouTube Short or TikTok link.</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
             <Clock className="h-5 w-5 text-primary-accent shrink-0 mt-0.5" />
             <div>
-              <p className="font-semibold text-text-heading">Durée max 60s</p>
-              <p>Ton clip ne doit pas dépasser 60 secondes. Format vertical (9:16) recommandé.</p>
+              <p className="font-semibold text-text-heading">Max duration 60s</p>
+              <p>Your clip must not exceed 60 seconds. Vertical format (9:16) recommended.</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
             <FileVideo className="h-5 w-5 text-primary-accent shrink-0 mt-0.5" />
             <div>
-              <p className="font-semibold text-text-heading">YouTube Short ou TikTok</p>
-              <p>Ton clip doit être publié sur YouTube Shorts ou TikTok. Pas d&apos;upload direct.</p>
+              <p className="font-semibold text-text-heading">YouTube Short or TikTok</p>
+              <p>Your clip must be published on YouTube Shorts or TikTok. No direct upload.</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
             <Music className="h-5 w-5 text-primary-accent shrink-0 mt-0.5" />
             <div>
-              <p className="font-semibold text-text-heading">Pas de musique copyright</p>
-              <p>Évite les musiques protégées pour ne pas te prendre un Content ID.</p>
+              <p className="font-semibold text-text-heading">No copyrighted music</p>
+              <p>Avoid copyrighted music to prevent Content ID claims.</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
             <Shield className="h-5 w-5 text-primary-accent shrink-0 mt-0.5" />
             <div>
-              <p className="font-semibold text-text-heading">Acceptation des CGU</p>
-              <p>En participant, tu autorises la publication de ton clip sur la chaîne du site.</p>
+              <p className="font-semibold text-text-heading">Terms acceptance</p>
+              <p>By participating, you authorize the publication of your clip on the site's channel.</p>
             </div>
           </div>
         </div>

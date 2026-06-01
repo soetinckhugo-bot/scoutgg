@@ -18,6 +18,7 @@ interface ClipCardProps {
   };
   userVote?: number;
   onVote: (clipId: string, score: number) => void;
+  canVote?: boolean;
 }
 
 function getEmbedUrl(platform: string, videoId: string): string {
@@ -27,7 +28,7 @@ function getEmbedUrl(platform: string, videoId: string): string {
   return `https://www.youtube.com/embed/${videoId}?rel=0`;
 }
 
-export default function ClipCard({ clip, userVote, onVote }: ClipCardProps) {
+export default function ClipCard({ clip, userVote, onVote, canVote = true }: ClipCardProps) {
   const [loading, setLoading] = useState(false);
 
   async function handleVote(score: number) {
@@ -61,8 +62,8 @@ export default function ClipCard({ clip, userVote, onVote }: ClipCardProps) {
         <div className="flex items-center justify-between">
           <StarRating
             value={userVote || Math.round(clip.avgScore)}
-            onChange={!loading ? handleVote : undefined}
-            readonly={loading}
+            onChange={!loading && canVote ? handleVote : undefined}
+            readonly={loading || !canVote}
             size={18}
           />
           <span className="text-xs text-text-muted">
@@ -70,7 +71,10 @@ export default function ClipCard({ clip, userVote, onVote }: ClipCardProps) {
           </span>
         </div>
         {userVote && (
-          <p className="text-xs text-success">Vote enregistré</p>
+          <p className="text-xs text-success">Vote saved</p>
+        )}
+        {!canVote && (
+          <p className="text-xs text-text-muted">Log in to vote</p>
         )}
       </CardContent>
     </Card>

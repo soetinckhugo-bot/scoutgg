@@ -84,11 +84,11 @@ export default function ClipsTab() {
       body: JSON.stringify(form),
     });
     if (res.ok) {
-      toast.success("Clip créé");
+      toast.success("Clip created");
       setIsAddOpen(false);
       fetchClips();
     } else {
-      toast.error("Erreur lors de la création");
+      toast.error("Error creating clip");
     }
   }
 
@@ -99,21 +99,21 @@ export default function ClipsTab() {
       body: JSON.stringify(patch),
     });
     if (res.ok) {
-      toast.success("Clip mis à jour");
+      toast.success("Clip updated");
       fetchClips();
     } else {
-      toast.error("Erreur lors de la mise à jour");
+      toast.error("Error updating clip");
     }
   }
 
   async function deleteClip(id: string) {
-    if (!confirm("Supprimer ce clip ?")) return;
+    if (!confirm("Delete this clip?")) return;
     const res = await fetch(`/api/admin/clips/${id}`, { method: "DELETE" });
     if (res.ok) {
-      toast.success("Clip supprimé");
+      toast.success("Clip deleted");
       fetchClips();
     } else {
-      toast.error("Erreur lors de la suppression");
+      toast.error("Error deleting clip");
     }
   }
 
@@ -126,20 +126,20 @@ export default function ClipsTab() {
         </h2>
         <Button onClick={() => setIsAddOpen(true)} className="bg-primary-accent hover:bg-primary-accent/90 text-text-heading">
           <Plus className="h-4 w-4 mr-1" />
-          Ajouter
+          Add
         </Button>
         <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
           <DialogContent className="bg-card border-border max-w-lg">
             <DialogHeader>
-              <DialogTitle className="text-text-heading">Nouveau clip</DialogTitle>
+              <DialogTitle className="text-text-heading">New clip</DialogTitle>
             </DialogHeader>
             <form onSubmit={createClip} className="space-y-4">
               <div>
-                <Label className="text-text-body">Pseudo</Label>
+                <Label className="text-text-body">Player name</Label>
                 <Input value={form.playerName} onChange={(e) => setForm({ ...form, playerName: e.target.value })} className="bg-surface text-text-heading border-border" required />
               </div>
               <div>
-                <Label className="text-text-body">Rôle</Label>
+                <Label className="text-text-body">Role</Label>
                 <Select value={form.playerRole} onValueChange={(v) => setForm({ ...form, playerRole: v || "TOP" })}>
                   <SelectTrigger className="bg-surface text-text-heading border-border">
                     <SelectValue />
@@ -152,11 +152,11 @@ export default function ClipsTab() {
                 </Select>
               </div>
               <div>
-                <Label className="text-text-body">Titre</Label>
+                <Label className="text-text-body">Title</Label>
                 <Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="bg-surface text-text-heading border-border" required />
               </div>
               <div>
-                <Label className="text-text-body">Plateforme</Label>
+                <Label className="text-text-body">Platform</Label>
                 <Select value={form.platform} onValueChange={(v) => setForm({ ...form, platform: v || "youtube" })}>
                   <SelectTrigger className="bg-surface text-text-heading border-border">
                     <SelectValue />
@@ -172,37 +172,37 @@ export default function ClipsTab() {
                 <Input value={form.videoId} onChange={(e) => setForm({ ...form, videoId: e.target.value })} className="bg-surface text-text-heading border-border" placeholder={form.platform === "youtube" ? "dQw4w9WgXcQ" : "1234567890"} required />
               </div>
               <div>
-                <Label className="text-text-body">Mois (YYYY-MM)</Label>
+                <Label className="text-text-body">Month (YYYY-MM)</Label>
                 <Input value={form.monthPeriod} onChange={(e) => setForm({ ...form, monthPeriod: e.target.value })} className="bg-surface text-text-heading border-border" pattern="\d{4}-\d{2}" required />
               </div>
               <div>
-                <Label className="text-text-body">Notes admin</Label>
+                <Label className="text-text-body">Admin notes</Label>
                 <Input value={form.adminNotes || ""} onChange={(e) => setForm({ ...form, adminNotes: e.target.value })} className="bg-surface text-text-heading border-border" />
               </div>
-              <Button type="submit" className="w-full bg-primary-accent hover:bg-primary-accent/90 text-text-heading">Créer</Button>
+              <Button type="submit" className="w-full bg-primary-accent hover:bg-primary-accent/90 text-text-heading">Create</Button>
             </form>
           </DialogContent>
         </Dialog>
       </div>
 
       {loading ? (
-        <p className="text-text-muted">Chargement...</p>
+        <p className="text-text-muted">Loading...</p>
       ) : clips.length === 0 ? (
-        <p className="text-text-muted">Aucun clip.</p>
+        <p className="text-text-muted">No clips.</p>
       ) : (
         <div className="rounded-lg border border-border overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-surface-hover text-text-body">
                 <tr>
-                  <th className="px-4 py-3 text-left">Titre</th>
-                  <th className="px-4 py-3 text-left">Joueur</th>
-                  <th className="px-4 py-3 text-left">Rôle</th>
-                  <th className="px-4 py-3 text-left">Mois</th>
-                  <th className="px-4 py-3 text-left">Actif</th>
-                  <th className="px-4 py-3 text-left">Gagnant</th>
+                  <th className="px-4 py-3 text-left">Title</th>
+                  <th className="px-4 py-3 text-left">Player</th>
+                  <th className="px-4 py-3 text-left">Role</th>
+                  <th className="px-4 py-3 text-left">Month</th>
+                  <th className="px-4 py-3 text-left">Active</th>
+                  <th className="px-4 py-3 text-left">Winner</th>
                   <th className="px-4 py-3 text-left">Votes</th>
-                  <th className="px-4 py-3 text-left">Moyenne</th>
+                  <th className="px-4 py-3 text-left">Average</th>
                   <th className="px-4 py-3 text-left">Actions</th>
                 </tr>
               </thead>

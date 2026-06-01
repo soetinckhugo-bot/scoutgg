@@ -586,11 +586,11 @@ model Clip {
 model ClipVote {
   id        String   @id @default(cuid())
   clipId    String
-  ipHash    String
+  userId    String
   score     Int
   votedAt   DateTime @default(now())
   clip      Clip     @relation(fields: [clipId], references: [id], onDelete: Cascade)
 
-  @@unique([clipId, ipHash])
+  @@unique([clipId, userId])
   @@index([clipId])
 }

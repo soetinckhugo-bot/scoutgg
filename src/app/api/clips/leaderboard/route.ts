@@ -11,10 +11,16 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const monthPeriod = searchParams.get("month") || getCurrentMonthPeriod();
+    const period = searchParams.get("period") || "month";
     const minVotes = parseInt(searchParams.get("minVotes") || "5", 10);
 
+    const where: any = { isActive: true };
+    if (period === "month") {
+      where.monthPeriod = monthPeriod;
+    }
+
     const clips = await db.clip.findMany({
-      where: { isActive: true, monthPeriod },
+      where,
       include: { votes: { select: { score: true } } },
     });
 
@@ -30,7 +36,7 @@ export async function GET(request: Request) {
           playerRole: clip.playerRole,
           title: clip.title,
           platform: clip.platform,
-        videoId: clip.videoId,
+          videoId: clip.videoId,
           monthPeriod: clip.monthPeriod,
           isWinner: clip.isWinner,
           createdAt: clip.createdAt,

@@ -2,18 +2,21 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/server/db";
 import { rateLimit } from "@/lib/server/rate-limit";
 import { logger } from "@/lib/logger";
-import crypto from "crypto";
-
-function getIpHash(request: Request): string {
-  const forwarded = request.headers.get("x-forwarded-for");
-  const ip = forwarded ? forwarded.split(",")[0].trim() : request.headers.get("x-real-ip") || "unknown";
-  return crypto.createHash("sha256").update(ip).digest("hex").slice(0, 32);
-}
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/server/auth-options";
 
 export async function POST(request: Request) {
   try {
-    const ipHash = getIpHash(request);
-    const limit = rateLimit(`vote:${ipHash}`, 10, 60 * 1000);
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+    }
+    const userId = (session.user as any).id;
+    if (!userId) {
+      return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+    }
+
+    const limit = rateLimit(`vote:${userId}`, 10, 60 * 1000);
     if (!limit.success) {
       return NextResponse.json({ error: "Too many requests" }, { status: 429 });
     }
@@ -31,9 +34,9 @@ export async function POST(request: Request) {
     }
 
     const vote = await db.clipVote.upsert({
-      where: { clipId_ipHash: { clipId, ipHash } },
+      where: { clipId_userId: { clipId, userId } },
       update: { score },
-      create: { clipId, ipHash, score },
+      create: { clipId, userId, score },
     });
 
     return NextResponse.json({ success: true, vote });
