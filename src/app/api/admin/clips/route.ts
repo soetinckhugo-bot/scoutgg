@@ -10,6 +10,7 @@ const createSchema = z.object({
   title: z.string().min(1).max(100),
   platform: z.enum(["youtube", "tiktok"]),
   videoId: z.string().min(1).max(50),
+  champion: z.string().min(1).max(30).optional(),
   monthPeriod: z.string().regex(/^\d{4}-\d{2}$/),
   isActive: z.boolean().optional(),
   adminNotes: z.string().optional(),

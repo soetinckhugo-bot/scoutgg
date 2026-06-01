@@ -16,7 +16,7 @@ function getEmbedUrl(platform: string, videoId: string): string {
   if (platform === "tiktok") {
     return `https://www.tiktok.com/embed/${videoId}`;
   }
-  return `https://www.youtube.com/embed/${videoId}?rel=0&autoplay=1`;
+  return `https://www.youtube.com/embed/${videoId}?rel=0&autoplay=1&vq=hd1080&modestbranding=1&iv_load_policy=3`;
 }
 
 export default function ClipLightbox({ open, onOpenChange, clip }: ClipLightboxProps) {

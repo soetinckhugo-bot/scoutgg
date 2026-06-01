@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import ClipCard from "@/components/clips/ClipCard";
 import ClipPodium from "@/components/clips/ClipPodium";
 import ClipLightbox from "@/components/clips/ClipLightbox";
+import ClipSidebar from "@/components/clips/ClipSidebar";
 import ParticipateModal from "@/components/clips/ParticipateModal";
 import { Input } from "@/components/ui/input";
 import { Star, Search, TrendingUp, Clock, User, Calendar } from "lucide-react";
@@ -14,6 +15,7 @@ interface Clip {
   id: string;
   playerName: string;
   playerRole: string;
+  champion: string | null;
   title: string;
   platform: string;
   videoId: string;
@@ -192,29 +194,41 @@ export default function ClipsPage() {
           </div>
         </div>
 
-        {!loading && period === "month" && <ClipPodium clips={podium} onOpen={setSelectedClip} />}
+        <div className="flex flex-col lg:flex-row gap-6">
+          <div className="flex-1 min-w-0">
+            {!loading && period === "month" && <ClipPodium clips={podium} onOpen={setSelectedClip} />}
 
-        {loading ? (
-          <div className="text-center py-16 text-text-muted">Loading...</div>
-        ) : clips.length === 0 ? (
-          <div className="text-center py-16">
-            <Star className="h-8 w-8 text-text-muted mx-auto mb-3" />
-            <p className="text-text-body text-lg">No clips found.</p>
+            {loading ? (
+              <div className="text-center py-16 text-text-muted">Loading...</div>
+            ) : clips.length === 0 ? (
+              <div className="text-center py-16">
+                <Star className="h-8 w-8 text-text-muted mx-auto mb-3" />
+                <p className="text-text-body text-lg">No clips found.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                {clips.map((clip) => (
+                  <ClipCard
+                    key={clip.id}
+                    clip={clip}
+                    userVote={userVotes[clip.id]}
+                    onVote={handleVote}
+                    canVote={!!session?.user}
+                    onOpen={() => setSelectedClip(clip)}
+                  />
+                ))}
+              </div>
+            )}
           </div>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-            {clips.map((clip) => (
-              <ClipCard
-                key={clip.id}
-                clip={clip}
-                userVote={userVotes[clip.id]}
-                onVote={handleVote}
-                canVote={!!session?.user}
-                onOpen={() => setSelectedClip(clip)}
-              />
-            ))}
+
+          <div className="w-full lg:w-72 shrink-0">
+            <ClipSidebar
+              clips={clips}
+              onOpen={setSelectedClip}
+              activeClipId={selectedClip?.id}
+            />
           </div>
-        )}
+        </div>
       </div>
 
       <ClipLightbox

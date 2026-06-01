@@ -10,6 +10,7 @@ const updateSchema = z.object({
   title: z.string().min(1).max(100).optional(),
   platform: z.enum(["youtube", "tiktok"]).optional(),
   videoId: z.string().min(1).max(50).optional(),
+  champion: z.string().min(1).max(30).optional().nullable(),
   monthPeriod: z.string().regex(/^\d{4}-\d{2}$/).optional(),
   isActive: z.boolean().optional(),
   isWinner: z.boolean().optional(),

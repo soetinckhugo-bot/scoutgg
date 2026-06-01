@@ -4,12 +4,14 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import StarRating from "./StarRating";
+import { getChampionIconUrl } from "@/lib/game-assets";
 
 interface ClipCardProps {
   clip: {
     id: string;
     playerName: string;
     playerRole: string;
+    champion: string | null;
     title: string;
     platform: string;
     videoId: string;
@@ -22,13 +24,6 @@ interface ClipCardProps {
   onOpen: () => void;
 }
 
-function getThumbnailUrl(platform: string, videoId: string): string {
-  if (platform === "youtube") {
-    return `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
-  }
-  return "";
-}
-
 export default function ClipCard({ clip, userVote, onVote, canVote = true, onOpen }: ClipCardProps) {
   const [loading, setLoading] = useState(false);
 
@@ -38,20 +33,20 @@ export default function ClipCard({ clip, userVote, onVote, canVote = true, onOpe
     setLoading(false);
   }
 
-  const thumb = getThumbnailUrl(clip.platform, clip.videoId);
+  const thumb = clip.champion ? getChampionIconUrl(clip.champion) : "";
 
   return (
     <Card className="bg-card border-border overflow-hidden transition-all duration-200 hover:shadow-lg hover:scale-[1.02] cursor-pointer group">
-      <div className="relative bg-black" style={{ paddingBottom: "133.33%" }} onClick={onOpen}>
+      <div className="relative bg-black aspect-[4/3] flex items-center justify-center" onClick={onOpen}>
         {thumb ? (
           <img
             src={thumb}
-            alt={clip.title}
-            className="absolute inset-0 w-full h-full object-cover"
+            alt={clip.champion || "champion"}
+            className="w-20 h-20 object-contain rounded-lg"
             loading="lazy"
           />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center bg-surface">
+          <div className="w-20 h-20 rounded-lg bg-surface flex items-center justify-center">
             <span className="text-text-muted text-xs">{clip.platform}</span>
           </div>
         )}
@@ -72,6 +67,9 @@ export default function ClipCard({ clip, userVote, onVote, canVote = true, onOpe
             {clip.playerName}
           </span>
         </div>
+        {clip.champion && (
+          <p className="text-[10px] text-primary-accent text-center font-medium">{clip.champion}</p>
+        )}
         <h3 className="text-xs text-text-body text-center line-clamp-1">{clip.title}</h3>
         <div className="flex items-center justify-center gap-2">
           <StarRating

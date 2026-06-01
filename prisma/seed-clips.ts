@@ -9,6 +9,7 @@ async function main() {
     {
       playerName: "Zeka",
       playerRole: "MID",
+      champion: "Kai'Sa",
       title: "Double Kill under tower",
       platform: "youtube",
       videoId: "dQw4w9WgXcQ",
@@ -18,6 +19,7 @@ async function main() {
     {
       playerName: "Canyon",
       playerRole: "JUNGLE",
+      champion: "Lee Sin",
       title: "Baron Steal with Smite",
       platform: "youtube",
       videoId: "9bZkp7q19f0",
@@ -27,6 +29,7 @@ async function main() {
     {
       playerName: "Gumayusi",
       playerRole: "ADC",
+      champion: "Jinx",
       title: "Pentakill in teamfight",
       platform: "youtube",
       videoId: "kJQP7kiw5Fk",
@@ -36,6 +39,7 @@ async function main() {
     {
       playerName: "Keria",
       playerRole: "SUPPORT",
+      champion: "Thresh",
       title: "Insane ADC save",
       platform: "youtube",
       videoId: "RgKAFK5djSk",
@@ -45,6 +49,7 @@ async function main() {
     {
       playerName: "Zeus",
       playerRole: "TOP",
+      champion: "Jax",
       title: "1v2 Top Lane Outplay",
       platform: "youtube",
       videoId: "CevxZvSJLk8",
@@ -54,9 +59,20 @@ async function main() {
     {
       playerName: "Chovy",
       playerRole: "MID",
+      champion: "Azir",
       title: "Perfect CS at 10 min",
       platform: "youtube",
       videoId: "JGwWNGJdvx8",
+      monthPeriod,
+      isActive: true,
+    },
+    {
+      playerName: "TestPlayer",
+      playerRole: "MID",
+      champion: "Kai'Sa",
+      title: "YouTube Short Test",
+      platform: "youtube",
+      videoId: "AhQGSaxiWiU",
       monthPeriod,
       isActive: true,
     },

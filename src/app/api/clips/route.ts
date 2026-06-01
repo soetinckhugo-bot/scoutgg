@@ -33,7 +33,7 @@ export async function GET(request: Request) {
       orderBy: { createdAt: "desc" },
     });
 
-    let clipsWithStats = clips.map((clip) => {
+    const clipsWithStats = clips.map((clip) => {
       const totalVotes = clip.votes.length;
       const avgScore = totalVotes > 0
         ? clip.votes.reduce((sum, v) => sum + v.score, 0) / totalVotes
@@ -42,6 +42,7 @@ export async function GET(request: Request) {
         id: clip.id,
         playerName: clip.playerName,
         playerRole: clip.playerRole,
+        champion: clip.champion,
         title: clip.title,
         platform: clip.platform,
         videoId: clip.videoId,

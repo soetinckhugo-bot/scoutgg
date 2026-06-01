@@ -34,6 +34,7 @@ export async function GET(request: Request) {
           id: clip.id,
           playerName: clip.playerName,
           playerRole: clip.playerRole,
+          champion: clip.champion,
           title: clip.title,
           platform: clip.platform,
           videoId: clip.videoId,

@@ -566,6 +566,7 @@ model Clip {
   id          String     @id @default(cuid())
   playerName  String
   playerRole  String     // top/jungle/mid/adc/support
+  champion    String?
   title       String
   platform    String     @default("youtube") // youtube | tiktok
   videoId     String     // youtubeId or tiktok video id

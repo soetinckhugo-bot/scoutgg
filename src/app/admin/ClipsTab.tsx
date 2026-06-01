@@ -30,6 +30,7 @@ interface Clip {
   title: string;
   platform: string;
   videoId: string;
+  champion: string | null;
   monthPeriod: string;
   isActive: boolean;
   isWinner: boolean;
@@ -50,6 +51,7 @@ export default function ClipsTab() {
     title: string;
     platform: string;
     videoId: string;
+    champion: string;
     monthPeriod: string;
     isActive: boolean;
     adminNotes: string | null;
@@ -59,6 +61,7 @@ export default function ClipsTab() {
     title: "",
     platform: "youtube",
     videoId: "",
+    champion: "",
     monthPeriod: new Date().toISOString().slice(0, 7),
     isActive: true,
     adminNotes: "",
@@ -176,6 +179,10 @@ export default function ClipsTab() {
                 <Input value={form.monthPeriod} onChange={(e) => setForm({ ...form, monthPeriod: e.target.value })} className="bg-surface text-text-heading border-border" pattern="\d{4}-\d{2}" required />
               </div>
               <div>
+                <Label className="text-text-body">Champion</Label>
+                <Input value={form.champion || ""} onChange={(e) => setForm({ ...form, champion: e.target.value })} className="bg-surface text-text-heading border-border" placeholder="e.g. Yasuo, Kai'Sa" />
+              </div>
+              <div>
                 <Label className="text-text-body">Admin notes</Label>
                 <Input value={form.adminNotes || ""} onChange={(e) => setForm({ ...form, adminNotes: e.target.value })} className="bg-surface text-text-heading border-border" />
               </div>
@@ -198,6 +205,7 @@ export default function ClipsTab() {
                   <th className="px-4 py-3 text-left">Title</th>
                   <th className="px-4 py-3 text-left">Player</th>
                   <th className="px-4 py-3 text-left">Role</th>
+                  <th className="px-4 py-3 text-left">Champion</th>
                   <th className="px-4 py-3 text-left">Month</th>
                   <th className="px-4 py-3 text-left">Active</th>
                   <th className="px-4 py-3 text-left">Winner</th>
@@ -214,6 +222,7 @@ export default function ClipsTab() {
                     <td className="px-4 py-3">
                       <Badge variant="secondary" className="text-xs bg-surface-hover text-text-body">{clip.playerRole}</Badge>
                     </td>
+                    <td className="px-4 py-3 text-text-muted">{clip.champion || "—"}</td>
                     <td className="px-4 py-3 text-text-muted">{clip.monthPeriod}</td>
                     <td className="px-4 py-3">
                       <Button
