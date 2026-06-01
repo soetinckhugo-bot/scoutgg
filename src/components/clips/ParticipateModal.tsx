@@ -32,21 +32,21 @@ export default function ParticipateModal() {
             <Mail className="h-5 w-5 text-primary-accent shrink-0 mt-0.5" />
             <div>
               <p className="font-semibold text-text-heading">Envoi par mail</p>
-              <p>Envoie ton clip à l'adresse dédiée (à venir) avec ton pseudo, ton rôle, le titre du clip et le lien YouTube unlisted.</p>
+              <p>Envoie ton clip à l&apos;adresse dédiée (à venir) avec ton pseudo, ton rôle, le titre du clip et le lien YouTube Short ou TikTok.</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
             <Clock className="h-5 w-5 text-primary-accent shrink-0 mt-0.5" />
             <div>
               <p className="font-semibold text-text-heading">Durée max 60s</p>
-              <p>Ton clip ne doit pas dépasser 60 secondes.</p>
+              <p>Ton clip ne doit pas dépasser 60 secondes. Format vertical (9:16) recommandé.</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
             <FileVideo className="h-5 w-5 text-primary-accent shrink-0 mt-0.5" />
             <div>
-              <p className="font-semibold text-text-heading">Format YouTube</p>
-              <p>Ton clip doit être en non-listé sur YouTube. Pas d'upload MP4 direct.</p>
+              <p className="font-semibold text-text-heading">YouTube Short ou TikTok</p>
+              <p>Ton clip doit être publié sur YouTube Shorts ou TikTok. Pas d&apos;upload direct.</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
@@ -60,7 +60,7 @@ export default function ParticipateModal() {
             <Shield className="h-5 w-5 text-primary-accent shrink-0 mt-0.5" />
             <div>
               <p className="font-semibold text-text-heading">Acceptation des CGU</p>
-              <p>En participant, tu autorises la publication de ton clip sur la chaîne YouTube du site.</p>
+              <p>En participant, tu autorises la publication de ton clip sur la chaîne du site.</p>
             </div>
           </div>
         </div>

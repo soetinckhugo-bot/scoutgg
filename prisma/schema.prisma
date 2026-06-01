@@ -567,7 +567,8 @@ model Clip {
   playerName  String
   playerRole  String     // top/jungle/mid/adc/support
   title       String
-  youtubeId   String
+  platform    String     @default("youtube") // youtube | tiktok
+  videoId     String     // youtubeId or tiktok video id
   monthPeriod String     // format "YYYY-MM"
   isActive    Boolean    @default(false)
   isWinner    Boolean    @default(false)

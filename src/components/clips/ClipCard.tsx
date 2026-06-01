@@ -11,12 +11,20 @@ interface ClipCardProps {
     playerName: string;
     playerRole: string;
     title: string;
-    youtubeId: string;
+    platform: string;
+    videoId: string;
     totalVotes: number;
     avgScore: number;
   };
   userVote?: number;
   onVote: (clipId: string, score: number) => void;
+}
+
+function getEmbedUrl(platform: string, videoId: string): string {
+  if (platform === "tiktok") {
+    return `https://www.tiktok.com/embed/${videoId}`;
+  }
+  return `https://www.youtube.com/embed/${videoId}?rel=0`;
 }
 
 export default function ClipCard({ clip, userVote, onVote }: ClipCardProps) {
@@ -30,9 +38,9 @@ export default function ClipCard({ clip, userVote, onVote }: ClipCardProps) {
 
   return (
     <Card className="bg-card border-border overflow-hidden transition-all duration-200 hover:shadow-lg hover:scale-[1.02]">
-      <div className="relative aspect-video bg-black">
+      <div className="relative bg-black" style={{ paddingBottom: "177.78%" }}>
         <iframe
-          src={`https://www.youtube.com/embed/${clip.youtubeId}?rel=0`}
+          src={getEmbedUrl(clip.platform, clip.videoId)}
           title={clip.title}
           className="absolute inset-0 w-full h-full"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

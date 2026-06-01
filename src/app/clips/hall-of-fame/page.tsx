@@ -9,6 +9,13 @@ export const metadata = {
   description: "Archive des meilleurs clips du mois.",
 };
 
+function getEmbedUrl(platform: string, videoId: string): string {
+  if (platform === "tiktok") {
+    return `https://www.tiktok.com/embed/${videoId}`;
+  }
+  return `https://www.youtube.com/embed/${videoId}?rel=0`;
+}
+
 export default async function HallOfFamePage({
   searchParams,
 }: {
@@ -69,12 +76,12 @@ export default async function HallOfFamePage({
             <p className="text-text-body text-lg">Aucun gagnant pour le moment.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
             {clipsWithStats.map((clip) => (
               <Card key={clip.id} className="bg-card border-border overflow-hidden">
-                <div className="relative aspect-video bg-black">
+                <div className="relative bg-black" style={{ paddingBottom: "177.78%" }}>
                   <iframe
-                    src={`https://www.youtube.com/embed/${clip.youtubeId}?rel=0`}
+                    src={getEmbedUrl(clip.platform, clip.videoId)}
                     title={clip.title}
                     className="absolute inset-0 w-full h-full"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

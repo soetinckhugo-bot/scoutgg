@@ -28,7 +28,8 @@ interface Clip {
   playerName: string;
   playerRole: string;
   title: string;
-  youtubeId: string;
+  platform: string;
+  videoId: string;
   monthPeriod: string;
   isActive: boolean;
   isWinner: boolean;
@@ -47,7 +48,8 @@ export default function ClipsTab() {
     playerName: string;
     playerRole: string;
     title: string;
-    youtubeId: string;
+    platform: string;
+    videoId: string;
     monthPeriod: string;
     isActive: boolean;
     adminNotes: string | null;
@@ -55,7 +57,8 @@ export default function ClipsTab() {
     playerName: "",
     playerRole: "TOP",
     title: "",
-    youtubeId: "",
+    platform: "youtube",
+    videoId: "",
     monthPeriod: new Date().toISOString().slice(0, 7),
     isActive: true,
     adminNotes: "",
@@ -153,8 +156,20 @@ export default function ClipsTab() {
                 <Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="bg-surface text-text-heading border-border" required />
               </div>
               <div>
-                <Label className="text-text-body">YouTube ID</Label>
-                <Input value={form.youtubeId} onChange={(e) => setForm({ ...form, youtubeId: e.target.value })} className="bg-surface text-text-heading border-border" placeholder="dQw4w9WgXcQ" required />
+                <Label className="text-text-body">Plateforme</Label>
+                <Select value={form.platform} onValueChange={(v) => setForm({ ...form, platform: v || "youtube" })}>
+                  <SelectTrigger className="bg-surface text-text-heading border-border">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-card border-border">
+                    <SelectItem value="youtube">YouTube</SelectItem>
+                    <SelectItem value="tiktok">TikTok</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label className="text-text-body">Video ID</Label>
+                <Input value={form.videoId} onChange={(e) => setForm({ ...form, videoId: e.target.value })} className="bg-surface text-text-heading border-border" placeholder={form.platform === "youtube" ? "dQw4w9WgXcQ" : "1234567890"} required />
               </div>
               <div>
                 <Label className="text-text-body">Mois (YYYY-MM)</Label>

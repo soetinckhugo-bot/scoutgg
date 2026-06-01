@@ -10,10 +10,18 @@ interface ClipPodiumProps {
     playerName: string;
     playerRole: string;
     title: string;
-    youtubeId: string;
+    platform: string;
+    videoId: string;
     totalVotes: number;
     avgScore: number;
   }[];
+}
+
+function getEmbedUrl(platform: string, videoId: string): string {
+  if (platform === "tiktok") {
+    return `https://www.tiktok.com/embed/${videoId}`;
+  }
+  return `https://www.youtube.com/embed/${videoId}?rel=0`;
 }
 
 export default function ClipPodium({ clips }: ClipPodiumProps) {
@@ -37,9 +45,9 @@ export default function ClipPodium({ clips }: ClipPodiumProps) {
 
         return (
           <Card key={clip.id} className={`border-2 ${rankBg} overflow-hidden`}>
-            <div className="relative aspect-video bg-black">
+            <div className="relative bg-black" style={{ paddingBottom: "177.78%" }}>
               <iframe
-                src={`https://www.youtube.com/embed/${clip.youtubeId}?rel=0`}
+                src={getEmbedUrl(clip.platform, clip.videoId)}
                 title={clip.title}
                 className="absolute inset-0 w-full h-full"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
