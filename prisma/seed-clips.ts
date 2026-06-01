@@ -46,8 +46,8 @@ async function main() {
       playerName: "Zeus",
       playerRole: "TOP",
       title: "1v2 Top Lane Outplay",
-      platform: "tiktok",
-      videoId: "1234567890",
+      platform: "youtube",
+      videoId: "CevxZvSJLk8",
       monthPeriod,
       isActive: true,
     },
@@ -55,8 +55,8 @@ async function main() {
       playerName: "Chovy",
       playerRole: "MID",
       title: "Perfect CS at 10 min",
-      platform: "tiktok",
-      videoId: "0987654321",
+      platform: "youtube",
+      videoId: "JGwWNGJdvx8",
       monthPeriod,
       isActive: true,
     },
@@ -70,7 +70,7 @@ async function main() {
     });
   }
 
-  console.log(`✅ ${clips.length} clips placeholder créés`);
+  console.log(`✅ ${clips.length} placeholder clips created`);
 }
 
 main()

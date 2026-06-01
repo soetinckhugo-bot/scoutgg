@@ -15,16 +15,17 @@ interface ClipPodiumProps {
     totalVotes: number;
     avgScore: number;
   }[];
+  onOpen: (clip: any) => void;
 }
 
-function getEmbedUrl(platform: string, videoId: string): string {
-  if (platform === "tiktok") {
-    return `https://www.tiktok.com/embed/${videoId}`;
+function getThumbnailUrl(platform: string, videoId: string): string {
+  if (platform === "youtube") {
+    return `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
   }
-  return `https://www.youtube.com/embed/${videoId}?rel=0`;
+  return "";
 }
 
-export default function ClipPodium({ clips }: ClipPodiumProps) {
+export default function ClipPodium({ clips, onOpen }: ClipPodiumProps) {
   if (clips.length === 0) return null;
 
   return (
@@ -43,17 +44,25 @@ export default function ClipPodium({ clips }: ClipPodiumProps) {
           ? "text-slate-400"
           : "text-amber-400";
 
+        const thumb = getThumbnailUrl(clip.platform, clip.videoId);
+
         return (
-          <Card key={clip.id} className={`border-2 ${rankBg} overflow-hidden`}>
-            <div className="relative bg-black" style={{ paddingBottom: "177.78%" }}>
-              <iframe
-                src={getEmbedUrl(clip.platform, clip.videoId)}
-                title={clip.title}
-                className="absolute inset-0 w-full h-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                loading="lazy"
-              />
+          <Card key={clip.id} className={`border-2 ${rankBg} overflow-hidden cursor-pointer group hover:shadow-lg hover:scale-[1.02] transition-all`} onClick={() => onOpen(clip)}>
+            <div className="relative bg-black" style={{ paddingBottom: "133.33%" }}>
+              {thumb ? (
+                <img src={thumb} alt={clip.title} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center bg-surface">
+                  <span className="text-text-muted text-xs">{clip.platform}</span>
+                </div>
+              )}
+              <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/10 transition-colors">
+                <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                  <svg className="w-6 h-6 text-black ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </div>
+              </div>
             </div>
             <CardContent className="p-4 space-y-2">
               <div className={`text-2xl font-bold ${rankText} text-center`}>

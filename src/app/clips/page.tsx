@@ -4,9 +4,9 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import ClipCard from "@/components/clips/ClipCard";
 import ClipPodium from "@/components/clips/ClipPodium";
+import ClipLightbox from "@/components/clips/ClipLightbox";
 import ParticipateModal from "@/components/clips/ParticipateModal";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Star, Search, TrendingUp, Clock, User, Calendar } from "lucide-react";
 import Link from "next/link";
 
@@ -39,6 +39,7 @@ export default function ClipsPage() {
   const [playerQuery, setPlayerQuery] = useState("");
   const [sort, setSort] = useState("recent");
   const [period, setPeriod] = useState("month");
+  const [selectedClip, setSelectedClip] = useState<Clip | null>(null);
 
   async function fetchClips() {
     setLoading(true);
@@ -103,7 +104,6 @@ export default function ClipsPage() {
           <ParticipateModal />
         </div>
 
-        {/* Auth notice */}
         {!session?.user && (
           <div className="text-center mb-6">
             <p className="text-sm text-text-muted">
@@ -112,9 +112,7 @@ export default function ClipsPage() {
           </div>
         )}
 
-        {/* Filters */}
         <div className="space-y-4 mb-8">
-          {/* Period */}
           <div className="flex justify-center gap-2">
             <button
               onClick={() => setPeriod("month")}
@@ -139,7 +137,6 @@ export default function ClipsPage() {
             </button>
           </div>
 
-          {/* Search */}
           <div className="relative max-w-md mx-auto">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
             <Input
@@ -151,7 +148,6 @@ export default function ClipsPage() {
             />
           </div>
 
-          {/* Role filters */}
           <div className="flex flex-wrap justify-center gap-2">
             <button
               onClick={() => setRole("")}
@@ -178,7 +174,6 @@ export default function ClipsPage() {
             ))}
           </div>
 
-          {/* Sort */}
           <div className="flex flex-wrap justify-center gap-2">
             {SORTS.map((s) => (
               <button
@@ -197,10 +192,8 @@ export default function ClipsPage() {
           </div>
         </div>
 
-        {/* Podium */}
-        {!loading && period === "month" && <ClipPodium clips={podium} />}
+        {!loading && period === "month" && <ClipPodium clips={podium} onOpen={setSelectedClip} />}
 
-        {/* Grid */}
         {loading ? (
           <div className="text-center py-16 text-text-muted">Loading...</div>
         ) : clips.length === 0 ? (
@@ -217,11 +210,18 @@ export default function ClipsPage() {
                 userVote={userVotes[clip.id]}
                 onVote={handleVote}
                 canVote={!!session?.user}
+                onOpen={() => setSelectedClip(clip)}
               />
             ))}
           </div>
         )}
       </div>
+
+      <ClipLightbox
+        open={!!selectedClip}
+        onOpenChange={(open) => !open && setSelectedClip(null)}
+        clip={selectedClip}
+      />
     </div>
   );
 }
