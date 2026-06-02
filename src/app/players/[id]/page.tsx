@@ -74,6 +74,7 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 
 import FavoriteButton from "@/components/FavoriteButton";
 import ExportPdfButton from "@/components/ExportPdfButton";
+import PlayerPrintable from "@/components/PlayerPrintable";
 import ReportCard from "@/components/ReportCard";
 // import { ShareableReport } from "@/components/ShareableReport";
 
@@ -299,7 +300,7 @@ export default async function PlayerPage(props: {
                   Compare
                 </Button>
               </Link>
-              <ExportPdfButton playerId={player.id} />
+              <ExportPdfButton targetId="player-printable" fileName={`${player.pseudo}-scouting-report`} />
             </div>
           </div>
         </div>
@@ -563,6 +564,11 @@ export default async function PlayerPage(props: {
             </Tabs>
           </div>
         </div>
+      </div>
+
+      {/* Printable version for PDF export */}
+      <div className="fixed left-[-9999px] top-0">
+        <PlayerPrintable id="player-printable" player={player} />
       </div>
     </>
   );
