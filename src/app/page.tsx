@@ -25,7 +25,9 @@ import {
   Trophy,
   Star,
   Zap,
+  Film,
 } from "lucide-react";
+import { getChampionIconUrl } from "@/lib/game-assets";
 import ScoutIcon from "@/components/ScoutIcon";
 import { ROLE_COLORS, STATUS_COLORS } from "@/lib/constants";
 import { formatStatus } from "@/lib/utils";
@@ -159,47 +161,53 @@ const getRecentReports = unstable_cache(
   { revalidate: 300, tags: ["recent-reports"] }
 );
 
-const getSoloqPOTW = unstable_cache(
+const getClipWinner = unstable_cache(
   async () => {
     const now = new Date();
-    const currentYear = now.getFullYear();
+    const monthPeriod = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
 
-    return db.soloqPOTW.findFirst({
-      where: {
-        isActive: true,
-        year: currentYear,
-      },
-      orderBy: { week: "desc" },
-      select: {
-        week: true,
-        player: {
-          select: {
-            id: true,
-            pseudo: true,
-            realName: true,
-            age: true,
-            dateOfBirth: true,
-            nationality: true,
-            role: true,
-            status: true,
-            league: true,
-            currentTeam: true,
-            photoUrl: true,
-            soloqStats: {
-              select: {
-                peakLp: true,
-                winrate: true,
-                currentRank: true,
-                totalGames: true,
-              },
-            },
-          },
-        },
-      },
+    let clip = await db.clip.findFirst({
+      where: { isWinner: true, monthPeriod, isActive: true },
+      include: { votes: { select: { score: true } } },
     });
+
+    if (!clip) {
+      const clips = await db.clip.findMany({
+        where: { monthPeriod, isActive: true },
+        include: { votes: { select: { score: true } } },
+        orderBy: { createdAt: "desc" },
+        take: 20,
+      });
+      if (clips.length > 0) {
+        const ranked = clips.map((c) => {
+          const tv = c.votes.length;
+          const avg = tv > 0 ? c.votes.reduce((s, v) => s + v.score, 0) / tv : 0;
+          return { ...c, totalVotes: tv, avgScore: avg, popularity: tv * avg };
+        }).sort((a, b) => b.popularity - a.popularity);
+        clip = ranked[0];
+      }
+    }
+
+    if (!clip) return null;
+
+    const totalVotes = clip.votes.length;
+    const avgScore = totalVotes > 0 ? clip.votes.reduce((sum, v) => sum + v.score, 0) / totalVotes : 0;
+    return {
+      id: clip.id,
+      playerName: clip.playerName,
+      playerRole: clip.playerRole,
+      champion: clip.champion,
+      title: clip.title,
+      platform: clip.platform,
+      videoId: clip.videoId,
+      monthPeriod: clip.monthPeriod,
+      isWinner: clip.isWinner,
+      totalVotes,
+      avgScore: Math.round(avgScore * 10) / 10,
+    };
   },
-  ["soloq-potw"],
-  { revalidate: 300, tags: ["soloq-potw"] }
+  ["clip-winner"],
+  { revalidate: 300, tags: ["clip-winner"] }
 );
 
 const getFreeAgentCount = unstable_cache(
@@ -219,11 +227,11 @@ const getTotalPlayers = unstable_cache(
 );
 
 export default async function HomePage() {
-  const [featuredPlayer, recentPlayers, recentReports, soloqPotw, freeAgentCount, totalPlayers] = await Promise.all([
+  const [featuredPlayer, recentPlayers, recentReports, clipWinner, freeAgentCount, totalPlayers] = await Promise.all([
     getFeaturedPlayer(),
     getRecentPlayers(),
     getRecentReports(),
-    getSoloqPOTW(),
+    getClipWinner(),
     getFreeAgentCount(),
     getTotalPlayers(),
   ]);
@@ -339,72 +347,64 @@ export default async function HomePage() {
             </div>
           )}
 
-          {/* Player of SOLOQ */}
-          {soloqPotw ? (
+          {/* Clip of the Month */}
+          {clipWinner ? (
             <div className="rounded-xl border border-border bg-card overflow-hidden flex flex-col h-full">
               <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
-                <ScoutIcon icon={Zap} size="md" variant="gold" glow />
-                <span className="text-xs font-semibold uppercase tracking-wider text-text-heading">Player of SOLOQ</span>
-                <Badge className="text-xs h-5 px-2 bg-yellow-500/10 text-yellow-400 border-yellow-500/20">Week {soloqPotw.week}</Badge>
+                <ScoutIcon icon={Film} size="md" variant="accent" glow />
+                <span className="text-xs font-semibold uppercase tracking-wider text-text-heading">Clip of the Month</span>
+                <Badge className={`text-xs h-5 px-2 ${clipWinner.isWinner ? "bg-yellow-500/10 text-yellow-400 border-yellow-500/20" : "bg-primary-accent/10 text-primary-accent border-primary-accent/20"}`}>
+                  {clipWinner.isWinner ? "Winner" : "Most Popular"}
+                </Badge>
               </div>
               <div className="p-4 flex flex-col flex-1">
-                <div className="flex items-center gap-4 mb-4">
-                  {soloqPotw.player.photoUrl ? (
-                    <Image src={soloqPotw.player.photoUrl} alt={soloqPotw.player.pseudo} width={64} height={64} className="rounded-full object-cover" />
+                <div className="flex flex-col items-center mb-4">
+                  {clipWinner.champion ? (
+                    <img
+                      src={getChampionIconUrl(clipWinner.champion)}
+                      alt={clipWinner.champion}
+                      className="w-20 h-20 object-contain rounded-xl bg-black border border-border mb-3"
+                    />
                   ) : (
-                    <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center text-xl font-bold text-text-heading">{(soloqPotw.player.pseudo?.[0] ?? "?").toUpperCase()}</div>
+                    <div className="w-20 h-20 rounded-xl bg-surface flex items-center justify-center mb-3">
+                      <Film className="h-8 w-8 text-text-muted" />
+                    </div>
                   )}
-                  <div>
-                    <h2 className="text-lg font-bold text-text-heading">{soloqPotw.player.pseudo}</h2>
-                    <p className="text-xs text-text-muted">
-                      {soloqPotw.player.realName && <span>{soloqPotw.player.realName}</span>}
-                      {(calculateAge(soloqPotw.player.dateOfBirth) ?? soloqPotw.player.age) && <span> • {calculateAge(soloqPotw.player.dateOfBirth) ?? soloqPotw.player.age} yo</span>}
-                      {soloqPotw.player.nationality && <span> • {soloqPotw.player.nationality}</span>}
-                    </p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <Badge className={`text-xs h-5 px-2 ${ROLE_COLORS[soloqPotw.player.role] || ""}`}>{soloqPotw.player.role}</Badge>
-                      <Badge className={`text-xs h-5 px-2 ${STATUS_COLORS[soloqPotw.player.status] || ""}`}>{formatStatus(soloqPotw.player.status)}</Badge>
-                    </div>
-                    <div className="flex items-center gap-2 mt-1 text-xs text-text-muted">
-                      <span>{soloqPotw.player.league}</span>
-                      <span>•</span>
-                      <span>{soloqPotw.player.currentTeam || "No team"}</span>
-                    </div>
+                  <h2 className="text-lg font-bold text-text-heading text-center">{clipWinner.title}</h2>
+                  <div className="flex items-center gap-2 mt-1">
+                    <Badge className={`text-xs h-5 px-2 ${ROLE_COLORS[clipWinner.playerRole] || ""}`}>{clipWinner.playerRole}</Badge>
+                    <span className="text-sm text-text-body font-medium">{clipWinner.playerName}</span>
                   </div>
+                  {clipWinner.champion && (
+                    <p className="text-xs text-primary-accent font-medium mt-1">{clipWinner.champion}</p>
+                  )}
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
-                  <div className="bg-surface-hover rounded py-2 px-1">
-                    <p className="text-xs text-text-muted uppercase tracking-wider">Peak LP</p>
-                    <p className="text-sm font-bold text-text-heading tabular-nums">{soloqPotw.player.soloqStats?.peakLp ? `+${soloqPotw.player.soloqStats.peakLp}` : "—"}</p>
+                <div className="flex items-center justify-center gap-2 mb-4">
+                  <div className="flex gap-0.5">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        className={`h-4 w-4 ${star <= Math.round(clipWinner.avgScore) ? "text-tier-s fill-tier-s" : "text-border"}`}
+                      />
+                    ))}
                   </div>
-                  <div className="bg-surface-hover rounded py-2 px-1">
-                    <p className="text-xs text-text-muted uppercase tracking-wider">Winrate</p>
-                    <p className="text-sm font-bold text-emerald-400 tabular-nums">{soloqPotw.player.soloqStats?.winrate ? `${(soloqPotw.player.soloqStats.winrate * 100).toFixed(0)}%` : "—"}</p>
-                  </div>
-                  <div className="bg-surface-hover rounded py-2 px-1">
-                    <p className="text-xs text-text-muted uppercase tracking-wider">Rank</p>
-                    <p className="text-sm font-bold text-text-heading tabular-nums">{soloqPotw.player.soloqStats?.currentRank?.split(" ")[0] || "—"}</p>
-                  </div>
-                  <div className="bg-surface-hover rounded py-2 px-1">
-                    <p className="text-xs text-text-muted uppercase tracking-wider">Games</p>
-                    <p className="text-sm font-bold text-text-heading tabular-nums">{soloqPotw.player.soloqStats?.totalGames || "—"}</p>
-                  </div>
+                  <span className="text-sm font-bold text-text-heading">{clipWinner.avgScore}/5</span>
+                  <span className="text-xs text-text-muted">· {clipWinner.totalVotes} votes</span>
                 </div>
-
                 <div className="flex-1" />
                 <Link
-                  href={`/players/${soloqPotw.player.id}`}
-                  className="inline-flex items-center justify-center w-full mt-4 px-4 py-2 text-sm font-medium text-text-heading bg-primary-accent rounded-md hover:bg-primary-accent/90 transition-colors"
+                  href={`/clips/${clipWinner.id}`}
+                  className="inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-text-heading bg-primary-accent rounded-md hover:bg-primary-accent/90 transition-colors"
                 >
-                  View Full Profile <ArrowRight className="ml-2 h-4 w-4" />
+                  Watch this clip <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </div>
             </div>
           ) : (
             <div className="rounded-xl border border-border bg-card overflow-hidden flex flex-col h-full items-center justify-center p-8 text-center">
-              <ScoutIcon icon={Zap} size="xl" variant="gold" glow bg />
-              <h2 className="text-lg font-bold text-text-heading mb-1">Player of SOLOQ</h2>
-              <p className="text-sm text-text-muted">No SOLOQ player of the week yet. Check back soon!</p>
+              <ScoutIcon icon={Film} size="xl" variant="accent" glow bg />
+              <h2 className="text-lg font-bold text-text-heading mb-1">Clip of the Month</h2>
+              <p className="text-sm text-text-muted">No clips yet for this month. Be the first to submit one!</p>
             </div>
           )}
         </div>

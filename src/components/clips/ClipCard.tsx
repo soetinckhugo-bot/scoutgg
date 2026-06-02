@@ -4,7 +4,10 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import StarRating from "./StarRating";
+import CopyLinkButton from "./CopyLinkButton";
 import { getChampionIconUrl } from "@/lib/game-assets";
+import { ExternalLink } from "lucide-react";
+import Link from "next/link";
 
 interface ClipCardProps {
   clip: {
@@ -81,6 +84,21 @@ export default function ClipCard({ clip, userVote, onVote, canVote = true, onOpe
           <span className="text-[10px] text-text-muted">
             {clip.avgScore > 0 ? `${clip.avgScore}` : "—"} · {clip.totalVotes} votes
           </span>
+        </div>
+        <div className="flex items-center justify-center gap-1.5 pt-1">
+          <CopyLinkButton
+            url={`https://leaguescout.gg/clips/${clip.id}`}
+            variant="ghost"
+            size="sm"
+            className="h-7 px-2 text-[10px] text-text-muted hover:text-text-heading"
+          />
+          <Link
+            href={`/clips/${clip.id}`}
+            className="inline-flex items-center gap-1 h-7 px-2 rounded-md text-[10px] text-text-muted hover:text-text-heading hover:bg-surface-hover transition-colors"
+          >
+            <ExternalLink className="h-3 w-3" />
+            Page
+          </Link>
         </div>
         {!canVote && (
           <p className="text-[10px] text-text-muted text-center">Log in to vote</p>

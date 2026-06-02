@@ -1,11 +1,16 @@
 "use client";
 
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import CopyLinkButton from "./CopyLinkButton";
+import { ExternalLink } from "lucide-react";
+import Link from "next/link";
 
 interface ClipLightboxProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   clip: {
+    id: string;
     title: string;
     platform: string;
     videoId: string;
@@ -22,9 +27,11 @@ function getEmbedUrl(platform: string, videoId: string): string {
 export default function ClipLightbox({ open, onOpenChange, clip }: ClipLightboxProps) {
   if (!clip) return null;
 
+  const pageUrl = `https://leaguescout.gg/clips/${clip.id}`;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-black border-none max-w-md p-0 overflow-hidden">
+      <DialogContent className="bg-black border-none max-w-md p-0 overflow-hidden gap-0">
         <div className="relative w-full" style={{ paddingBottom: "177.78%" }}>
           <iframe
             src={getEmbedUrl(clip.platform, clip.videoId)}
@@ -33,6 +40,18 @@ export default function ClipLightbox({ open, onOpenChange, clip }: ClipLightboxP
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
           />
+        </div>
+        <div className="bg-card border-t border-border p-4 space-y-3">
+          <h3 className="text-sm font-semibold text-text-heading text-center">{clip.title}</h3>
+          <div className="flex items-center justify-center gap-3">
+            <CopyLinkButton url={pageUrl} variant="outline" size="sm" className="border-border text-text-body hover:bg-surface-hover" />
+            <Button variant="outline" size="sm" className="border-border text-text-body hover:bg-surface-hover" asChild>
+              <Link href={`/clips/${clip.id}`} onClick={() => onOpenChange(false)}>
+                <ExternalLink className="h-4 w-4 mr-1.5" />
+                Open page
+              </Link>
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
