@@ -40,12 +40,12 @@ export default function ClipCard({ clip, userVote, onVote, canVote = true, onOpe
 
   return (
     <Card className="bg-card border-border overflow-hidden transition-all duration-200 hover:shadow-lg hover:scale-[1.02] cursor-pointer group">
-      <div className="relative bg-black aspect-[4/3] flex items-center justify-center" onClick={onOpen}>
+      <div className="relative bg-[#1A1D29] aspect-[4/3] flex items-center justify-center overflow-hidden" onClick={onOpen}>
         {thumb ? (
           <img
             src={thumb}
             alt={clip.champion || "champion"}
-            className="w-full h-full object-contain p-6"
+            className="w-full h-full object-cover"
             loading="lazy"
           />
         ) : (

@@ -54,12 +54,12 @@ export default function ClipSidebar({ clips, title = "Popular This Month", onOpe
             }`}
           >
             <span className="text-sm font-bold text-text-muted w-5 text-center">{i + 1}</span>
-            <div className="w-10 h-10 rounded-lg bg-black flex items-center justify-center shrink-0 overflow-hidden">
+            <div className="w-10 h-10 rounded-lg bg-[#1A1D29] flex items-center justify-center shrink-0 overflow-hidden">
               {clip.champion ? (
                 <img
                   src={getChampionIconUrl(clip.champion)}
                   alt={clip.champion}
-                  className="w-9 h-9 object-contain"
+                  className="w-full h-full object-cover"
                   loading="lazy"
                 />
               ) : (

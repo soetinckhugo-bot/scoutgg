@@ -43,11 +43,11 @@ export default function ClipPodium({ clips, onOpen }: ClipPodiumProps) {
 
         return (
           <Card key={clip.id} className={`border-2 ${rankBg} overflow-hidden cursor-pointer group hover:shadow-lg hover:scale-[1.02] transition-all`} onClick={() => onOpen(clip)}>
-            <div className="relative bg-black aspect-[4/3] flex items-center justify-center">
+            <div className="relative bg-[#1A1D29] aspect-[4/3] flex items-center justify-center overflow-hidden">
               {thumb ? (
-                <img src={thumb} alt={clip.champion || "champion"} className="w-24 h-24 object-contain rounded-lg" loading="lazy" />
+                <img src={thumb} alt={clip.champion || "champion"} className="w-full h-full object-cover" loading="lazy" />
               ) : (
-                <div className="w-24 h-24 rounded-lg bg-surface flex items-center justify-center">
+                <div className="w-full h-full flex items-center justify-center">
                   <span className="text-text-muted text-xs">{clip.platform}</span>
                 </div>
               )}

@@ -227,12 +227,12 @@ export default async function ClipPage({ params }: Props) {
                   href={`/clips/${r.id}`}
                   className="group block rounded-xl border border-border bg-card overflow-hidden hover:border-primary-accent/40 transition-colors"
                 >
-                  <div className="relative aspect-[4/3] bg-black flex items-center justify-center">
+                  <div className="relative aspect-[4/3] bg-[#1A1D29] flex items-center justify-center overflow-hidden">
                     {r.champion ? (
                       <img
                         src={getChampionIconUrl(r.champion)}
                         alt={r.champion}
-                        className="w-14 h-14 object-contain rounded-lg"
+                        className="w-full h-full object-cover"
                         loading="lazy"
                       />
                     ) : (
