@@ -1,5 +1,5 @@
 import { PageTitle } from "@/components/ui/typography";
-import { MessageSquare, Mail, ExternalLink } from "lucide-react";
+import { MessageSquare, Mail } from "lucide-react";
 
 export default function FeedbackPage() {
   return (
@@ -13,28 +13,6 @@ export default function FeedbackPage() {
       </div>
 
       <div className="space-y-6">
-        <div className="rounded-xl border border-border bg-card overflow-hidden">
-          <div className="flex items-center gap-2 px-4 py-3 bg-primary-accent border-b border-primary-accent/50">
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-white">
-              Discord
-            </h2>
-          </div>
-          <div className="p-4">
-            <p className="text-text-body mb-3">
-              Join our Discord community to share your ideas, report bugs, or just chat with the team.
-            </p>
-            <a
-              href="https://discord.gg/leaguescout"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-primary-accent hover:text-primary-accent/80 transition-colors font-medium"
-            >
-              Join Discord
-              <ExternalLink className="h-4 w-4" />
-            </a>
-          </div>
-        </div>
-
         <div className="rounded-xl border border-border bg-card overflow-hidden">
           <div className="flex items-center gap-2 px-4 py-3 bg-primary-accent border-b border-primary-accent/50">
             <h2 className="text-sm font-semibold uppercase tracking-wider text-white">

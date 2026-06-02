@@ -107,7 +107,37 @@ export default async function ClipPage({ params }: Props) {
     : `https://www.youtube.com/embed/${clip.videoId}?rel=0&autoplay=0&vq=hd1080&modestbranding=1&iv_load_policy=3`;
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "VideoObject",
+            name: clip.title,
+            description: `Community clip by ${clip.playerName}${clip.champion ? ` on ${clip.champion}` : ""}. Rated ${clip.avgScore}/5 by the LeagueScout community.`,
+            thumbnailUrl: clip.champion
+              ? getChampionIconUrl(clip.champion)
+              : `https://img.youtube.com/vi/${clip.videoId}/0.jpg`,
+            uploadDate: clip.createdAt.toISOString(),
+            contentUrl: `https://leaguescout.gg/clips/${clip.id}`,
+            embedUrl: clip.platform === "tiktok"
+              ? `https://www.tiktok.com/embed/${clip.videoId}`
+              : `https://www.youtube.com/embed/${clip.videoId}`,
+            author: {
+              "@type": "Person",
+              name: clip.playerName,
+            },
+            aggregateRating: {
+              "@type": "AggregateRating",
+              ratingValue: clip.avgScore,
+              bestRating: 5,
+              ratingCount: clip.totalVotes,
+            },
+          }),
+        }}
+      />
+      <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
         {/* Back link */}
         <Link
@@ -231,5 +261,6 @@ export default async function ClipPage({ params }: Props) {
         )}
       </div>
     </div>
+  </>
   );
 }

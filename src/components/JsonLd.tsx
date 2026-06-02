@@ -49,7 +49,6 @@ export function OrganizationJsonLd() {
         }/logo.png`,
         sameAs: [
           "https://twitter.com/LeagueScout",
-          "https://discord.gg/LeagueScout",
         ],
       }}
     />

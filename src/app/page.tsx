@@ -820,9 +820,6 @@ export default async function HomePage() {
                 <li className="flex items-center gap-2 text-sm text-text-body">
                   <span className="text-emerald-400">✓</span> Export data (CSV)
                 </li>
-                <li className="flex items-center gap-2 text-sm text-text-body">
-                  <span className="text-emerald-400">✓</span> Discord access
-                </li>
               </ul>
               <a href="/pricing" className="block w-full text-center py-2.5 text-sm font-medium text-text-heading bg-primary-accent rounded-lg hover:bg-primary-accent/90 transition-colors mt-auto">
                 Get Scout Pro →

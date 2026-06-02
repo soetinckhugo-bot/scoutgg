@@ -87,7 +87,7 @@ tracesSampleRate: 1.0, // 100% en dev, réduire en prod (ex: 0.1)
 ## Alertes
 
 Dans Sentry, configure des alertes pour :
-- Nouvelles erreurs (email/Slack/Discord)
+- Nouvelles erreurs (email/Slack)
 - Erreurs récurrentes (> 100/min)
 - Performance dégradée (p95 > 2s)
 

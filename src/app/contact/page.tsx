@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Mail, ArrowLeft, MessageCircle } from "lucide-react";
+import { Mail, ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -30,13 +30,6 @@ const contactLinks = [
     description: "Email us anytime",
     href: "mailto:contact@LeagueScout.gg",
     external: false,
-  },
-  {
-    icon: <MessageCircle className="h-5 w-5" />,
-    label: "Hugo_____",
-    description: "Chat on Discord",
-    href: "https://discord.com/users/Hugo_____",
-    external: true,
   },
   {
     icon: (
