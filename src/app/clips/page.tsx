@@ -10,6 +10,7 @@ import ParticipateModal from "@/components/clips/ParticipateModal";
 import { Input } from "@/components/ui/input";
 import { Star, Search, TrendingUp, Clock, User, Calendar } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 interface Clip {
   id: string;
@@ -50,14 +51,14 @@ export default function ClipsPage() {
     if (playerQuery) params.set("player", playerQuery);
     if (sort) params.set("sort", sort);
     if (period) params.set("period", period);
-    const res = await fetch(`/api/clips?${params.toString()}`);
+    const res = await fetch(`/api/clips?${params.toString()}`, { cache: "no-store" });
     const data = await res.json();
     setClips(data.clips || []);
     setLoading(false);
   }
 
   async function fetchPodium() {
-    const res = await fetch(`/api/clips/leaderboard?minVotes=5&period=${period}`);
+    const res = await fetch(`/api/clips/leaderboard?minVotes=5&period=${period}`, { cache: "no-store" });
     const data = await res.json();
     setPodium(data.clips || []);
   }
@@ -73,7 +74,10 @@ export default function ClipsPage() {
   }, [playerQuery]);
 
   async function handleVote(clipId: string, score: number) {
-    if (!session?.user) return;
+    if (!session?.user) {
+      toast.error("Log in to vote");
+      return;
+    }
     const res = await fetch("/api/vote", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -82,8 +86,12 @@ export default function ClipsPage() {
     if (res.ok) {
       const updated = { ...userVotes, [clipId]: score };
       setUserVotes(updated);
-      fetchClips();
-      fetchPodium();
+      toast.success("Vote recorded");
+      await fetchClips();
+      await fetchPodium();
+    } else {
+      const data = await res.json().catch(() => ({}));
+      toast.error(data.error || "Failed to vote");
     }
   }
 

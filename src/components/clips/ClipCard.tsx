@@ -45,11 +45,11 @@ export default function ClipCard({ clip, userVote, onVote, canVote = true, onOpe
           <img
             src={thumb}
             alt={clip.champion || "champion"}
-            className="w-20 h-20 object-contain rounded-lg"
+            className="w-full h-full object-contain p-6"
             loading="lazy"
           />
         ) : (
-          <div className="w-20 h-20 rounded-lg bg-surface flex items-center justify-center">
+          <div className="w-full h-full flex items-center justify-center">
             <span className="text-text-muted text-xs">{clip.platform}</span>
           </div>
         )}

@@ -172,20 +172,11 @@ const getClipWinner = unstable_cache(
     });
 
     if (!clip) {
-      const clips = await db.clip.findMany({
-        where: { monthPeriod, isActive: true },
+      clip = await db.clip.findFirst({
+        where: { isWinner: true, isActive: true },
         include: { votes: { select: { score: true } } },
-        orderBy: { createdAt: "desc" },
-        take: 20,
+        orderBy: { monthPeriod: "desc" },
       });
-      if (clips.length > 0) {
-        const ranked = clips.map((c) => {
-          const tv = c.votes.length;
-          const avg = tv > 0 ? c.votes.reduce((s, v) => s + v.score, 0) / tv : 0;
-          return { ...c, totalVotes: tv, avgScore: avg, popularity: tv * avg };
-        }).sort((a, b) => b.popularity - a.popularity);
-        clip = ranked[0];
-      }
     }
 
     if (!clip) return null;
@@ -353,8 +344,8 @@ export default async function HomePage() {
               <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
                 <ScoutIcon icon={Film} size="md" variant="accent" glow />
                 <span className="text-xs font-semibold uppercase tracking-wider text-text-heading">Clip of the Month</span>
-                <Badge className={`text-xs h-5 px-2 ${clipWinner.isWinner ? "bg-yellow-500/10 text-yellow-400 border-yellow-500/20" : "bg-primary-accent/10 text-primary-accent border-primary-accent/20"}`}>
-                  {clipWinner.isWinner ? "Winner" : "Most Popular"}
+                <Badge className="text-xs h-5 px-2 bg-yellow-500/10 text-yellow-400 border-yellow-500/20">
+                  Winner
                 </Badge>
               </div>
               <div className="p-4 flex flex-col flex-1">

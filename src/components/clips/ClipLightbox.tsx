@@ -44,10 +44,10 @@ export default function ClipLightbox({ open, onOpenChange, clip }: ClipLightboxP
         <div className="bg-card border-t border-border p-4 space-y-3">
           <h3 className="text-sm font-semibold text-text-heading text-center">{clip.title}</h3>
           <div className="flex items-center justify-center gap-3">
-            <CopyLinkButton url={pageUrl} variant="outline" size="sm" className="border-border text-text-body hover:bg-surface-hover" />
-            <Button variant="outline" size="sm" className="border-border text-text-body hover:bg-surface-hover" asChild>
+            <CopyLinkButton url={pageUrl} variant="outline" size="sm" className="h-9 px-3 border-border text-text-body hover:bg-surface-hover" />
+            <Button variant="outline" size="sm" className="h-9 px-3 gap-1.5 border-border text-text-body hover:bg-surface-hover" asChild>
               <Link href={`/clips/${clip.id}`} onClick={() => onOpenChange(false)}>
-                <ExternalLink className="h-4 w-4 mr-1.5" />
+                <ExternalLink className="h-4 w-4" />
                 Open page
               </Link>
             </Button>
