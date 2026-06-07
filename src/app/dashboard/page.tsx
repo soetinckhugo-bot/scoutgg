@@ -16,6 +16,7 @@ import {
   Star,
   Zap,
   FileText,
+  Target,
   ArrowRight,
   ArrowUpRight,
   Users,
@@ -38,6 +39,7 @@ import { PageTitle, DataLabel, DataValue } from "@/components/ui/typography";
 import RecentDiscussions from "./RecentDiscussions";
 import ScrimDigestWidget from "./ScrimDigestWidget";
 import RecentReviews from "./RecentReviews";
+import ActiveDevelopmentPlans from "./ActiveDevelopmentPlans";
 
 interface Favorite {
   id: string;
@@ -214,6 +216,15 @@ const STAFF_ACTIONS = [
     border: "border-amber-500/20",
     hover: "hover:border-amber-500/40 hover:bg-amber-500/15",
   },
+  {
+    href: "/dashboard/development",
+    icon: Target,
+    label: "Development",
+    color: "text-emerald-400",
+    bg: "bg-emerald-500/10",
+    border: "border-emerald-500/20",
+    hover: "hover:border-emerald-500/40 hover:bg-emerald-500/15",
+  },
 ];
 
 function StaffActionCard({
@@ -356,7 +367,7 @@ export default function DashboardPage() {
         <h2 className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-3">
           Staff Tools
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-8 gap-3">
           {STAFF_ACTIONS.map((action) => (
             <StaffActionCard key={action.href} action={action} />
           ))}
@@ -676,6 +687,17 @@ export default function DashboardPage() {
                 </div>
               )}
             </div>
+          </div>
+
+          {/* Active Development Plans */}
+          <div className="rounded-xl border border-border overflow-hidden">
+            <div className="px-4 py-3 border-b border-border bg-surface-hover flex items-center justify-between">
+              <h2 className="text-base font-semibold flex items-center gap-2 text-text-heading">
+                <ScoutIcon icon={Target} size="lg" variant="muted" />
+                Active Plans
+              </h2>
+            </div>
+            <ActiveDevelopmentPlans />
           </div>
 
           {/* Scrim Digest */}

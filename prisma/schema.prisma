@@ -668,3 +668,21 @@ model PlayerReview {
   @@index([userId])
   @@index([week, year])
 }
+
+model DevelopmentPlan {
+  id          String   @id @default(cuid())
+  playerId    String
+  userId      String
+  title       String
+  description String?
+  targetDate  DateTime?
+  status      String   @default("active") // active | completed | abandoned
+  progress    Int      @default(0) // 0-100
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([playerId])
+  @@index([userId])
+  @@index([status])
+  @@index([playerId, status])
+}
