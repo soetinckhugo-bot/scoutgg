@@ -27,6 +27,7 @@ import {
   BarChart3,
   Eye,
   ClipboardList,
+  Swords,
 } from "lucide-react";
 import ScoutIcon from "@/components/ScoutIcon";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -579,6 +580,7 @@ export default function DashboardPage() {
                 { href: "/compare", icon: Zap, label: "Compare Players" },
                 { href: "/watchlist", icon: Heart, label: "My Watchlist" },
                 { href: "/pipeline", icon: ClipboardList, label: "Scouting Pipeline" },
+                { href: "/dashboard/scrims", icon: Swords, label: "Scrims" },
               ].map((link) => (
                 <Link
                   key={link.href}

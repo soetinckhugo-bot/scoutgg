@@ -605,3 +605,19 @@ model RateLimit {
 
   @@index([resetAt])
 }
+
+model Scrim {
+  id         String   @id @default(cuid())
+  date       DateTime
+  opponent   String
+  result     String   // WIN / LOSS / DRAW
+  compAlly   String?
+  compEnemy  String?
+  notes      String?
+  createdBy  String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([date])
+  @@index([opponent])
+}
