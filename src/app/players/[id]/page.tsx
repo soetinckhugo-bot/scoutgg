@@ -63,6 +63,7 @@ import {
   FileText,
   Swords,
   LayoutGrid,
+  MessageSquare,
 } from "lucide-react";
 import { EmptyState } from "@/components/ui/empty-state";
 import { ROLE_COLORS, STATUS_COLORS, BEHAVIOR_TAG_COLORS } from "@/lib/constants";
@@ -76,6 +77,7 @@ import FavoriteButton from "@/components/FavoriteButton";
 import ExportPdfButton from "@/components/ExportPdfButton";
 import PlayerPrintable from "@/components/PlayerPrintable";
 import ReportCard from "@/components/ReportCard";
+import StaffDiscussion from "./StaffDiscussion";
 // import { ShareableReport } from "@/components/ShareableReport";
 
 const RoleRadarChart = dynamic(() => import("@/components/charts/RoleRadarChart"));
@@ -321,6 +323,7 @@ export default async function PlayerPage(props: {
                   <TabsTrigger value="pro" className="px-5 py-2 text-sm font-semibold data-[state=active]:bg-primary-accent data-[state=active]:text-white data-[state=active]:shadow-none">Pro</TabsTrigger>
                   <TabsTrigger value="analysis" className="px-5 py-2 text-sm font-semibold data-[state=active]:bg-primary-accent data-[state=active]:text-white data-[state=active]:shadow-none">Analysis</TabsTrigger>
                   <TabsTrigger value="vods" className="px-5 py-2 text-sm font-semibold data-[state=active]:bg-primary-accent data-[state=active]:text-white data-[state=active]:shadow-none">VODs</TabsTrigger>
+                  <TabsTrigger value="staff" className="px-5 py-2 text-sm font-semibold data-[state=active]:bg-primary-accent data-[state=active]:text-white data-[state=active]:shadow-none">Staff</TabsTrigger>
                 </TabsList>
                 <SeasonSplitSelector seasons={seasons} splits={splits} />
               </div>
@@ -558,8 +561,9 @@ export default async function PlayerPage(props: {
                   )}
                 </div>
               </TabsContent>
-
-
+              <TabsContent value="staff" className="space-y-6 animate-fade-in">
+                <StaffDiscussion playerId={player.id} />
+              </TabsContent>
             </Tabs>
           </div>
         </div>

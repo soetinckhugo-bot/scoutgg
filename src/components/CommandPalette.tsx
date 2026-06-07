@@ -47,7 +47,7 @@ const PAGES = [
   { icon: Folder, label: "My Lists", href: "/lists", shortcut: "M" },
   { icon: FileText, label: "Reports", href: "/reports", shortcut: "E" },
   { icon: Star, label: "Tier Lists", href: "/tierlists", shortcut: "T" },
-  { icon: BarChart3, label: "Dashboard", href: "/dashboard", shortcut: "D" },
+  { icon: BarChart3, label: "Staff Hub", href: "/dashboard", shortcut: "D" },
   { icon: Settings, label: "Settings", href: "/settings", shortcut: "S" },
 ];
 

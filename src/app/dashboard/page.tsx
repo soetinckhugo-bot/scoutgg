@@ -12,6 +12,7 @@ import {
   Heart,
   Bell,
   TrendingUp,
+  MessageSquare,
   Star,
   Zap,
   FileText,
@@ -34,6 +35,7 @@ import { ROLE_COLORS } from "@/lib/constants";
 import { logger } from "@/lib/logger";
 import PlayerCard from "@/components/PlayerCard";
 import { PageTitle, DataLabel, DataValue } from "@/components/ui/typography";
+import RecentDiscussions from "./RecentDiscussions";
 
 interface Favorite {
   id: string;
@@ -320,9 +322,9 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
         <div>
-          <PageTitle className="text-text-heading mb-0.5">My Scout Desk</PageTitle>
+          <PageTitle className="text-text-heading mb-0.5">Staff Hub</PageTitle>
           <p className="text-sm text-text-body">
-            Your personalized scouting command center
+            Your coaching & scouting command center
           </p>
         </div>
         <Button
@@ -663,6 +665,17 @@ export default function DashboardPage() {
                 </div>
               )}
             </div>
+          </div>
+
+          {/* Recent Staff Discussions */}
+          <div className="rounded-xl border border-border overflow-hidden">
+            <div className="px-4 py-3 border-b border-border bg-surface-hover flex items-center justify-between">
+              <h2 className="text-base font-semibold flex items-center gap-2 text-text-heading">
+                <ScoutIcon icon={MessageSquare} size="lg" variant="muted" />
+                Recent Discussions
+              </h2>
+            </div>
+            <RecentDiscussions />
           </div>
         </div>
       </div>

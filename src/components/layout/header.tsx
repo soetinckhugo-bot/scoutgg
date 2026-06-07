@@ -25,7 +25,7 @@ interface Suggestion {
 }
 
 const navLinks = [
-  { href: "/dashboard", label: "Dashboard" },
+  { href: "/dashboard", label: "Staff Hub" },
   { href: "/players", label: "Players" },
   { href: "/leaderboards", label: "Leaderboards" },
   { href: "/prospects", label: "Prospects" },
