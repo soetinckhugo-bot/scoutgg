@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search, Trash2, Edit, Calendar, Trophy, XCircle, Minus } from "lucide-react";
+import { Plus, Search, Trash2, Edit, Calendar, Trophy, XCircle, Minus, BarChart3 } from "lucide-react";
 import { toast } from "sonner";
 import { ROLE_COLORS, ROLES } from "@/lib/constants";
 
@@ -143,12 +143,20 @@ export default function ScrimsPage() {
             Track your team&apos;s practice matches and performance
           </p>
         </div>
-        <Button asChild className="bg-primary-accent hover:bg-primary-accent/90">
-          <Link href="/dashboard/scrims/new">
-            <Plus className="w-4 h-4 mr-2" />
-            New Scrim
-          </Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/dashboard/scrims/digest">
+              <BarChart3 className="w-4 h-4 mr-1.5" />
+              Analytics
+            </Link>
+          </Button>
+          <Button asChild className="bg-primary-accent hover:bg-primary-accent/90">
+            <Link href="/dashboard/scrims/new">
+              <Plus className="w-4 h-4 mr-2" />
+              New Scrim
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <Card className="border-border bg-surface-hover">

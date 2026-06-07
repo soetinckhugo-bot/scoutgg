@@ -36,6 +36,7 @@ import { logger } from "@/lib/logger";
 import PlayerCard from "@/components/PlayerCard";
 import { PageTitle, DataLabel, DataValue } from "@/components/ui/typography";
 import RecentDiscussions from "./RecentDiscussions";
+import ScrimDigestWidget from "./ScrimDigestWidget";
 
 interface Favorite {
   id: string;
@@ -664,6 +665,19 @@ export default function DashboardPage() {
                   ))}
                 </div>
               )}
+            </div>
+          </div>
+
+          {/* Scrim Digest */}
+          <div className="rounded-xl border border-border overflow-hidden">
+            <div className="px-4 py-3 border-b border-border bg-surface-hover flex items-center justify-between">
+              <h2 className="text-base font-semibold flex items-center gap-2 text-text-heading">
+                <ScoutIcon icon={BarChart3} size="lg" variant="muted" />
+                Scrim Digest
+              </h2>
+            </div>
+            <div className="p-4">
+              <ScrimDigestWidget />
             </div>
           </div>
 
