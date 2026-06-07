@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Download, Check, Camera } from "lucide-react";
 import { ROLE_COLORS, TIER_COLORS } from "@/lib/constants";
 import { logger } from "@/lib/logger";
+import { getBaseUrl } from "@/lib/utils";
 
 interface ShareableReportProps {
   player: {
@@ -311,7 +312,7 @@ async function drawCardToCanvas(
   }
 
   const footerY = rect.height - 14;
-  drawText("leaguescout.gg", pad, footerY, {
+  drawText(getBaseUrl().replace(/^https?:\/\//, ""), pad, footerY, {
     font: "10px sans-serif",
     color: "#A0AEC0",
     baseline: "bottom",
@@ -485,7 +486,7 @@ export function ShareableReport({ player, stats, verdict }: ShareableReportProps
 
         {/* Footer */}
         <div className="absolute bottom-3 left-5 right-5 flex items-center justify-between">
-          <span className="text-text-body text-[10px]">leaguescout.gg</span>
+          <span className="text-text-body text-[10px]">{getBaseUrl().replace(/^https?:\/\//, "")}</span>
           <span className="text-text-body text-[10px]">
             Professional scouting intelligence
           </span>

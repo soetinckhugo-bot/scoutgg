@@ -24,7 +24,7 @@ async function cargoQuery(params: {
   groupBy?: string;
   orderBy?: string;
   limit?: number;
-}): Promise<any[]> {
+}): Promise<unknown[]> {
   // Rate limiting
   const now = Date.now();
   const wait = lastRequest + RATE_LIMIT_MS - now;
@@ -88,10 +88,10 @@ export async function getTeamRoster(teamName: string): Promise<LeaguepediaPlayer
     limit: 20,
   });
 
-  return results.map((r) => ({
-    Name: r.Name,
-    Team: r.Team,
-    Role: r.Role,
+  return results.map((r: unknown) => ({
+    Name: (r as Record<string, string>).Name,
+    Team: (r as Record<string, string>).Team,
+    Role: (r as Record<string, string>).Role,
   }));
 }
 
@@ -113,10 +113,10 @@ export async function getLeaguePlayers(
     limit: 500,
   });
 
-  return results.map((r) => ({
-    Name: r.Name,
-    Team: r.Team,
-    Role: r.Role,
+  return results.map((r: unknown) => ({
+    Name: (r as Record<string, string>).Name,
+    Team: (r as Record<string, string>).Team,
+    Role: (r as Record<string, string>).Role,
   }));
 }
 
@@ -142,10 +142,10 @@ export async function getTeamsByRegion(region: string): Promise<LeaguepediaTeam[
     limit: 100,
   });
 
-  return results.map((r) => ({
-    Name: r.Name,
-    Short: r.Short,
-    Region: r.Region,
+  return results.map((r: unknown) => ({
+    Name: (r as Record<string, string>).Name,
+    Short: (r as Record<string, string>).Short,
+    Region: (r as Record<string, string>).Region,
   }));
 }
 
@@ -176,14 +176,14 @@ export async function getTournaments(league: string): Promise<LeaguepediaTournam
     limit: 20,
   });
 
-  return results.map((r) => ({
-    Name: r.OverviewPage,
-    OverviewPage: r.OverviewPage,
-    DateStart: r.DateTime_UTC,
-    DateEnd: r.DateTime_UTC,
-    League: r.League,
-    Split: r.Split,
-    Year: r.Year,
+  return results.map((r: unknown) => ({
+    Name: (r as Record<string, string>).OverviewPage,
+    OverviewPage: (r as Record<string, string>).OverviewPage,
+    DateStart: (r as Record<string, string>).DateTime_UTC,
+    DateEnd: (r as Record<string, string>).DateTime_UTC,
+    League: (r as Record<string, string>).League,
+    Split: (r as Record<string, string>).Split,
+    Year: (r as Record<string, string>).Year,
   }));
 }
 
@@ -260,8 +260,8 @@ export async function syncRostersWithLeaguepedia(
             action: "no_change",
           });
         }
-      } catch (err: any) {
-        result.errors.push(`${lpPlayer.Name}: ${err.message}`);
+      } catch (err: unknown) {
+        result.errors.push(`${lpPlayer.Name}: ${err instanceof Error ? err.message : String(err)}`);
       }
     }
 
@@ -276,8 +276,8 @@ export async function syncRostersWithLeaguepedia(
         )
       );
     }
-  } catch (err: any) {
-    result.errors.push(`Global error: ${err.message}`);
+  } catch (err: unknown) {
+    result.errors.push(`Global error: ${err instanceof Error ? err.message : String(err)}`);
   }
 
   return result;

@@ -1,5 +1,6 @@
 import type { Player, SoloqStats, ProStats, Report } from "@prisma/client";
 import { calculateAge } from "@/lib/age";
+import { getBaseUrl } from "@/lib/utils";
 
 interface PlayerPrintableProps {
   player: Player & {
@@ -56,7 +57,7 @@ export default function PlayerPrintable({ player, id }: PlayerPrintableProps) {
               Generated {new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
             </p>
             <p style={{ fontSize: 11, color: "#6C757D", margin: "2px 0 0" }}>
-              leaguescout.gg/players/{player.id}
+              {getBaseUrl().replace(/^https?:\/\//, "")}/players/{player.id}
             </p>
           </div>
         </div>

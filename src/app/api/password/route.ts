@@ -10,7 +10,7 @@ const PasswordSchema = z.object({
 export async function POST(request: Request) {
   // Rate limit: 3 attempts per minute per IP
   const ip = request.headers.get("x-forwarded-for") || "unknown";
-  const limit = rateLimit(`password:${ip}`, 3, 60 * 1000);
+  const limit = await rateLimit(`password:${ip}`, 3, 60 * 1000);
   if (!limit.success) {
     return NextResponse.json(
       { error: "Too many attempts. Please try again later." },

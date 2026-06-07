@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/server/db";
+import { Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/server/auth-options";
 import { rateLimit } from "@/lib/server/rate-limit";
@@ -17,7 +18,7 @@ export async function GET(request: NextRequest) {
   }
 
   const ip = request.headers.get("x-forwarded-for") || "unknown";
-  const limit = rateLimit(`export-players:${ip}`, 10, 60 * 1000);
+  const limit = await rateLimit(`export-players:${ip}`, 10, 60 * 1000);
   if (!limit.success) {
     return NextResponse.json(
       { error: "Rate limit exceeded. Try again later." },
@@ -33,7 +34,7 @@ export async function GET(request: NextRequest) {
     const league = searchParams.get("league") || undefined;
     const status = searchParams.get("status") || undefined;
 
-    const where: any = {};
+    const where: Prisma.PlayerWhereInput = {};
 
     if (q) {
       where.OR = [

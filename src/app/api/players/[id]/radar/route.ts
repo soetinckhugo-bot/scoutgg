@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/server/db";
+import { Prisma } from "@prisma/client";
 import { logger } from "@/lib/logger";
 import { calculateRankPercentile, type PlayerData, getTierFromLeague } from "@/lib/scoring";
 import { ROLE_METRICS } from "@/lib/radar-metrics";
@@ -72,7 +73,7 @@ export async function GET(
     const comparisonMode = searchParams.get("comparison") || "league"; // "league" | "tier"
 
     // Build query based on comparison mode
-    const playerWhere: any = {
+    const playerWhere: Prisma.PlayerWhereInput = {
       role: player.role,
       proStats: { isNot: null },
     };

@@ -34,6 +34,7 @@ export const authOptions: NextAuthOptions = {
               role: user.role,
               isPremium: user.isPremium,
               subscriptionStatus: user.subscriptionStatus,
+              premiumUntil: user.premiumUntil,
             };
           }
         }
@@ -52,17 +53,19 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = (user as any).role;
-        token.isPremium = (user as any).isPremium;
-        token.subscriptionStatus = (user as any).subscriptionStatus;
+        token.role = user.role;
+        token.isPremium = user.isPremium;
+        token.subscriptionStatus = user.subscriptionStatus;
+        token.premiumUntil = user.premiumUntil ? user.premiumUntil.toISOString() : null;
       }
       return token;
     },
     async session({ session, token }) {
       if (token && session.user) {
-        (session.user as any).role = token.role;
-        (session.user as any).isPremium = token.isPremium;
-        (session.user as any).subscriptionStatus = token.subscriptionStatus;
+        session.user.role = token.role;
+        session.user.isPremium = token.isPremium;
+        session.user.subscriptionStatus = token.subscriptionStatus;
+        session.user.premiumUntil = token.premiumUntil;
       }
       return session;
     },

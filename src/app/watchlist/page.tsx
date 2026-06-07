@@ -15,7 +15,17 @@ interface Favorite {
   id: string;
   playerId: string;
   notes: string | null;
-  player: any;
+  player: {
+    id: string;
+    pseudo: string;
+    realName: string | null;
+    role: string;
+    league: string;
+    currentTeam: string | null;
+    photoUrl: string | null;
+    status: string;
+    soloqStats: { currentRank: string | null; peakLp: number | null } | null;
+  };
 }
 
 function formatNotes(text: string): React.ReactElement {

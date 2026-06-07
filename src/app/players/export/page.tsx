@@ -45,7 +45,7 @@ const MOCK_PLAYER = {
 };
 
 export default function ExportPage() {
-  const [theme, setTheme] = useState("default");
+  const [theme, setTheme] = useState<"default" | "fearx" | "frenchflair" | "loud" | "g2">("default");
   const [activeTab, setActiveTab] = useState<"identity" | "analysis">("identity");
   const [exporting, setExporting] = useState(false);
 
@@ -165,11 +165,11 @@ export default function ExportPage() {
       <div className="flex justify-center">
         {activeTab === "identity" ? (
           <div ref={identityRef} className="inline-block">
-            <IdentityCard player={MOCK_PLAYER} theme={theme as any} />
+            <IdentityCard player={MOCK_PLAYER} theme={theme} />
           </div>
         ) : (
           <div ref={analysisRef} className="inline-block">
-            <AnalysisCard player={MOCK_PLAYER} theme={theme as any} />
+            <AnalysisCard player={MOCK_PLAYER} theme={theme} />
           </div>
         )}
       </div>

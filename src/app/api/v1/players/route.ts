@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/server/db";
+import { Prisma } from "@prisma/client";
 import { withApiAuth } from "@/lib/server/api-auth";
 
 export const GET = withApiAuth(async (request: NextRequest) => {
@@ -11,7 +12,7 @@ export const GET = withApiAuth(async (request: NextRequest) => {
   const search = searchParams.get("search");
   const skip = (page - 1) * limit;
 
-  const where: any = {};
+  const where: Prisma.PlayerWhereInput = {};
   if (role) where.role = role;
   if (league) where.league = league;
   if (search) {

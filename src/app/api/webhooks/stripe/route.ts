@@ -19,10 +19,11 @@ export async function POST(request: Request) {
 
   try {
     event = getStripe().webhooks.constructEvent(payload, sig, endpointSecret);
-  } catch (err: any) {
-    logger.error("Stripe webhook signature verification failed", { message: err.message });
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    logger.error("Stripe webhook signature verification failed", { message: msg });
     return NextResponse.json(
-      { error: `Webhook Error: ${err.message}` },
+      { error: `Webhook Error: ${msg}` },
       { status: 400 }
     );
   }
@@ -100,7 +101,7 @@ export async function POST(request: Request) {
       }
 
       case "customer.subscription.updated": {
-        const subscription = event.data.object as Stripe.Subscription;
+        const subscription = event.data.object as Stripe.Subscription & { current_period_end?: number };
         const customerId = subscription.customer as string;
         const status = subscription.status;
 
@@ -110,8 +111,8 @@ export async function POST(request: Request) {
           data: {
             isPremium: isActive,
             subscriptionStatus: status,
-            premiumUntil: (subscription as any).current_period_end
-              ? new Date((subscription as any).current_period_end * 1000)
+            premiumUntil: subscription.current_period_end
+              ? new Date(subscription.current_period_end * 1000)
               : undefined,
           },
         });
@@ -157,7 +158,7 @@ export async function POST(request: Request) {
       default:
         logger.info(`Unhandled event type: ${event.type}`);
     }
-  } catch (err: any) {
+  } catch (err: unknown) {
     logger.error("Webhook processing error:", { err });
     return NextResponse.json(
       { error: "Webhook handler failed" },

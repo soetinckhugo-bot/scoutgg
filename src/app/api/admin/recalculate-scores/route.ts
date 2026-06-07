@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/server/db";
 import { calculateScores, type PlayerData } from "@/lib/scoring";
 import { requireAdmin } from "@/lib/server/auth";
+import { revalidateTag } from "next/cache";
 import { logger } from "@/lib/logger";
 
 export async function POST() {
@@ -9,8 +10,9 @@ export async function POST() {
   if (unauthorized) return unauthorized;
 
   try {
-    // Fetch all ProStats with their players
+    // Fetch all ProStats with their players (capped to prevent OOM)
     const proStatsList = await db.proStats.findMany({
+      take: 10000,
       include: { player: true },
     });
 
@@ -105,15 +107,17 @@ export async function POST() {
       updatedCount += batch.length;
     }
 
+    revalidateTag("players");
+    revalidateTag("homepage");
     return NextResponse.json({
       success: true,
       recalculated: updatedCount,
       totalPlayers: proStatsList.length,
     });
-  } catch (error: any) {
+  } catch (error) {
     logger.error("Recalculate scores error:", { error });
     return NextResponse.json(
-      { error: error.message || "Failed to recalculate scores" },
+      { error: error instanceof Error ? error.message : "Failed to recalculate scores" },
       { status: 500 }
     );
   }

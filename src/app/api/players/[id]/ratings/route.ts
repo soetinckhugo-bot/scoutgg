@@ -4,7 +4,9 @@ import { db } from "@/lib/server/db";
 import { authOptions } from "@/lib/server/auth-options";
 import { logger } from "@/lib/logger";
 
-function getUserId(session: any): string | null {
+import type { Session } from "next-auth";
+
+function getUserId(session: Session | null): string | null {
   return session?.user?.email || null;
 }
 
@@ -81,7 +83,7 @@ export async function POST(
     const { mechanics, macro, attitude, potential, notes } = json;
 
     // Validate ratings are 1-5
-    const validate = (v: any) => {
+    const validate = (v: unknown) => {
       const n = Number(v);
       return Number.isInteger(n) && n >= 1 && n <= 5 ? n : 0;
     };

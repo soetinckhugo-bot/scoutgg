@@ -296,10 +296,10 @@ export async function POST(request: NextRequest) {
       alertsCreated: results.filter((r) => r.created).length,
       results,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error("[Cron] Alert check error:", { error });
     return NextResponse.json(
-      { error: error.message || "Alert check failed" },
+      { error: error instanceof Error ? error.message : "Alert check failed" },
       { status: 500 }
     );
   }

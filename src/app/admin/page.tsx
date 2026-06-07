@@ -1359,10 +1359,51 @@ function PlayerForm({
   );
 }
 
+interface ExpiringContract {
+  id: string;
+  pseudo: string;
+  role: string;
+  league: string;
+  currentTeam: string | null;
+  contractEndDate: Date | string;
+  daysUntil: number;
+}
+
+interface AlertResult {
+  alertsCreated: number;
+  results: Array<{
+    type: string;
+    playerId: string;
+    userId: string;
+    created: boolean;
+    error?: string;
+  }>;
+}
+
+interface SyncResultItem {
+  playerId: string;
+  pseudo: string;
+  success: boolean;
+  error?: string;
+}
+
+interface SyncSummary {
+  total: number;
+  success: number;
+  failed: number;
+  startedAt: string;
+  completedAt: string;
+}
+
+interface SyncResult {
+  summary: SyncSummary;
+  results: SyncResultItem[];
+}
+
 function AlertsTab() {
   const [checking, setChecking] = useState(false);
-  const [lastResult, setLastResult] = useState<any>(null);
-  const [expiringContracts, setExpiringContracts] = useState<any[]>([]);
+  const [lastResult, setLastResult] = useState<AlertResult | null>(null);
+  const [expiringContracts, setExpiringContracts] = useState<ExpiringContract[]>([]);
   const [loadingContracts, setLoadingContracts] = useState(true);
 
   useEffect(() => {
@@ -1412,7 +1453,7 @@ function AlertsTab() {
             <p className="text-sm text-text-muted">No contracts expiring in the next 90 days.</p>
           ) : (
             <div className="space-y-2">
-              {expiringContracts.map((player: any) => (
+              {expiringContracts.map((player) => (
                 <div key={player.id} className="flex items-center justify-between p-3 bg-surface-hover rounded-lg border border-border">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-surface-elevated flex items-center justify-center text-sm font-bold text-text-heading">
@@ -1492,7 +1533,7 @@ function AlertsTab() {
 
 function SyncTab() {
   const [syncing, setSyncing] = useState(false);
-  const [lastResult, setLastResult] = useState<any>(null);
+  const [lastResult, setLastResult] = useState<SyncResult | null>(null);
 
   const handleSync = async () => {
     setSyncing(true);
@@ -1570,7 +1611,7 @@ function SyncTab() {
               </div>
               <div className="text-center p-4 bg-surface-hover rounded-lg">
                 <div className="text-2xl font-bold text-text-heading">
-                  {lastResult.results?.filter((r: any) => r.error?.includes("No riotPuuid")).length || 0}
+                  {lastResult.results?.filter((r) => r.error?.includes("No riotPuuid")).length || 0}
                 </div>
                 <div className="text-xs text-text-body">Missing PUUID</div>
               </div>
@@ -1585,7 +1626,7 @@ function SyncTab() {
         </Card>
       )}
 
-      {lastResult?.results && lastResult.results.some((r: any) => !r.success) && (
+      {lastResult?.results && lastResult.results.some((r) => !r.success) && (
         <Card className="border-border">
           <CardHeader>
             <CardTitle className="text-lg text-red-600 text-red-400">Failed Syncs</CardTitle>
@@ -1593,8 +1634,8 @@ function SyncTab() {
           <CardContent>
             <div className="divide-y divide-border max-h-64 overflow-y-auto">
               {lastResult.results
-                .filter((r: any) => !r.success)
-                .map((r: any) => (
+                .filter((r) => !r.success)
+                .map((r) => (
                   <div key={r.playerId} className="py-2 flex items-center justify-between">
                     <span className="font-medium text-sm">{r.pseudo}</span>
                     <span className="text-xs text-red-600 text-red-400">{r.error}</span>

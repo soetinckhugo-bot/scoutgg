@@ -16,8 +16,8 @@ export interface ValidationIssue {
   player: string;
   field: string;
   message: string;
-  value?: any;
-  expected?: any;
+  value?: unknown;
+  expected?: unknown;
 }
 
 export interface ValidationResult {
@@ -285,7 +285,7 @@ export async function validateImport(league: string): Promise<ValidationResult> 
  * Valide un fichier CSV avant import (sans toucher à la BDD)
  */
 export function validateCsvBeforeImport(
-  rows: Array<Record<string, any>>
+  rows: Array<Record<string, unknown>>
 ): ValidationResult {
   const issues: ValidationIssue[] = [];
 
@@ -327,7 +327,7 @@ export function validateCsvBeforeImport(
   // Vérifier les doublons
   const nameCounts: Record<string, number> = {};
   for (const row of rows) {
-    const name = row.Player || row.player || row.name || "";
+    const name = String(row.Player || row.player || row.name || "");
     if (name) {
       nameCounts[name] = (nameCounts[name] || 0) + 1;
     }
@@ -344,8 +344,8 @@ export function validateCsvBeforeImport(
   }
 
   for (const row of rows) {
-    const playerName = row.Player || row.player || row.name || "Unknown";
-    const games = parseInt(row.Games || row.games || "0") || 0;
+    const playerName = String(row.Player || row.player || row.name || "Unknown");
+    const games = parseInt(String(row.Games || row.games || "0")) || 0;
 
     if (games < RULES.minGames) {
       issues.push({
@@ -358,10 +358,10 @@ export function validateCsvBeforeImport(
     }
 
     // Vérifier KDA
-    const k = parseFloat(row.K || row.k || "0") || 0;
-    const d = parseFloat(row.D || row.d || "0") || 0;
-    const a = parseFloat(row.A || row.a || "0") || 0;
-    const kda = parseFloat(row.KDA || row.kda || "0") || 0;
+    const k = parseFloat(String(row.K || row.k || "0")) || 0;
+    const d = parseFloat(String(row.D || row.d || "0")) || 0;
+    const a = parseFloat(String(row.A || row.a || "0")) || 0;
+    const kda = parseFloat(String(row.KDA || row.kda || "0")) || 0;
 
     if (d > 0) {
       const calculatedKda = (k + a) / d;

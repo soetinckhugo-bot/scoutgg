@@ -28,8 +28,7 @@ async function getReports() {
 
 export default async function ReportsPage() {
   const session = await getServerSession(authOptions);
-  const user = session?.user as any;
-  const isPremium = user?.isPremium === true && user?.subscriptionStatus === "active";
+  const isPremium = session?.user?.isPremium === true && session?.user?.subscriptionStatus === "active";
 
   const reports = await getReports();
 

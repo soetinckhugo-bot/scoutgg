@@ -5,7 +5,9 @@ import { db } from "@/lib/server/db";
 import { FavoriteCreateSchema, FavoriteUpdateSchema } from "@/lib/schemas";
 import { authOptions } from "@/lib/server/auth-options";
 
-function getUserId(session: any): string | null {
+import type { Session } from "next-auth";
+
+function getUserId(session: Session | null): string | null {
   return session?.user?.email || null;
 }
 

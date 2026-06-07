@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/server/db";
 import { requireAdmin } from "@/lib/server/auth";
+import { revalidateTag } from "next/cache";
 import { logger } from "@/lib/logger";
 
 export async function POST(request: Request) {
@@ -11,6 +12,7 @@ export async function POST(request: Request) {
     // 1. Fetch all ROL players with their stats
     const rolPlayers = await db.player.findMany({
       where: { league: "ROL" },
+      take: 5000,
       include: {
         proStats: true,
         soloqStats: true,
@@ -64,7 +66,7 @@ export async function POST(request: Request) {
       const notes: string[] = [];
 
       // Merge player fields: fill nulls on master from dupes
-      const updateData: Record<string, any> = {};
+      const updateData: Record<string, unknown> = {};
       const fieldsToMerge = [
         "photoUrl", "realName", "nationality", "age", "dateOfBirth", "currentTeam",
         "riotPuuid", "riotId", "opggUrl", "golggUrl", "lolprosUrl",
@@ -73,10 +75,12 @@ export async function POST(request: Request) {
       ] as const;
 
       for (const field of fieldsToMerge) {
-        if (!(master as any)[field]) {
+        const masterField = field as keyof typeof master;
+        if (!master[masterField]) {
           for (const d of dupes) {
-            if ((d as any)[field]) {
-              updateData[field] = (d as any)[field];
+            const dupeField = field as keyof typeof d;
+            if (d[dupeField]) {
+              (updateData as Record<string, unknown>)[field] = d[dupeField];
               break;
             }
           }
@@ -123,8 +127,8 @@ export async function POST(request: Request) {
           try {
             const res = await updater.fn(master.id, d.id);
             if (res.count > 0) notes.push(`Transferred ${res.count} ${updater.name} from ${d.id}`);
-          } catch (e: any) {
-            notes.push(`Failed to transfer ${updater.name} from ${d.id}: ${e.message}`);
+          } catch (e: unknown) {
+            notes.push(`Failed to transfer ${updater.name} from ${d.id}: ${e instanceof Error ? e.message : String(e)}`);
           }
         }
 
@@ -177,8 +181,8 @@ export async function POST(request: Request) {
         try {
           await db.player.delete({ where: { id: d.id } });
           deletedIds.push(d.id);
-        } catch (e: any) {
-          notes.push(`Failed to delete ${d.id}: ${e.message}`);
+        } catch (e: unknown) {
+          notes.push(`Failed to delete ${d.id}: ${e instanceof Error ? e.message : String(e)}`);
         }
       }
 
@@ -200,6 +204,9 @@ export async function POST(request: Request) {
 
     const totalRol = await db.player.count({ where: { league: "ROL" } });
 
+    revalidateTag("players");
+    revalidateTag("homepage");
+    revalidateTag("mercato");
     return NextResponse.json({
       success: true,
       duplicatesFound: duplicates.length,
@@ -208,10 +215,10 @@ export async function POST(request: Request) {
       rolWithoutStats,
       details: results,
     });
-  } catch (error: any) {
-    logger.error("ROL merge error:", { error });
+  } catch (error: unknown) {
+    logger.error("ROL merge error:", { error: String(error) });
     return NextResponse.json(
-      { error: error.message || "Merge failed" },
+      { error: error instanceof Error ? error.message : "Merge failed" },
       { status: 500 }
     );
   }

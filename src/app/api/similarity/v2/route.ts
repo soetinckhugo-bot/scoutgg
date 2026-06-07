@@ -16,6 +16,7 @@
 
 import { NextResponse } from "next/server";
 import { db } from "@/lib/server/db";
+import { Prisma } from "@prisma/client";
 import { logger } from "@/lib/logger";
 import { ROLE_METRICS } from "@/lib/radar-metrics";
 
@@ -354,7 +355,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Player not found" }, { status: 404 });
     }
 
-    const poolWhere: any = {
+    const poolWhere: Prisma.PlayerWhereInput = {
       role: sourcePlayer.role,
       proStats: { isNot: null },
       id: { not: playerId },

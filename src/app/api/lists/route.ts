@@ -6,7 +6,9 @@ import { authOptions } from "@/lib/server/auth-options";
 import { calculateAge } from "@/lib/age";
 import { z } from "zod";
 
-function getUserId(session: any): string | null {
+import type { Session } from "next-auth";
+
+function getUserId(session: Session | null): string | null {
   return session?.user?.email || null;
 }
 
@@ -164,7 +166,7 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: "List not found" }, { status: 404 });
     }
 
-    const updateData: any = {};
+    const updateData: Record<string, unknown> = {};
     if (name !== undefined) updateData.name = name.slice(0, 100);
     if (description !== undefined) updateData.description = description?.slice(0, 500) || null;
     if (color !== undefined) updateData.color = color;

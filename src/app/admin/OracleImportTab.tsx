@@ -12,7 +12,7 @@ import { toast } from "sonner";
 
 export default function OracleImportTab() {
   const [csvContent, setCsvContent] = useState("");
-  const [preview, setPreview] = useState<any[]>([]);
+  const [preview, setPreview] = useState<Record<string, string>[]>([]);
   const [importing, setImporting] = useState(false);
 
   function parseCSV(content: string) {
@@ -24,7 +24,7 @@ export default function OracleImportTab() {
 
     for (let i = 1; i < lines.length; i++) {
       const values = lines[i].split(",").map((v) => v.trim().replace(/^"|"$/g, ""));
-      const row: any = {};
+      const row: Record<string, string> = {};
       headers.forEach((h, idx) => {
         row[h] = values[idx] || "";
       });
@@ -172,7 +172,7 @@ Adam,Team BDS,TOP,15,45,23,89,5.8,12.5,850,720...`}
                 <tbody>
                   {preview.map((row, i) => (
                     <tr key={`row-${i}`} className="border-b border-border">
-                      {Object.values(row).map((val: any, j) => (
+                      {Object.values(row).map((val: string, j) => (
                         <td key={`cell-${i}-${j}`} className="p-2 text-text-heading">
                           {val}
                         </td>

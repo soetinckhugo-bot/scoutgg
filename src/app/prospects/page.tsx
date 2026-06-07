@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 // Card kept only for podium cards (featured/clickable)
 import { cache } from "react";
 import type { Metadata } from "next";
+import { Prisma } from "@prisma/client";
 import {
   Star,
   TrendingUp,
@@ -46,12 +47,16 @@ const REGIONS = [
   { value: "BG", label: "Bulgaria", flag: "🇧🇬" },
 ];
 
+type PlayerWithRelations = Prisma.PlayerGetPayload<{
+  include: { soloqStats: true; proStats: true; prospectMetrics: true };
+}>;
+
 const getProspects = cache(async (searchParams: {
     role?: string;
     region?: string;
     sort?: string;
   }) => {
-    const where: any = {
+    const where: Prisma.PlayerWhereInput = {
       isProspect: true,
       hasPlayedInMajorLeague: false,
       NOT: { league: { in: MAJOR_LEAGUES } },
@@ -60,7 +65,7 @@ const getProspects = cache(async (searchParams: {
     if (searchParams.role) where.role = searchParams.role;
     if (searchParams.region) where.nationality = searchParams.region;
 
-    const players = await db.player.findMany({
+    const players: PlayerWithRelations[] = await db.player.findMany({
       where,
       include: {
         soloqStats: true,
@@ -72,7 +77,7 @@ const getProspects = cache(async (searchParams: {
     });
 
     // Always top 30 by score; sort in-memory for display grouping
-    const sorted = [...players];
+    const sorted: PlayerWithRelations[] = [...players];
     if (searchParams.sort === "age") {
       sorted.sort((a, b) => {
         const ageA = calculateAge(a.dateOfBirth) ?? a.age ?? 999;
@@ -87,6 +92,7 @@ const getProspects = cache(async (searchParams: {
 
     const ranked = sorted.map((p, i) => ({
       ...p,
+      nationality: p.nationality,
       age: calculateAge(p.dateOfBirth) ?? p.age,
       displayRank: i + 1,
     }));
@@ -122,7 +128,23 @@ function PodiumCard({
   player,
   rank,
 }: {
-  player: any;
+  player: {
+    id: string;
+    pseudo: string;
+    realName: string | null;
+    role: string;
+    league: string;
+    status: string;
+    nationality: string | null;
+    currentTeam: string | null;
+    photoUrl: string | null;
+    age: number | null;
+    dateOfBirth: Date | null;
+    prospectScore: number | null;
+    prospectTrend: string | null;
+    soloqStats: { currentRank: string | null; peakLp: number | null } | null;
+    proStats: { globalScore: number | null; tierScore: number | null } | null;
+  };
   rank: number;
 }) {
   const isFirst = rank === 1;
@@ -156,9 +178,9 @@ function PodiumCard({
 
           {/* Photo */}
           <div className="mb-3">
-            {player.prospectPhotoUrl || player.photoUrl ? (
+            {player.photoUrl ? (
               <Image
-                src={player.prospectPhotoUrl || player.photoUrl}
+                src={player.photoUrl}
                 alt={player.pseudo}
                 width={80}
                 height={80}
@@ -173,7 +195,7 @@ function PodiumCard({
 
           {/* Flag + Name */}
           <div className="flex items-center gap-2 mb-1">
-            <Flag code={player.nationality?.toLowerCase()} />
+            <Flag code={player.nationality?.toLowerCase() || ""} />
             <h2 className="font-bold text-text-heading text-base">
               {player.pseudo}
             </h2>
@@ -217,7 +239,25 @@ function ProspectRow({
   player,
   index,
 }: {
-  player: any;
+  player: {
+    id: string;
+    pseudo: string;
+    realName: string | null;
+    role: string;
+    league: string;
+    status: string;
+    nationality: string | null;
+    currentTeam: string | null;
+    photoUrl: string | null;
+    prospectPhotoUrl: string | null;
+    age: number | null;
+    dateOfBirth: Date | null;
+    prospectScore: number | null;
+    prospectTrend: string | null;
+    displayRank: number;
+    soloqStats: { currentRank: string | null; peakLp: number | null } | null;
+    proStats: { globalScore: number | null; tierScore: number | null } | null;
+  };
   index: number;
 }) {
   const rank = player.displayRank;
@@ -257,14 +297,14 @@ function ProspectRow({
 
         {/* Flag */}
         <span className="w-6 text-center shrink-0">
-          <Flag code={player.nationality?.toLowerCase()} />
+          <Flag code={player.nationality?.toLowerCase() || ""} />
         </span>
 
         {/* Photo */}
         <div className="shrink-0">
           {player.prospectPhotoUrl || player.photoUrl ? (
             <Image
-              src={player.prospectPhotoUrl || player.photoUrl}
+              src={player.prospectPhotoUrl || player.photoUrl || ""}
               alt={player.pseudo}
               width={36}
               height={36}

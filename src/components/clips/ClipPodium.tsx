@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import StarRating from "./StarRating";
@@ -17,7 +18,7 @@ interface ClipPodiumProps {
     totalVotes: number;
     avgScore: number;
   }[];
-  onOpen: (clip: any) => void;
+  onOpen: (clip: { id: string; playerName: string; playerRole: string; champion: string | null; title: string; platform: string; videoId: string; totalVotes: number; avgScore: number }) => void;
 }
 
 export default function ClipPodium({ clips, onOpen }: ClipPodiumProps) {
@@ -45,7 +46,7 @@ export default function ClipPodium({ clips, onOpen }: ClipPodiumProps) {
           <Card key={clip.id} className={`border-2 ${rankBg} overflow-hidden cursor-pointer group hover:shadow-lg hover:scale-[1.02] transition-all`} onClick={() => onOpen(clip)}>
             <div className="relative bg-[#1A1D29] aspect-[4/3] flex items-center justify-center overflow-hidden">
               {thumb ? (
-                <img src={thumb} alt={clip.champion || "champion"} className="w-full h-full object-cover" loading="lazy" />
+                <Image src={thumb} alt={clip.champion || "champion"} fill sizes="(max-width: 768px) 50vw, 300px" className="object-cover" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
                   <span className="text-text-muted text-xs">{clip.platform}</span>

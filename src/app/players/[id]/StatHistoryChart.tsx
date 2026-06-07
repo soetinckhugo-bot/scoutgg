@@ -34,7 +34,7 @@ export default function StatHistoryChart({ playerId }: { playerId: string }) {
         const res = await fetch(`/api/players/${playerId}/history`);
         if (!res.ok) throw new Error("Failed");
         const data = await res.json();
-        const formatted = (data.history || []).map((h: any) => ({
+        const formatted = (data.history || []).map((h: { week: number; winrate: number; [key: string]: unknown }) => ({
           ...h,
           label: `W${h.week}`,
           winratePct: Math.round(h.winrate * 100) / 100,
@@ -148,7 +148,7 @@ export default function StatHistoryChart({ playerId }: { playerId: string }) {
                 }}
                 itemStyle={{ color: "#E9ECEF" }}
                 labelStyle={{ color: "#6C757D" }}
-                formatter={(value: any) => [formatter(value as number), label]}
+                formatter={(value: unknown) => [formatter(value as number), label]}
               />
               <Line
                 type="monotone"

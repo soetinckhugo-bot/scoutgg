@@ -286,7 +286,7 @@ export function validateCsvRow(row: CsvPlayerRow, lineNumber: number): Validatio
   for (const [field, rule] of Object.entries(CSV_VALIDATION_RULES)) {
     if (rule.type === "string") continue;
 
-    const rawValue = (row as any)[field] as string | undefined;
+    const rawValue = (row as unknown as Record<string, string>)[field];
     if (!rawValue || rawValue.trim() === "" || rawValue.trim() === "-") continue;
 
     let value: number | null = null;

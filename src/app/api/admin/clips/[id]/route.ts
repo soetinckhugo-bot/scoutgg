@@ -26,7 +26,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     const body = updateSchema.parse(await request.json());
     const clip = await db.clip.update({ where: { id }, data: body });
     return NextResponse.json({ success: true, clip });
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: error.issues }, { status: 400 });
     }
@@ -43,7 +43,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     const { id } = await params;
     await db.clip.delete({ where: { id } });
     return NextResponse.json({ success: true });
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error("DELETE /api/admin/clips/:id failed", { error });
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }

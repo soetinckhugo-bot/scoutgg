@@ -1,5 +1,9 @@
 interface JsonLdProps {
-  data: Record<string, any> | Record<string, any>[];
+  data: unknown;
+}
+
+function safeJsonLdStringify(data: unknown): string {
+  return JSON.stringify(data).replace(/</g, "\\u003c");
 }
 
 export function JsonLd({ data }: JsonLdProps) {
@@ -7,7 +11,7 @@ export function JsonLd({ data }: JsonLdProps) {
     <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{
-        __html: JSON.stringify(data),
+        __html: safeJsonLdStringify(data),
       }}
     />
   );

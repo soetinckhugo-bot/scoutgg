@@ -118,13 +118,14 @@ async function syncPlayer(player: {
       pseudo: player.pseudo,
       success: true,
     };
-  } catch (err: any) {
-    logger.error(`[Cron] Failed to sync ${player.pseudo}:`, { message: err.message });
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    logger.error(`[Cron] Failed to sync ${player.pseudo}:`, { message: msg });
     return {
       playerId: player.id,
       pseudo: player.pseudo,
       success: false,
-      error: err.message,
+      error: msg,
     };
   }
 }
@@ -151,11 +152,12 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    // Get all players with a riotPuuid
+    // Get all players with a riotPuuid (capped to prevent timeout/oom)
     const players = await db.player.findMany({
       where: {
         riotPuuid: { not: null },
       },
+      take: 5000,
       select: {
         id: true,
         pseudo: true,
@@ -194,10 +196,10 @@ export async function POST(request: NextRequest) {
       },
       results,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error("[Cron] Sync error:", { error });
     return NextResponse.json(
-      { error: error.message || "Cron sync failed" },
+      { error: error instanceof Error ? error.message : "Cron sync failed" },
       { status: 500 }
     );
   }

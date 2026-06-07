@@ -5,6 +5,7 @@ import { ReportCreateSchema } from "@/lib/schemas";
 import { requireAdmin } from "@/lib/server/auth";
 import { rateLimit } from "@/lib/server/rate-limit";
 import { getServerSession } from "next-auth/next";
+import { revalidateTag } from "next/cache";
 import { authOptions } from "@/lib/server/auth-options";
 
 const DEFAULT_LIMIT = 50;
@@ -12,7 +13,7 @@ const DEFAULT_LIMIT = 50;
 export async function GET(request: Request) {
   // Rate limit: 60 requests per minute per IP
   const ip = request.headers.get("x-forwarded-for") || "unknown";
-  const limit = rateLimit(`reports-get:${ip}`, 60, 60 * 1000);
+  const limit = await rateLimit(`reports-get:${ip}`, 60, 60 * 1000);
   if (!limit.success) {
     return NextResponse.json(
       { error: "Too many requests. Please try again later." },
@@ -27,8 +28,7 @@ export async function GET(request: Request) {
     const skip = (page - 1) * limit;
 
     const session = await getServerSession(authOptions);
-    const user = session?.user as any;
-    const isPremium = user?.isPremium === true && user?.subscriptionStatus === "active";
+    const isPremium = session?.user?.isPremium === true && session?.user?.subscriptionStatus === "active";
 
     const [reports, totalCount] = await Promise.all([
       db.report.findMany({
@@ -111,6 +111,8 @@ export async function POST(request: Request) {
       },
     });
 
+    revalidateTag("reports");
+    revalidateTag("homepage");
     return NextResponse.json(report, { status: 201 });
   } catch (error) {
     logger.error("Error creating report", { error: String(error) });

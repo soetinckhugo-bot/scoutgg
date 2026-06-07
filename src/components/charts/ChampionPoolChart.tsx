@@ -28,8 +28,8 @@ function parseChampionPool(pool: string): ChampionData[] {
     const parsed = JSON.parse(pool);
     if (Array.isArray(parsed)) {
       return parsed
-        .map((item: any) => ({
-          name: item.champion || String(item),
+        .map((item: { name: string; games: number }) => ({
+          name: item.name || String(item),
           games: item.games || 1,
         }))
         .filter((c) => c.name);
@@ -54,16 +54,16 @@ function parseChampionPool(pool: string): ChampionData[] {
 }
 
 const CHAMPION_COLORS = [
-  "#E94560",
-  "#0F3460",
-  "#28A745",
-  "#FFC107",
-  "#6F42C1",
-  "#17A2B8",
-  "#FD7E14",
-  "#DC3545",
-  "#20C997",
-  "#6610F2",
+  "var(--primary-accent)",
+  "var(--color-info)",
+  "var(--color-success)",
+  "var(--color-warning)",
+  "var(--color-purple)",
+  "var(--secondary)",
+  "var(--color-orange)",
+  "var(--destructive)",
+  "var(--color-success)",
+  "var(--color-purple)",
 ];
 
 export default function ChampionPoolChart({

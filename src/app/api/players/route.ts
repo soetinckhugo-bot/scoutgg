@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
 import { logger } from "@/lib/logger";
 import { db } from "@/lib/server/db";
+import { Prisma } from "@prisma/client";
 import { PlayerCreateSchema } from "@/lib/schemas";
 import { calculateAge } from "@/lib/age";
 import { requireAdmin } from "@/lib/server/auth";
 import { rateLimit } from "@/lib/server/rate-limit";
+import { revalidateTag } from "next/cache";
 import { z } from "zod";
 
 const DEFAULT_LIMIT = 50;
@@ -29,7 +31,7 @@ const VALID_SORT_FIELDS = [
 
 type SortField = (typeof VALID_SORT_FIELDS)[number];
 
-function buildOrderBy(sort: SortField, order: "asc" | "desc"): any {
+function buildOrderBy(sort: SortField, order: "asc" | "desc"): Prisma.PlayerOrderByWithRelationInput {
   switch (sort) {
     case "pseudo":
       return { pseudo: order };
@@ -80,7 +82,7 @@ const PlayerQuerySchema = z.object({
 export async function GET(request: Request) {
   // Rate limit: 60 requests per minute per IP
   const ip = request.headers.get("x-forwarded-for") || "unknown";
-  const limit = rateLimit(`players-get:${ip}`, 60, 60 * 1000);
+  const limit = await rateLimit(`players-get:${ip}`, 60, 60 * 1000);
   if (!limit.success) {
     return NextResponse.json(
       { error: "Too many requests. Please try again later." },
@@ -108,7 +110,7 @@ export async function GET(request: Request) {
     const tier = parsed.data.tier;
     const minGames = parsed.data.minGames || 0;
 
-    const where: any = {};
+    const where: Prisma.PlayerWhereInput = {};
     if (role) where.role = role;
     if (league) where.league = league;
     if (tier) where.tier = tier;
@@ -243,6 +245,7 @@ export async function POST(request: Request) {
         league: body.league,
         tier: body.tier ?? null,
         status: body.status,
+        contractEndDate: body.contractEndDate ? new Date(body.contractEndDate) : null,
         opggUrl: body.opggUrl ?? null,
         golggUrl: body.golggUrl ?? null,
         lolprosUrl: body.lolprosUrl ?? null,
@@ -273,6 +276,9 @@ export async function POST(request: Request) {
       },
     });
 
+    revalidateTag("players");
+    revalidateTag("homepage");
+    revalidateTag("mercato");
     return NextResponse.json(player, { status: 201 });
   } catch (error) {
     logger.error("Error creating player", { error: String(error) });

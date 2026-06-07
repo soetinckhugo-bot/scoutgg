@@ -121,10 +121,10 @@ export async function GET(
       matches: playerMatches.filter(Boolean),
       total: playerMatches.length,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error("Match history error:", { error });
     return NextResponse.json(
-      { error: error.message || "Failed to fetch match history" },
+      { error: error instanceof Error ? error.message : "Failed to fetch match history" },
       { status: 500 }
     );
   }

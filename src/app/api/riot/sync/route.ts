@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
 
   // Rate limit: 5 requests per minute per IP
   const ip = request.headers.get("x-forwarded-for") || "unknown";
-  const limit = rateLimit(`riot-sync:${ip}`, 5, 60 * 1000);
+  const limit = await rateLimit(`riot-sync:${ip}`, 5, 60 * 1000);
 
   if (!limit.success) {
     return NextResponse.json(
@@ -219,10 +219,10 @@ export async function POST(request: NextRequest) {
         recentMatches: matches.length,
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error("Riot sync error:", { error });
     return NextResponse.json(
-      { error: error.message || "Failed to sync stats" },
+      { error: error instanceof Error ? error.message : "Failed to sync stats" },
       { status: 500 }
     );
   }

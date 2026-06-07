@@ -49,8 +49,9 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Get ALL favorites with players in ONE query
+    // Get ALL favorites with players in ONE query (capped to prevent OOM)
     const allFavorites = await db.favorite.findMany({
+      take: 10000,
       include: {
         player: {
           include: {
@@ -126,10 +127,10 @@ export async function POST(request: NextRequest) {
       sentTo: sent,
       failedFor: failed,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error("[Cron] Weekly digest error:", { error });
     return NextResponse.json(
-      { error: error.message || "Digest failed" },
+      { error: error instanceof Error ? error.message : "Digest failed" },
       { status: 500 }
     );
   }

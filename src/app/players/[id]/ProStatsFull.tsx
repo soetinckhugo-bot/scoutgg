@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { ChevronDown, Loader2 } from "lucide-react";
 import { getTierFromLeague, type TierLevel } from "@/lib/scoring";
 import { logger } from "@/lib/logger";
@@ -219,13 +219,19 @@ function SplitSelector({
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    fetch(`/api/players/${playerId}/prostats/splits`)
+    const controller = new AbortController();
+    fetch(`/api/players/${playerId}/prostats/splits`, { signal: controller.signal })
       .then((r) => r.json())
       .then((data) => {
         setSplits(data.splits || []);
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch(() => {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
+      });
+    return () => controller.abort();
   }, [playerId]);
 
   const seasons = Array.from(new Set(splits.map((s) => s.season)));
@@ -324,6 +330,7 @@ export default function ProStatsFull({
   const [selectedSplit, setSelectedSplit] = useState<string | null>(proStats?.split || null);
   const [isAll, setIsAll] = useState(false);
   const [loading, setLoading] = useState(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const tier = (displayStats?.tier || getTierFromLeague(league)) as TierLevel;
   const tierColor = TIER_COLORS[tier] || "text-text-muted";
@@ -331,6 +338,12 @@ export default function ProStatsFull({
 
   const handleSelectSplit = useCallback(
     async (season: string, split: string | null, all: boolean) => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      const controller = new AbortController();
+      abortControllerRef.current = controller;
+
       setSelectedSeason(season);
       setSelectedSplit(split);
       setIsAll(all);
@@ -338,22 +351,26 @@ export default function ProStatsFull({
 
       try {
         if (all) {
-          const res = await fetch(`/api/players/${playerId}/prostats/all?year=${season}`);
+          const res = await fetch(`/api/players/${playerId}/prostats/all?year=${season}`, { signal: controller.signal });
           if (res.ok) {
             const data = await res.json();
             setDisplayStats(data);
           }
         } else if (split) {
-          const res = await fetch(`/api/players/${playerId}/prostats?season=${season}&split=${split}`);
+          const res = await fetch(`/api/players/${playerId}/prostats?season=${season}&split=${split}`, { signal: controller.signal });
           if (res.ok) {
             const data = await res.json();
             setDisplayStats(data);
           }
         }
       } catch (err) {
-        logger.error("Failed to load split stats", { err });
+        if (!controller.signal.aborted) {
+          logger.error("Failed to load split stats", { err });
+        }
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     },
     [playerId]
@@ -366,6 +383,15 @@ export default function ProStatsFull({
     setSelectedSplit(proStats?.split || null);
     setIsAll(false);
   }, [proStats]);
+
+  // Cleanup pending fetches on unmount
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
 
   if (!displayStats) {
     return (

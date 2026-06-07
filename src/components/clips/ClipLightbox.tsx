@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import CopyLinkButton from "./CopyLinkButton";
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
+import { getBaseUrl } from "@/lib/utils";
 
 interface ClipLightboxProps {
   open: boolean;
@@ -27,7 +28,7 @@ function getEmbedUrl(platform: string, videoId: string): string {
 export default function ClipLightbox({ open, onOpenChange, clip }: ClipLightboxProps) {
   if (!clip) return null;
 
-  const pageUrl = `https://leaguescout.gg/clips/${clip.id}`;
+  const pageUrl = `${getBaseUrl()}/clips/${clip.id}`;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

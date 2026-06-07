@@ -7,7 +7,9 @@ import StarRating from "./StarRating";
 import CopyLinkButton from "./CopyLinkButton";
 import { getChampionIconUrl } from "@/lib/game-assets";
 import { ExternalLink } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
+import { getBaseUrl } from "@/lib/utils";
 
 interface ClipCardProps {
   clip: {
@@ -42,11 +44,12 @@ export default function ClipCard({ clip, userVote, onVote, canVote = true, onOpe
     <Card className="bg-card border-border overflow-hidden transition-all duration-200 hover:shadow-lg hover:scale-[1.02] cursor-pointer group">
       <div className="relative bg-[#1A1D29] aspect-[4/3] flex items-center justify-center overflow-hidden" onClick={onOpen}>
         {thumb ? (
-          <img
+          <Image
             src={thumb}
             alt={clip.champion || "champion"}
-            className="w-full h-full object-cover"
-            loading="lazy"
+            fill
+            sizes="(max-width: 768px) 50vw, 300px"
+            className="object-cover"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
@@ -87,7 +90,7 @@ export default function ClipCard({ clip, userVote, onVote, canVote = true, onOpe
         </div>
         <div className="flex items-center justify-center gap-1.5 pt-1">
           <CopyLinkButton
-            url={`https://leaguescout.gg/clips/${clip.id}`}
+            url={`${getBaseUrl()}/clips/${clip.id}`}
             variant="ghost"
             size="sm"
             className="h-7 px-2 text-[10px] text-text-muted hover:text-text-heading"

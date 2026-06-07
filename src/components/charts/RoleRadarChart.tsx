@@ -160,9 +160,9 @@ export default function RoleRadarChart({ role, proStats }: RoleRadarChartProps) 
           <Radar
             name="Score"
             dataKey="score"
-            stroke="#E94560"
+            stroke="var(--primary-accent)"
             strokeWidth={2}
-            fill="#E94560"
+            fill="var(--primary-accent)"
             fillOpacity={0.2}
           />
         </RadarChart>

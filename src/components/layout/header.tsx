@@ -29,6 +29,7 @@ const navLinks = [
   { href: "/players", label: "Players" },
   { href: "/leaderboards", label: "Leaderboards" },
   { href: "/prospects", label: "Prospects" },
+  { href: "/mercato", label: "Mercato" },
   { href: "/clips", label: "Clips" },
   { href: "/compare", label: "Comparison" },
   { href: "/similarity", label: "Similarity" },
@@ -54,22 +55,30 @@ function useSearchSuggestions(query: string) {
       clearTimeout(debounceRef.current);
     }
 
+    const controller = new AbortController();
+
     debounceRef.current = setTimeout(async () => {
       try {
         const res = await fetch(
-          `/api/search/suggestions?q=${encodeURIComponent(trimmed)}`
+          `/api/search/suggestions?q=${encodeURIComponent(trimmed)}`,
+          { signal: controller.signal }
         );
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
         setSuggestions(data.suggestions || []);
       } catch {
-        setSuggestions([]);
+        if (!controller.signal.aborted) {
+          setSuggestions([]);
+        }
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     }, 300);
 
     return () => {
+      controller.abort();
       if (debounceRef.current) {
         clearTimeout(debounceRef.current);
       }

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/server/db";
+import { Prisma } from "@prisma/client";
 import { logger } from "@/lib/logger";
 import { rateLimit } from "@/lib/server/rate-limit";
 import { ROLE_METRICS } from "@/lib/radar-metrics";
@@ -104,7 +105,7 @@ function calculateSimilarity(
 export async function GET(request: Request) {
   // Rate limit: 30 requests per minute per IP (computationally expensive)
   const ip = request.headers.get("x-forwarded-for") || "unknown";
-  const limit = rateLimit(`similarity:${ip}`, 30, 60 * 1000);
+  const limit = await rateLimit(`similarity:${ip}`, 30, 60 * 1000);
   if (!limit.success) {
     return NextResponse.json(
       { error: "Too many requests. Please try again later." },
@@ -197,7 +198,7 @@ export async function GET(request: Request) {
     }
 
     // If comparing against league
-    const where: any = {
+    const where: Prisma.PlayerWhereInput = {
       role: sourcePlayer.role,
       proStats: { isNot: null },
       id: { not: playerId },

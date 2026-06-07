@@ -6,7 +6,7 @@ import { logger } from "@/lib/logger";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
-  if (!session || (session.user as any)?.role !== "admin") {
+  if (!session || session.user?.role !== "admin") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -76,6 +76,7 @@ export async function GET() {
 
     // ProStats by league — aggregate via player relation
     const allProStats = await db.proStats.findMany({
+      take: 5000,
       include: {
         player: { select: { league: true } },
       },
@@ -141,6 +142,7 @@ export async function GET() {
 
     // Players with incomplete stats (proStats exists but missing key fields)
     const proStatsWithMissing = await db.proStats.findMany({
+      take: 5000,
       include: {
         player: { select: { league: true } },
       },
@@ -178,6 +180,7 @@ export async function GET() {
 
     // SoloQ stats completeness
     const soloqWithMissing = await db.soloqStats.findMany({
+      take: 5000,
       select: {
         playerId: true,
         currentRank: true,

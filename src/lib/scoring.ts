@@ -29,9 +29,9 @@ export type TierLevel = "TIER_1" | "TIER_2" | "TIER_3" | "TIER_4";
 
 export function getTierFromLeague(league: string): TierLevel {
   const upper = league.toUpperCase();
-  if (LEAGUE_TIERS.TIER_1.includes(upper as any)) return "TIER_1";
-  if (LEAGUE_TIERS.TIER_2.includes(upper as any)) return "TIER_2";
-  if (LEAGUE_TIERS.TIER_3.includes(upper as any)) return "TIER_3";
+  if (LEAGUE_TIERS.TIER_1.some((l) => l === upper)) return "TIER_1";
+  if (LEAGUE_TIERS.TIER_2.some((l) => l === upper)) return "TIER_2";
+  if (LEAGUE_TIERS.TIER_3.some((l) => l === upper)) return "TIER_3";
   return "TIER_4";
 }
 
@@ -247,7 +247,7 @@ const scoresCache = new Map<string, ScoringResult>();
 const MAX_CACHE_SIZE = 100;
 
 function getCacheKey(playerStats: PlayerStats, allPlayers: PlayerData[]): string {
-  const playerId = (playerStats as any).id || JSON.stringify(playerStats);
+  const playerId = (playerStats as PlayerStats & { id?: string }).id || JSON.stringify(playerStats);
   const playersHash = allPlayers.length;
   return `${playerId}::${playerStats.role}::${playerStats.league}::${playersHash}`;
 }

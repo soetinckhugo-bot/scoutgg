@@ -1,4 +1,5 @@
 import { db } from "@/lib/server/db";
+import { Prisma } from "@prisma/client";
 import Link from "next/link";
 import { Search, Filter, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -26,7 +27,7 @@ const searchPlayers = unstable_cache(
     minLp?: string;
     maxAge?: string;
   }) => {
-    const where: any = {};
+    const where: Prisma.PlayerWhereInput = {};
 
     // Full-text search on pseudo, realName, team, bio
     if (params.q) {
@@ -91,7 +92,7 @@ const searchPlayers = unstable_cache(
     });
   },
   ["player-search"],
-  { revalidate: 60, tags: ["player-search"] }
+  { revalidate: 60, tags: ["player-search", "players", "search"] }
 );
 
 function buildQueryString(

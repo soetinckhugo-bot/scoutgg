@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
   if (unauthorized) return unauthorized;
 
   const ip = request.headers.get("x-forwarded-for") || "unknown";
-  const limit = rateLimit(`import-oracle:${ip}`, 5, 60 * 1000);
+  const limit = await rateLimit(`import-oracle:${ip}`, 5, 60 * 1000);
   if (!limit.success) {
     return NextResponse.json(
       { error: "Rate limit exceeded. Try again later." },

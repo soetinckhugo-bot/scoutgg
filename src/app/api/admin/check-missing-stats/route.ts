@@ -46,10 +46,10 @@ export async function GET(request: Request) {
         team: p.currentTeam,
       })),
     });
-  } catch (error: any) {
+  } catch (error) {
     logger.error("Check missing stats error:", { error });
     return NextResponse.json(
-      { error: error.message || "Check failed" },
+      { error: error instanceof Error ? error.message : "Check failed" },
       { status: 500 }
     );
   }

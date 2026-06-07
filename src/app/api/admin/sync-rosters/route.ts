@@ -25,10 +25,10 @@ export async function POST(request: Request) {
     const result = await syncRostersWithLeaguepedia(league, year, split);
 
     return NextResponse.json(result);
-  } catch (error: any) {
+  } catch (error) {
     logger.error("Sync rosters error:", { error });
     return NextResponse.json(
-      { error: error.message || "Sync failed" },
+      { error: error instanceof Error ? error.message : "Sync failed" },
       { status: 500 }
     );
   }

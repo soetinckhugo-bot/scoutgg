@@ -85,7 +85,7 @@ export default function DraftBoardPage() {
       const res = await fetch("/api/players?limit=200");
       if (!res.ok) throw new Error("Failed");
       const data = await res.json();
-      const mapped = data.players.map((p: any) => ({
+      const mapped = data.players.map((p: { id: string; pseudo: string; role: string; league: string; currentTeam: string | null; photoUrl: string | null; status: string; tier: string | null; prospectScore: number | null; soloqStats: { currentRank: string | null; peakLp: number | null } | null; proStats: { globalScore: number | null; tierScore: number | null } | null }) => ({
         id: `bp-${p.id}`,
         playerId: p.id,
         pseudo: p.pseudo,

@@ -99,8 +99,8 @@ export default function AdcRadarChart({ playerId }: AdcRadarChartProps) {
         const allRes = await fetch(`/api/players?role=ADC&limit=100`);
         const allData = await allRes.json();
         const adcs = (allData.players || [])
-          .filter((p: any) => p.id !== playerId && p.proStats)
-          .map((p: any) => ({
+          .filter((p: { id: string; proStats: unknown }) => p.id !== playerId && p.proStats)
+          .map((p: { id: string; pseudo: string; league: string; tier: string | null; proStats: { role: string; league: string } }) => ({
             id: p.id,
             pseudo: p.pseudo,
             league: p.league,
@@ -233,24 +233,24 @@ export default function AdcRadarChart({ playerId }: AdcRadarChartProps) {
               <PolarGrid stroke="rgba(148, 163, 184, 0.15)" />
               <PolarAngleAxis
                 dataKey="metric"
-                tick={{ fill: "#94a3b8", fontSize: 11 }}
+                tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
               />
               <Radar
                 name={player.pseudo}
                 dataKey={player.pseudo}
-                stroke="#f59e0b"
+                stroke="var(--color-warning)"
                 strokeWidth={2}
-                fill="#f59e0b"
+                fill="var(--color-warning)"
                 fillOpacity={0.15}
               />
               {hasComparison && (
                 <Radar
                   name={`${compareLabel} avg`}
                   dataKey="avg"
-                  stroke="#64748b"
+                  stroke="var(--text-muted)"
                   strokeWidth={1.5}
                   strokeDasharray="4 4"
-                  fill="#64748b"
+                  fill="var(--text-muted)"
                   fillOpacity={0.05}
                 />
               )}

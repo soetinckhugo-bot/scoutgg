@@ -26,10 +26,10 @@ export async function GET(request: Request) {
     const result = await validateImport(league);
 
     return NextResponse.json(result);
-  } catch (error: any) {
+  } catch (error) {
     logger.error("Validation error:", { error });
     return NextResponse.json(
-      { error: error.message || "Validation failed" },
+      { error: error instanceof Error ? error.message : "Validation failed" },
       { status: 500 }
     );
   }

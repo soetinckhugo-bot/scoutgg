@@ -3,6 +3,7 @@ import { db } from "@/lib/server/db";
 import { rateLimit } from "@/lib/server/rate-limit";
 import { logger } from "@/lib/logger";
 import { getServerSession } from "next-auth/next";
+import { revalidateTag } from "next/cache";
 import { authOptions } from "@/lib/server/auth-options";
 
 export async function POST(request: Request) {
@@ -11,12 +12,12 @@ export async function POST(request: Request) {
     if (!session || !session.user) {
       return NextResponse.json({ error: "Authentication required" }, { status: 401 });
     }
-    const userId = (session.user as any).id;
+    const userId = session.user.id;
     if (!userId) {
       return NextResponse.json({ error: "Authentication required" }, { status: 401 });
     }
 
-    const limit = rateLimit(`vote:${userId}`, 10, 60 * 1000);
+    const limit = await rateLimit(`vote:${userId}`, 10, 60 * 1000);
     if (!limit.success) {
       return NextResponse.json({ error: "Too many requests" }, { status: 429 });
     }
@@ -39,8 +40,10 @@ export async function POST(request: Request) {
       create: { clipId, userId, score },
     });
 
+    revalidateTag("clips");
+    revalidateTag("homepage");
     return NextResponse.json({ success: true, vote });
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error("POST /api/vote failed", { error });
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }

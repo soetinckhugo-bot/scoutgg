@@ -68,6 +68,7 @@ export async function PUT(
         ...(body.league !== undefined && { league: body.league }),
         ...(body.tier !== undefined && { tier: body.tier }),
         ...(body.status !== undefined && { status: body.status }),
+        ...(body.contractEndDate !== undefined && { contractEndDate: body.contractEndDate ? new Date(body.contractEndDate) : null }),
         ...(body.opggUrl !== undefined && { opggUrl: body.opggUrl }),
         ...(body.golggUrl !== undefined && { golggUrl: body.golggUrl }),
         ...(body.lolprosUrl !== undefined && { lolprosUrl: body.lolprosUrl }),
@@ -116,7 +117,7 @@ export async function PUT(
           where: { id },
           data: { prospectScore: total },
         });
-        (player as any).prospectScore = total;
+        Object.assign(player, { prospectScore: total });
       } catch (scoreError) {
         logger.error("Failed to auto-recalculate prospect score", { playerId: id, error: scoreError });
       }

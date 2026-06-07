@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp } from "lucide-react";
@@ -56,11 +57,12 @@ export default function ClipSidebar({ clips, title = "Popular This Month", onOpe
             <span className="text-sm font-bold text-text-muted w-5 text-center">{i + 1}</span>
             <div className="w-10 h-10 rounded-lg bg-[#1A1D29] flex items-center justify-center shrink-0 overflow-hidden">
               {clip.champion ? (
-                <img
+                <Image
                   src={getChampionIconUrl(clip.champion)}
                   alt={clip.champion}
-                  className="w-full h-full object-cover"
-                  loading="lazy"
+                  width={40}
+                  height={40}
+                  className="object-cover"
                 />
               ) : (
                 <span className="text-[10px] text-text-muted uppercase">{clip.platform.slice(0, 2)}</span>

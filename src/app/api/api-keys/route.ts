@@ -5,7 +5,9 @@ import { authOptions } from "@/lib/server/auth-options";
 import crypto from "crypto";
 import { logger } from "@/lib/logger";
 
-function getUserId(session: any): string | null {
+import type { Session } from "next-auth";
+
+function getUserId(session: Session | null): string | null {
   return session?.user?.email || null;
 }
 

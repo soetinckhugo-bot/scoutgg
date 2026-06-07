@@ -5,7 +5,7 @@ import { authOptions } from "./auth-options";
 export async function requireAdmin() {
   const session = await getServerSession(authOptions);
 
-  if (!session || (session.user as any)?.role !== "admin") {
+  if (!session || session.user?.role !== "admin") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -22,12 +22,11 @@ export async function requirePremium() {
     );
   }
 
-  const user = session.user as any;
   const now = new Date();
-  const premiumUntil = user?.premiumUntil ? new Date(user.premiumUntil) : null;
+  const premiumUntil = session.user.premiumUntil ? new Date(session.user.premiumUntil) : null;
   const isPremium =
-    user?.isPremium === true &&
-    user?.subscriptionStatus === "active" &&
+    session.user.isPremium === true &&
+    session.user.subscriptionStatus === "active" &&
     (!premiumUntil || premiumUntil > now);
 
   if (!isPremium) {

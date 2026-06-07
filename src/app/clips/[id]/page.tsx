@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Metadata } from "next";
 import { db } from "@/lib/server/db";
 import { notFound } from "next/navigation";
@@ -7,6 +8,8 @@ import { Star, ArrowLeft, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import CopyLinkButton from "@/components/clips/CopyLinkButton";
+import { getBaseUrl } from "@/lib/utils";
+import { JsonLd } from "@/components/JsonLd";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -100,7 +103,7 @@ export default async function ClipPage({ params }: Props) {
   }
 
   const related = await getRelatedClips(clip.monthPeriod, clip.id);
-  const pageUrl = `https://leaguescout.gg/clips/${clip.id}`;
+  const pageUrl = `${getBaseUrl()}/clips/${clip.id}`;
 
   const embedUrl = clip.platform === "tiktok"
     ? `https://www.tiktok.com/embed/${clip.videoId}`
@@ -108,33 +111,30 @@ export default async function ClipPage({ params }: Props) {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "VideoObject",
-            name: clip.title,
-            description: `Community clip by ${clip.playerName}${clip.champion ? ` on ${clip.champion}` : ""}. Rated ${clip.avgScore}/5 by the LeagueScout community.`,
-            thumbnailUrl: clip.champion
-              ? getChampionIconUrl(clip.champion)
-              : `https://img.youtube.com/vi/${clip.videoId}/0.jpg`,
-            uploadDate: clip.createdAt.toISOString(),
-            contentUrl: `https://leaguescout.gg/clips/${clip.id}`,
-            embedUrl: clip.platform === "tiktok"
-              ? `https://www.tiktok.com/embed/${clip.videoId}`
-              : `https://www.youtube.com/embed/${clip.videoId}`,
-            author: {
-              "@type": "Person",
-              name: clip.playerName,
-            },
-            aggregateRating: {
-              "@type": "AggregateRating",
-              ratingValue: clip.avgScore,
-              bestRating: 5,
-              ratingCount: clip.totalVotes,
-            },
-          }),
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "VideoObject",
+          name: clip.title,
+          description: `Community clip by ${clip.playerName}${clip.champion ? ` on ${clip.champion}` : ""}. Rated ${clip.avgScore}/5 by the LeagueScout community.`,
+          thumbnailUrl: clip.champion
+            ? getChampionIconUrl(clip.champion)
+            : `https://img.youtube.com/vi/${clip.videoId}/0.jpg`,
+          uploadDate: clip.createdAt.toISOString(),
+          contentUrl: `${getBaseUrl()}/clips/${clip.id}`,
+          embedUrl: clip.platform === "tiktok"
+            ? `https://www.tiktok.com/embed/${clip.videoId}`
+            : `https://www.youtube.com/embed/${clip.videoId}`,
+          author: {
+            "@type": "Person",
+            name: clip.playerName,
+          },
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: clip.avgScore,
+            bestRating: 5,
+            ratingCount: clip.totalVotes,
+          },
         }}
       />
       <div className="min-h-screen bg-background">
@@ -165,10 +165,12 @@ export default async function ClipPage({ params }: Props) {
         <div className="text-center space-y-4 mb-8">
           <div className="flex items-center justify-center gap-3">
             {clip.champion && (
-              <img
+              <Image
                 src={getChampionIconUrl(clip.champion)}
                 alt={clip.champion}
-                className="w-12 h-12 rounded-lg object-contain bg-black border border-border"
+                width={48}
+                height={48}
+                className="rounded-lg object-contain bg-black border border-border"
               />
             )}
             <div className="text-left">
@@ -229,11 +231,12 @@ export default async function ClipPage({ params }: Props) {
                 >
                   <div className="relative aspect-[4/3] bg-[#1A1D29] flex items-center justify-center overflow-hidden">
                     {r.champion ? (
-                      <img
+                      <Image
                         src={getChampionIconUrl(r.champion)}
                         alt={r.champion}
-                        className="w-full h-full object-cover"
-                        loading="lazy"
+                        fill
+                        sizes="(max-width: 768px) 33vw, 150px"
+                        className="object-cover"
                       />
                     ) : (
                       <span className="text-[10px] text-text-muted uppercase">{r.platform}</span>

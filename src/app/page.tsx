@@ -30,7 +30,7 @@ import {
 import { getChampionIconUrl } from "@/lib/game-assets";
 import ScoutIcon from "@/components/ScoutIcon";
 import { ROLE_COLORS, STATUS_COLORS } from "@/lib/constants";
-import { formatStatus } from "@/lib/utils";
+import { formatStatus, getBaseUrl } from "@/lib/utils";
 import PlayerCard from "@/components/PlayerCard";
 import { WebsiteJsonLd, OrganizationJsonLd } from "@/components/JsonLd";
 import { HeroTitle, SectionHeader, DataLabel, DataValue } from "@/components/ui/typography";
@@ -101,7 +101,7 @@ const getFeaturedPlayer = unstable_cache(
     });
   },
   ["featured-player"],
-  { revalidate: 300, tags: ["featured-player"] }
+  { revalidate: 300, tags: ["featured-player", "homepage", "players"] }
 );
 
 const getRecentPlayers = unstable_cache(
@@ -130,7 +130,7 @@ const getRecentPlayers = unstable_cache(
     });
   },
   ["recent-players"],
-  { revalidate: 300, tags: ["recent-players"] }
+  { revalidate: 300, tags: ["recent-players", "homepage", "players"] }
 );
 
 const getRecentReports = unstable_cache(
@@ -158,7 +158,7 @@ const getRecentReports = unstable_cache(
     });
   },
   ["recent-reports"],
-  { revalidate: 300, tags: ["recent-reports"] }
+  { revalidate: 300, tags: ["recent-reports", "homepage", "reports"] }
 );
 
 const getClipWinner = unstable_cache(
@@ -198,7 +198,7 @@ const getClipWinner = unstable_cache(
     };
   },
   ["clip-winner"],
-  { revalidate: 300, tags: ["clip-winner"] }
+  { revalidate: 300, tags: ["clip-winner", "homepage", "clips"] }
 );
 
 const getFreeAgentCount = unstable_cache(
@@ -208,13 +208,13 @@ const getFreeAgentCount = unstable_cache(
     });
   },
   ["free-agent-count"],
-  { revalidate: 300, tags: ["free-agent-count"] }
+  { revalidate: 300, tags: ["free-agent-count", "homepage", "mercato"] }
 );
 
 const getTotalPlayers = unstable_cache(
   async () => db.player.count(),
   ["total-players"],
-  { revalidate: 300, tags: ["total-players"] }
+  { revalidate: 300, tags: ["total-players", "homepage", "players"] }
 );
 
 export default async function HomePage() {
@@ -351,10 +351,12 @@ export default async function HomePage() {
               <div className="p-4 flex flex-col flex-1">
                 <div className="flex flex-col items-center mb-4">
                   {clipWinner.champion ? (
-                    <img
+                    <Image
                       src={getChampionIconUrl(clipWinner.champion)}
                       alt={clipWinner.champion}
-                      className="w-20 h-20 object-contain rounded-xl bg-black border border-border mb-3"
+                      width={80}
+                      height={80}
+                      className="object-contain rounded-xl bg-black border border-border mb-3"
                     />
                   ) : (
                     <div className="w-20 h-20 rounded-xl bg-surface flex items-center justify-center mb-3">
@@ -513,7 +515,7 @@ export default async function HomePage() {
           <div className="grid md:grid-cols-2 gap-8 items-center mb-16">
             <div className="bg-card rounded-xl border border-border p-6">
               <div className="flex items-center gap-2 mb-4">
-                <span className="text-xs text-text-muted">leaguescout.gg</span>
+                <span className="text-xs text-text-muted">{getBaseUrl().replace(/^https?:\/\//, "")}</span>
               </div>
               <div className="aspect-square bg-background rounded-lg flex items-center justify-center">
                 <div className="text-center">
@@ -547,7 +549,7 @@ export default async function HomePage() {
             </div>
             <div className="order-1 md:order-2 bg-card rounded-xl border border-border p-6">
               <div className="flex items-center gap-2 mb-4">
-                <span className="text-xs text-text-muted">leaguescout.gg</span>
+                <span className="text-xs text-text-muted">{getBaseUrl().replace(/^https?:\/\//, "")}</span>
               </div>
               <div className="space-y-3">
                 {[1,2,3,4].map((i) => (
@@ -568,7 +570,7 @@ export default async function HomePage() {
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div className="bg-card rounded-xl border border-border p-6">
               <div className="flex items-center gap-2 mb-4">
-                <span className="text-xs text-text-muted">leaguescout.gg</span>
+                <span className="text-xs text-text-muted">{getBaseUrl().replace(/^https?:\/\//, "")}</span>
               </div>
               <div className="flex items-center justify-between mb-4">
                 <div className="text-center">

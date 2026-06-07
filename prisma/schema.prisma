@@ -595,3 +595,13 @@ model ClipVote {
   @@unique([clipId, userId])
   @@index([clipId])
 }
+
+model RateLimit {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  count     Int
+  resetAt   DateTime
+  updatedAt DateTime @updatedAt
+
+  @@index([resetAt])
+}

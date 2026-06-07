@@ -43,7 +43,7 @@ export async function GET(request: Request) {
     });
 
     return NextResponse.json({ clips: clipsWithStats });
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error("GET /api/admin/clips failed", { error });
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
@@ -57,7 +57,7 @@ export async function POST(request: Request) {
     const body = createSchema.parse(await request.json());
     const clip = await db.clip.create({ data: body });
     return NextResponse.json({ success: true, clip });
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: error.issues }, { status: 400 });
     }

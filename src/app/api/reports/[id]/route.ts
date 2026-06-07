@@ -32,8 +32,7 @@ export async function GET(
 
     // Check if user has premium access
     const session = await getServerSession(authOptions);
-    const user = session?.user as any;
-    const isPremium = user?.isPremium === true && user?.subscriptionStatus === "active";
+    const isPremium = session?.user?.isPremium === true && session?.user?.subscriptionStatus === "active";
 
     if (!isPremium) {
       return NextResponse.json(

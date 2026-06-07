@@ -38,7 +38,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
         avgScore: Math.round(avgScore * 10) / 10,
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error("GET /api/clips/:id failed", { error });
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }

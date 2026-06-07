@@ -6,6 +6,7 @@ import { Search, ChevronLeft, ChevronRight, Download, Filter, ChevronDown, X } f
 import { EmptyState } from "@/components/ui/empty-state";
 import { unstable_cache } from "next/cache";
 import type { Metadata } from "next";
+import { Prisma } from "@prisma/client";
 import PlayerGrid from "./PlayerGrid";
 import { PageTitle, DataLabel } from "@/components/ui/typography";
 import {
@@ -47,7 +48,7 @@ const getPlayers = unstable_cache(
       page?: string;
     }
   ) => {
-    const where: any = {};
+    const where: Prisma.PlayerWhereInput = {};
 
     if (searchParams.q) {
       where.OR = [
@@ -83,7 +84,7 @@ const getPlayers = unstable_cache(
       };
     }
 
-    let orderBy: any = { pseudo: "asc" };
+    let orderBy: Prisma.PlayerOrderByWithRelationInput = { pseudo: "asc" };
     if (searchParams.sort === "rank") {
       orderBy = { soloqStats: { peakLp: "desc" } };
     } else if (searchParams.sort === "winrate") {
@@ -142,7 +143,7 @@ const getPlayers = unstable_cache(
     return { players, totalCount, page, totalPages: Math.ceil(totalCount / PLAYERS_PER_PAGE) };
   },
   ["players-list"],
-  { revalidate: 60, tags: ["players-list"] }
+  { revalidate: 60, tags: ["players-list", "players"] }
 );
 
 function buildQueryString(

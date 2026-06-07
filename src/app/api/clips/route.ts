@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/server/db";
 import { logger } from "@/lib/logger";
+import { Prisma } from "@prisma/client";
 
 function getCurrentMonthPeriod(): string {
   const now = new Date();
@@ -16,7 +17,7 @@ export async function GET(request: Request) {
     const player = searchParams.get("player");
     const sort = searchParams.get("sort") || "recent";
 
-    const where: any = { isActive: true };
+    const where: Prisma.ClipWhereInput = { isActive: true };
     if (period === "month") {
       where.monthPeriod = monthPeriod;
     }
@@ -24,7 +25,7 @@ export async function GET(request: Request) {
       where.playerRole = role;
     }
     if (player) {
-      where.playerName = { contains: player, mode: "insensitive" };
+      where.playerName = { contains: player };
     }
 
     const clips = await db.clip.findMany({
@@ -66,7 +67,7 @@ export async function GET(request: Request) {
     // "recent" is default (already sorted by createdAt desc)
 
     return NextResponse.json({ clips: clipsWithStats });
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error("GET /api/clips failed", { error });
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }

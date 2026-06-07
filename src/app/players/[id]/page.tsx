@@ -28,7 +28,7 @@ export async function generateMetadata(props: { params: Promise<{ id: string }> 
 
   const title = `${player.pseudo} — ${player.role} | LeagueScout`;
   const description = player.bio || `Scouting profile for ${player.pseudo}, ${player.role} player in ${player.league}.`;
-  const siteUrl = process.env.NEXTAUTH_URL || "https://leaguescout.gg";
+  const siteUrl = getBaseUrl();
 
   return {
     title,
@@ -66,7 +66,7 @@ import {
 } from "lucide-react";
 import { EmptyState } from "@/components/ui/empty-state";
 import { ROLE_COLORS, STATUS_COLORS, BEHAVIOR_TAG_COLORS } from "@/lib/constants";
-import { formatStatus } from "@/lib/utils";
+import { formatStatus, getBaseUrl } from "@/lib/utils";
 import { ProfilePageJsonLd } from "@/components/JsonLd";
 import Flag from "@/components/Flag";
 import { SectionHeader, DataLabel, DataValue } from "@/components/ui/typography";
@@ -127,9 +127,8 @@ export default async function PlayerPage(props: {
   }
 
   const session = await getServerSession(authOptions);
-  const user = session?.user as any;
-  const isPremium = user?.isPremium === true && user?.subscriptionStatus === "active";
-  const isAdmin = user?.role === "admin";
+  const isPremium = session?.user?.isPremium === true && session?.user?.subscriptionStatus === "active";
+  const isAdmin = session?.user?.role === "admin";
 
   const freeReports = player.reports.filter((r) => !r.isPremium);
   const premiumReports = player.reports.filter((r) => r.isPremium);

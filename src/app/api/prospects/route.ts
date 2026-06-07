@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/server/db";
+import { Prisma } from "@prisma/client";
 import { computeProspectScore } from "@/lib/prospect-scoring";
 import { calculateAge } from "@/lib/age";
 
@@ -19,7 +20,7 @@ export async function GET(request: NextRequest) {
   );
   const skip = (page - 1) * limit;
 
-  const where: any = {
+  const where: Prisma.PlayerWhereInput = {
     isProspect: true,
     hasPlayedInMajorLeague: false,
     NOT: { league: { in: MAJOR_LEAGUES } },

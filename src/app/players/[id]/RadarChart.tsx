@@ -39,7 +39,7 @@ interface RadarChartProps {
   comparison?: ComparisonPoint[];
 }
 
-function CustomTooltip({ active, payload, label }: any) {
+function CustomTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ payload: MetricPoint & { fullMark: number } }>; label?: string }) {
   if (!active || !payload || payload.length === 0) return null;
   const data = payload[0].payload as MetricPoint & { fullMark: number };
   return (
@@ -130,7 +130,7 @@ function RadarChartComponent({ metrics, playerName, role, comparison }: RadarCha
               strokeWidth={2}
               fill="#E94560"
               fillOpacity={0.15}
-              dot={(props: any) => {
+              dot={(props: { cx?: number; cy?: number; index?: number }) => {
                 const { cx, cy, index } = props;
                 if (cx == null || cy == null || index == null) return null;
                 const tier = metrics[index]?.tier ?? "D";

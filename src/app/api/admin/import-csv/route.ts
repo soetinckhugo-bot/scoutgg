@@ -4,6 +4,7 @@ import { requireAdmin } from "@/lib/server/auth";
 import { parseCsv, normalizeRole, parseProStatsFromRow, validateCsvRow, findDuplicatePlayers, detectCsvMetrics } from "@/lib/csv-parser";
 import { calculateScores, type PlayerData } from "@/lib/scoring";
 import { LEAGUE_TIERS } from "@/lib/constants";
+import { revalidateTag } from "next/cache";
 import { logger } from "@/lib/logger";
 
 // Process batch with limited concurrency to avoid SQLite locks
@@ -231,9 +232,9 @@ export async function POST(request: Request) {
           ),
           error: null,
         };
-      } catch (err: any) {
+      } catch (err: unknown) {
         results.errors.push(
-          `${playerData.pseudo}: score calculation failed - ${err.message}`
+          `${playerData.pseudo}: score calculation failed - ${err instanceof Error ? err.message : String(err)}`
         );
         return { playerId: playerData.playerId, result: null, error: err };
       }
@@ -262,11 +263,14 @@ export async function POST(request: Request) {
       5
     );
 
+    revalidateTag("players");
+    revalidateTag("homepage");
+    revalidateTag("mercato");
     return NextResponse.json(results, { status: 200 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error("CSV import error:", { error });
     return NextResponse.json(
-      { error: error.message || "Import failed" },
+      { error: error instanceof Error ? error.message : "Import failed" },
       { status: 500 }
     );
   }

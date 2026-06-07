@@ -93,8 +93,8 @@ export default function OrgPage() {
       await fetchOrg();
       setNewOrgName("");
       toast.success("Organization created");
-    } catch (err: any) {
-      toast.error(err.message || "Failed to create");
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Failed to create");
     } finally {
       setCreating(false);
     }
@@ -118,8 +118,8 @@ export default function OrgPage() {
         navigator.clipboard.writeText(data.joinUrl);
         toast.info("Join link copied to clipboard");
       }
-    } catch (err: any) {
-      toast.error(err.message || "Failed to invite");
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Failed to invite");
     } finally {
       setInviting(false);
     }
