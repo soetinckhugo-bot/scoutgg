@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { db } from "@/lib/server/db";
 import { calculateAge } from "@/lib/age";
 import Link from "next/link";
