@@ -647,3 +647,24 @@ model PlayerComment {
   @@index([userId])
   @@index([playerId, createdAt])
 }
+
+model PlayerReview {
+  id            String   @id @default(cuid())
+  playerId      String
+  userId        String
+  week          Int
+  year          Int
+  mechanics     Int      @default(0)
+  macro         Int      @default(0)
+  attitude      Int      @default(0)
+  communication Int      @default(0)
+  notes         String?
+  goals         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([playerId, userId, week, year])
+  @@index([playerId])
+  @@index([userId])
+  @@index([week, year])
+}

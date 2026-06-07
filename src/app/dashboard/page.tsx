@@ -37,6 +37,7 @@ import PlayerCard from "@/components/PlayerCard";
 import { PageTitle, DataLabel, DataValue } from "@/components/ui/typography";
 import RecentDiscussions from "./RecentDiscussions";
 import ScrimDigestWidget from "./ScrimDigestWidget";
+import RecentReviews from "./RecentReviews";
 
 interface Favorite {
   id: string;
@@ -204,6 +205,15 @@ const STAFF_ACTIONS = [
     border: "border-orange-500/20",
     hover: "hover:border-orange-500/40 hover:bg-orange-500/15",
   },
+  {
+    href: "/dashboard/reviews",
+    icon: Star,
+    label: "Reviews",
+    color: "text-amber-400",
+    bg: "bg-amber-500/10",
+    border: "border-amber-500/20",
+    hover: "hover:border-amber-500/40 hover:bg-amber-500/15",
+  },
 ];
 
 function StaffActionCard({
@@ -346,7 +356,7 @@ export default function DashboardPage() {
         <h2 className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-3">
           Staff Tools
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
           {STAFF_ACTIONS.map((action) => (
             <StaffActionCard key={action.href} action={action} />
           ))}
@@ -679,6 +689,17 @@ export default function DashboardPage() {
             <div className="p-4">
               <ScrimDigestWidget />
             </div>
+          </div>
+
+          {/* Recent Reviews */}
+          <div className="rounded-xl border border-border overflow-hidden">
+            <div className="px-4 py-3 border-b border-border bg-surface-hover flex items-center justify-between">
+              <h2 className="text-base font-semibold flex items-center gap-2 text-text-heading">
+                <ScoutIcon icon={Star} size="lg" variant="muted" />
+                Recent Reviews
+              </h2>
+            </div>
+            <RecentReviews />
           </div>
 
           {/* Recent Staff Discussions */}

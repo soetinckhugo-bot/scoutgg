@@ -78,6 +78,7 @@ import ExportPdfButton from "@/components/ExportPdfButton";
 import PlayerPrintable from "@/components/PlayerPrintable";
 import ReportCard from "@/components/ReportCard";
 import StaffDiscussion from "./StaffDiscussion";
+import PlayerReviews from "./PlayerReviews";
 // import { ShareableReport } from "@/components/ShareableReport";
 
 const RoleRadarChart = dynamic(() => import("@/components/charts/RoleRadarChart"));
@@ -562,6 +563,7 @@ export default async function PlayerPage(props: {
                 </div>
               </TabsContent>
               <TabsContent value="staff" className="space-y-6 animate-fade-in">
+                <PlayerReviews playerId={player.id} />
                 <StaffDiscussion playerId={player.id} />
               </TabsContent>
             </Tabs>
