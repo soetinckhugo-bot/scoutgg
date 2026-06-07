@@ -14,6 +14,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [remember, setRemember] = useState(false);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -23,6 +24,7 @@ export default function LoginPage() {
     const result = await signIn("credentials", {
       email,
       password,
+      remember,
       redirect: false,
     });
 
@@ -89,6 +91,18 @@ export default function LoginPage() {
                   required
                   className="bg-card border-border text-text-heading placeholder:text-text-muted focus:border-primary-accent focus:ring-primary-accent"
                 />
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  id="remember"
+                  type="checkbox"
+                  checked={remember}
+                  onChange={(e) => setRemember(e.target.checked)}
+                  className="h-4 w-4 rounded border-border bg-card text-primary-accent focus:ring-primary-accent"
+                />
+                <Label htmlFor="remember" className="text-sm text-text-muted cursor-pointer">
+                  Remember me for 30 days
+                </Label>
               </div>
               <Button
                 type="submit"
