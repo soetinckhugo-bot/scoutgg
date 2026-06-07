@@ -16,16 +16,68 @@ import {
 } from "@/components/ui/select";
 import { Plus, Search, Trash2, Edit, Calendar, Trophy, XCircle, Minus } from "lucide-react";
 import { toast } from "sonner";
+import { ROLE_COLORS, ROLES } from "@/lib/constants";
 
 interface Scrim {
   id: string;
   date: string;
   opponent: string;
   result: "WIN" | "LOSS" | "DRAW";
-  compAlly: string | null;
-  compEnemy: string | null;
+  allyTop: string | null;
+  allyJungle: string | null;
+  allyMid: string | null;
+  allyAdc: string | null;
+  allySupport: string | null;
+  enemyTop: string | null;
+  enemyJungle: string | null;
+  enemyMid: string | null;
+  enemyAdc: string | null;
+  enemySupport: string | null;
   notes: string | null;
   createdAt: string;
+}
+
+const ROLE_LABELS: Record<string, string> = {
+  TOP: "TOP",
+  JUNGLE: "JGL",
+  MID: "MID",
+  ADC: "ADC",
+  SUPPORT: "SUP",
+};
+
+function CompRow({
+  label,
+  roles,
+  data,
+}: {
+  label: string;
+  roles: string[];
+  data: Scrim;
+}) {
+  const hasAny = roles.some((r) => data[`ally${r}` as keyof Scrim] || data[`enemy${r}` as keyof Scrim]);
+  if (!hasAny) return null;
+
+  return (
+    <div className="flex items-center gap-2 text-xs mt-1.5">
+      <span className="text-text-muted w-8 shrink-0">{label}</span>
+      <div className="flex items-center gap-1 flex-wrap">
+        {roles.map((role) => {
+          const champ = data[`${label === "Ally" ? "ally" : "enemy"}${role}` as keyof Scrim] as string | null;
+          if (!champ) return null;
+          return (
+            <Badge
+              key={role}
+              variant="outline"
+              className={`text-[10px] h-5 px-1.5 ${ROLE_COLORS[role]}`}
+            >
+              <span className="opacity-60 mr-0.5">{ROLE_LABELS[role]}</span>
+              {champ}
+            </Badge>
+          );
+        })}
+      </div>
+    </div>
+  );
 }
 
 export default function ScrimsPage() {
@@ -149,28 +201,23 @@ export default function ScrimsPage() {
               className="border-border bg-surface-hover hover:border-border-hover transition-colors"
             >
               <CardContent className="p-4">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                  <div className="flex items-center gap-3 flex-1">
+                <div className="flex flex-col sm:flex-row sm:items-start gap-3">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
                     <Badge
                       variant="outline"
-                      className={`${resultColor[scrim.result]} flex items-center gap-1`}
+                      className={`${resultColor[scrim.result]} flex items-center gap-1 shrink-0`}
                     >
                       {resultIcon[scrim.result]}
                       {scrim.result}
                     </Badge>
-                    <div>
+                    <div className="min-w-0">
                       <p className="font-medium text-text-heading">{scrim.opponent}</p>
                       <p className="text-xs text-text-muted">
                         {new Date(scrim.date).toLocaleDateString()}
                       </p>
                     </div>
                   </div>
-                  {scrim.compAlly && (
-                    <p className="text-xs text-text-body truncate max-w-[200px]">
-                      {scrim.compAlly}
-                    </p>
-                  )}
-                  <div className="flex items-center gap-2 ml-auto">
+                  <div className="flex items-center gap-2 ml-auto shrink-0">
                     <Button
                       variant="ghost"
                       size="sm"
@@ -188,6 +235,14 @@ export default function ScrimsPage() {
                     </Button>
                   </div>
                 </div>
+
+                {/* Composition rows */}
+                <CompRow label="Ally" roles={ROLES} data={scrim} />
+                <CompRow label="Enemy" roles={ROLES} data={scrim} />
+
+                {scrim.notes && (
+                  <p className="text-xs text-text-body mt-2 line-clamp-2">{scrim.notes}</p>
+                )}
               </CardContent>
             </Card>
           ))}

@@ -9,8 +9,16 @@ const ScrimSchema = z.object({
   date: z.string().min(1),
   opponent: z.string().min(1).max(100),
   result: z.enum(["WIN", "LOSS", "DRAW"]),
-  compAlly: z.string().max(500).optional(),
-  compEnemy: z.string().max(500).optional(),
+  allyTop: z.string().max(50).optional(),
+  allyJungle: z.string().max(50).optional(),
+  allyMid: z.string().max(50).optional(),
+  allyAdc: z.string().max(50).optional(),
+  allySupport: z.string().max(50).optional(),
+  enemyTop: z.string().max(50).optional(),
+  enemyJungle: z.string().max(50).optional(),
+  enemyMid: z.string().max(50).optional(),
+  enemyAdc: z.string().max(50).optional(),
+  enemySupport: z.string().max(50).optional(),
   notes: z.string().max(2000).optional(),
 });
 
@@ -68,10 +76,11 @@ export async function POST(request: Request) {
     const body = await request.json();
     const data = ScrimSchema.parse(body);
 
+    const { date, ...rest } = data;
     const scrim = await db.scrim.create({
       data: {
-        ...data,
-        date: new Date(data.date),
+        ...rest,
+        date: new Date(date),
         createdBy: session.user.id,
       },
     });

@@ -9,8 +9,16 @@ const ScrimUpdateSchema = z.object({
   date: z.string().min(1).optional(),
   opponent: z.string().min(1).max(100).optional(),
   result: z.enum(["WIN", "LOSS", "DRAW"]).optional(),
-  compAlly: z.string().max(500).optional().nullable(),
-  compEnemy: z.string().max(500).optional().nullable(),
+  allyTop: z.string().max(50).optional().nullable(),
+  allyJungle: z.string().max(50).optional().nullable(),
+  allyMid: z.string().max(50).optional().nullable(),
+  allyAdc: z.string().max(50).optional().nullable(),
+  allySupport: z.string().max(50).optional().nullable(),
+  enemyTop: z.string().max(50).optional().nullable(),
+  enemyJungle: z.string().max(50).optional().nullable(),
+  enemyMid: z.string().max(50).optional().nullable(),
+  enemyAdc: z.string().max(50).optional().nullable(),
+  enemySupport: z.string().max(50).optional().nullable(),
   notes: z.string().max(2000).optional().nullable(),
 });
 

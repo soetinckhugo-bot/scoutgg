@@ -607,16 +607,29 @@ model RateLimit {
 }
 
 model Scrim {
-  id         String   @id @default(cuid())
-  date       DateTime
-  opponent   String
-  result     String   // WIN / LOSS / DRAW
-  compAlly   String?
-  compEnemy  String?
-  notes      String?
-  createdBy  String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id            String   @id @default(cuid())
+  date          DateTime
+  opponent      String
+  result        String   // WIN / LOSS / DRAW
+
+  // Ally composition (5 roles)
+  allyTop       String?
+  allyJungle    String?
+  allyMid       String?
+  allyAdc       String?
+  allySupport   String?
+
+  // Enemy composition (5 roles)
+  enemyTop      String?
+  enemyJungle   String?
+  enemyMid      String?
+  enemyAdc      String?
+  enemySupport  String?
+
+  notes         String?
+  createdBy     String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   @@index([date])
   @@index([opponent])

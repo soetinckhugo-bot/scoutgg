@@ -15,20 +15,59 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Save, Trophy, XCircle, Minus } from "lucide-react";
 import { toast } from "sonner";
+import { ROLE_COLORS, ROLES } from "@/lib/constants";
+
+const ROLE_LABELS: Record<string, string> = {
+  TOP: "TOP",
+  JUNGLE: "JGL",
+  MID: "MID",
+  ADC: "ADC",
+  SUPPORT: "SUP",
+};
+
+type FormData = {
+  date: string;
+  opponent: string;
+  result: "WIN" | "LOSS" | "DRAW";
+  allyTop: string;
+  allyJungle: string;
+  allyMid: string;
+  allyAdc: string;
+  allySupport: string;
+  enemyTop: string;
+  enemyJungle: string;
+  enemyMid: string;
+  enemyAdc: string;
+  enemySupport: string;
+  notes: string;
+};
 
 export default function NewScrimPage() {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<FormData>({
     date: new Date().toISOString().split("T")[0],
     opponent: "",
-    result: "WIN" as "WIN" | "LOSS" | "DRAW",
-    compAlly: "",
-    compEnemy: "",
+    result: "WIN",
+    allyTop: "",
+    allyJungle: "",
+    allyMid: "",
+    allyAdc: "",
+    allySupport: "",
+    enemyTop: "",
+    enemyJungle: "",
+    enemyMid: "",
+    enemyAdc: "",
+    enemySupport: "",
     notes: "",
   });
+
+  function setField(field: keyof FormData, value: string) {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -63,7 +102,7 @@ export default function NewScrimPage() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
+    <div className="max-w-3xl mx-auto space-y-6">
       <Button variant="ghost" size="sm" asChild>
         <Link href="/dashboard/scrims">
           <ArrowLeft className="w-4 h-4 mr-1" />
@@ -76,15 +115,16 @@ export default function NewScrimPage() {
           <CardTitle className="text-text-heading">Log New Scrim</CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Date + Result + Opponent */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="date">Date</Label>
                 <Input
                   id="date"
                   type="date"
                   value={form.date}
-                  onChange={(e) => setForm({ ...form, date: e.target.value })}
+                  onChange={(e) => setField("date", e.target.value)}
                   required
                   className="bg-card border-border"
                 />
@@ -93,75 +133,92 @@ export default function NewScrimPage() {
                 <Label htmlFor="result">Result</Label>
                 <Select
                   value={form.result}
-                  onValueChange={(v) => setForm({ ...form, result: v as "WIN" | "LOSS" | "DRAW" })}
+                  onValueChange={(v) => setField("result", v as "WIN" | "LOSS" | "DRAW")}
                 >
                   <SelectTrigger className="bg-card border-border">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="WIN">
-                      <span className="flex items-center gap-2">
-                        {resultIcon.WIN} Win
-                      </span>
+                      <span className="flex items-center gap-2">{resultIcon.WIN} Win</span>
                     </SelectItem>
                     <SelectItem value="LOSS">
-                      <span className="flex items-center gap-2">
-                        {resultIcon.LOSS} Loss
-                      </span>
+                      <span className="flex items-center gap-2">{resultIcon.LOSS} Loss</span>
                     </SelectItem>
                     <SelectItem value="DRAW">
-                      <span className="flex items-center gap-2">
-                        {resultIcon.DRAW} Draw
-                      </span>
+                      <span className="flex items-center gap-2">{resultIcon.DRAW} Draw</span>
                     </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="opponent">Opponent</Label>
-              <Input
-                id="opponent"
-                placeholder="Team name..."
-                value={form.opponent}
-                onChange={(e) => setForm({ ...form, opponent: e.target.value })}
-                required
-                className="bg-card border-border"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="compAlly">Your Composition</Label>
+                <Label htmlFor="opponent">Opponent</Label>
                 <Input
-                  id="compAlly"
-                  placeholder="e.g. Renekton, Lee Sin, Azir..."
-                  value={form.compAlly}
-                  onChange={(e) => setForm({ ...form, compAlly: e.target.value })}
-                  className="bg-card border-border"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="compEnemy">Enemy Composition</Label>
-                <Input
-                  id="compEnemy"
-                  placeholder="e.g. Ornn, Sejuani, Viktor..."
-                  value={form.compEnemy}
-                  onChange={(e) => setForm({ ...form, compEnemy: e.target.value })}
+                  id="opponent"
+                  placeholder="Team name..."
+                  value={form.opponent}
+                  onChange={(e) => setField("opponent", e.target.value)}
+                  required
                   className="bg-card border-border"
                 />
               </div>
             </div>
 
+            {/* Your Team Composition */}
+            <div className="space-y-3">
+              <Label className="text-sm font-medium text-text-heading">Your Team Composition</Label>
+              <div className="grid grid-cols-5 gap-2">
+                {ROLES.map((role) => (
+                  <div key={`ally-${role}`} className="space-y-1.5">
+                    <Badge
+                      variant="outline"
+                      className={`w-full justify-center text-[10px] font-bold tracking-wider ${ROLE_COLORS[role]}`}
+                    >
+                      {ROLE_LABELS[role]}
+                    </Badge>
+                    <Input
+                      placeholder="Champ"
+                      value={form[`ally${role}` as keyof FormData]}
+                      onChange={(e) => setField(`ally${role}` as keyof FormData, e.target.value)}
+                      className="bg-card border-border text-xs text-center"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Enemy Team Composition */}
+            <div className="space-y-3">
+              <Label className="text-sm font-medium text-text-heading">Enemy Team Composition</Label>
+              <div className="grid grid-cols-5 gap-2">
+                {ROLES.map((role) => (
+                  <div key={`enemy-${role}`} className="space-y-1.5">
+                    <Badge
+                      variant="outline"
+                      className={`w-full justify-center text-[10px] font-bold tracking-wider ${ROLE_COLORS[role]}`}
+                    >
+                      {ROLE_LABELS[role]}
+                    </Badge>
+                    <Input
+                      placeholder="Champ"
+                      value={form[`enemy${role}` as keyof FormData]}
+                      onChange={(e) => setField(`enemy${role}` as keyof FormData, e.target.value)}
+                      className="bg-card border-border text-xs text-center"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Notes */}
             <div className="space-y-2">
               <Label htmlFor="notes">Notes</Label>
               <Textarea
                 id="notes"
                 placeholder="Draft strategy, early game issues, shotcalling, team fights..."
                 value={form.notes}
-                onChange={(e) => setForm({ ...form, notes: e.target.value })}
-                rows={5}
+                onChange={(e) => setField("notes", e.target.value)}
+                rows={4}
                 className="bg-card border-border"
               />
             </div>

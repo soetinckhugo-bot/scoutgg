@@ -5,11 +5,9 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-// Card usage reduced: only used for POTW and Quick Links now
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Progress } from "@/components/ui/progress";
 import {
   Heart,
   Bell,
@@ -18,6 +16,7 @@ import {
   Zap,
   FileText,
   ArrowRight,
+  ArrowUpRight,
   Users,
   Search,
   Loader2,
@@ -25,7 +24,6 @@ import {
   Briefcase,
   Crown,
   BarChart3,
-  Eye,
   ClipboardList,
   Swords,
 } from "lucide-react";
@@ -35,7 +33,6 @@ import { toast } from "sonner";
 import { ROLE_COLORS } from "@/lib/constants";
 import { logger } from "@/lib/logger";
 import PlayerCard from "@/components/PlayerCard";
-// ScoutingBoard moved to /pipeline page
 import { PageTitle, DataLabel, DataValue } from "@/components/ui/typography";
 
 interface Favorite {
@@ -138,6 +135,98 @@ function getNotifIcon(type: string) {
   }
 }
 
+/* ─── Staff Action Bar ─── */
+
+const STAFF_ACTIONS = [
+  {
+    href: "/players",
+    icon: Users,
+    label: "Browse Players",
+    color: "text-blue-400",
+    bg: "bg-blue-500/10",
+    border: "border-blue-500/20",
+    hover: "hover:border-blue-500/40 hover:bg-blue-500/15",
+  },
+  {
+    href: "/prospects",
+    icon: Crown,
+    label: "Top Prospects",
+    color: "text-amber-400",
+    bg: "bg-amber-500/10",
+    border: "border-amber-500/20",
+    hover: "hover:border-amber-500/40 hover:bg-amber-500/15",
+  },
+  {
+    href: "/leaderboards",
+    icon: BarChart3,
+    label: "Leaderboards",
+    color: "text-emerald-400",
+    bg: "bg-emerald-500/10",
+    border: "border-emerald-500/20",
+    hover: "hover:border-emerald-500/40 hover:bg-emerald-500/15",
+  },
+  {
+    href: "/compare",
+    icon: Zap,
+    label: "Compare",
+    color: "text-violet-400",
+    bg: "bg-violet-500/10",
+    border: "border-violet-500/20",
+    hover: "hover:border-violet-500/40 hover:bg-violet-500/15",
+  },
+  {
+    href: "/watchlist",
+    icon: Heart,
+    label: "Watchlist",
+    color: "text-rose-400",
+    bg: "bg-rose-500/10",
+    border: "border-rose-500/20",
+    hover: "hover:border-rose-500/40 hover:bg-rose-500/15",
+  },
+  {
+    href: "/pipeline",
+    icon: ClipboardList,
+    label: "Pipeline",
+    color: "text-cyan-400",
+    bg: "bg-cyan-500/10",
+    border: "border-cyan-500/20",
+    hover: "hover:border-cyan-500/40 hover:bg-cyan-500/15",
+  },
+  {
+    href: "/dashboard/scrims",
+    icon: Swords,
+    label: "Scrims",
+    color: "text-orange-400",
+    bg: "bg-orange-500/10",
+    border: "border-orange-500/20",
+    hover: "hover:border-orange-500/40 hover:bg-orange-500/15",
+  },
+];
+
+function StaffActionCard({
+  action,
+}: {
+  action: (typeof STAFF_ACTIONS)[number];
+}) {
+  const Icon = action.icon;
+  return (
+    <Link
+      href={action.href}
+      className={`group relative flex flex-col items-center gap-2 p-4 rounded-xl border ${action.border} ${action.bg} ${action.hover} transition-all duration-200`}
+    >
+      <ArrowUpRight className="absolute top-2 right-2 w-3.5 h-3.5 text-text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
+      <div className={`p-2.5 rounded-lg ${action.bg}`}>
+        <Icon className={`w-6 h-6 ${action.color}`} />
+      </div>
+      <span className="text-xs font-medium text-text-heading text-center leading-tight">
+        {action.label}
+      </span>
+    </Link>
+  );
+}
+
+/* ─── Quick Stat ─── */
+
 function QuickStatItem({
   icon: Icon,
   label,
@@ -150,17 +239,21 @@ function QuickStatItem({
   color: string;
 }) {
   return (
-    <div className="flex items-center gap-3 p-4 bg-card rounded-lg border border-border">
-      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${color}`}>
-        <Icon className="size-5" />
+    <div className="flex items-center gap-3 p-3 bg-card rounded-lg border border-border">
+      <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${color}`}>
+        <Icon className="size-4" />
       </div>
       <div className="flex flex-col">
-        <DataValue highlight className="text-text-heading">{value}</DataValue>
-        <DataLabel className="normal-case">{label}</DataLabel>
+        <DataValue highlight className="text-text-heading text-base">
+          {value}
+        </DataValue>
+        <DataLabel className="normal-case text-[11px]">{label}</DataLabel>
       </div>
     </div>
   );
 }
+
+/* ─── Page ─── */
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
@@ -223,71 +316,93 @@ export default function DashboardPage() {
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 space-y-6">
       {/* Header */}
-      <div className="mb-8">
-        <PageTitle className="text-text-heading mb-1">
-          My Scout Desk
-        </PageTitle>
-        <p className="text-text-body">
-          Your personalized scouting command center
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
+        <div>
+          <PageTitle className="text-text-heading mb-0.5">My Scout Desk</PageTitle>
+          <p className="text-sm text-text-body">
+            Your personalized scouting command center
+          </p>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          className="border-border text-text-body hover:text-text-heading gap-1.5"
+          asChild
+        >
+          <Link href="/players">
+            <Search className="w-3.5 h-3.5" />
+            Search Players
+          </Link>
+        </Button>
       </div>
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+      {/* ─── Staff Action Bar ─── */}
+      <section>
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-3">
+          Staff Tools
+        </h2>
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+          {STAFF_ACTIONS.map((action) => (
+            <StaffActionCard key={action.href} action={action} />
+          ))}
+        </div>
+      </section>
+
+      {/* ─── Quick Stats ─── */}
+      <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
         <QuickStatItem
           icon={Heart}
           label="Watchlist"
           value={favorites.length}
-          color="bg-primary-accent/20 text-primary-accent"
+          color="bg-rose-500/15 text-rose-400"
         />
         <QuickStatItem
           icon={Bell}
           label="Unread Alerts"
           value={unreadCount}
-          color="bg-blue-500/20 text-blue-400"
+          color="bg-blue-500/15 text-blue-400"
         />
         <QuickStatItem
           icon={Star}
           label="Prospects"
           value={prospects.length > 0 ? "Top 5" : 0}
-          color="bg-amber-500/20 text-amber-400"
+          color="bg-amber-500/15 text-amber-400"
         />
         <QuickStatItem
           icon={FileText}
           label="Reports"
           value={reports.length}
-          color="bg-purple-500/20 text-purple-400"
+          color="bg-violet-500/15 text-violet-400"
         />
         <Link href="/pipeline" className="block group">
           <QuickStatItem
             icon={ClipboardList}
             label="Pipeline"
             value={boardCount}
-            color="bg-primary-accent/20 text-primary-accent"
+            color="bg-cyan-500/15 text-cyan-400"
           />
         </Link>
-      </div>
+      </section>
 
+      {/* ─── Main Content ─── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column — 2/3 */}
         <div className="lg:col-span-2 space-y-6">
           {/* Watchlist */}
-          <div className="rounded-lg border border-border overflow-hidden">
-            <div className="px-4 py-3 border-b border-border bg-surface-hover">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold flex items-center gap-2 text-text-heading">
-                  <ScoutIcon icon={Heart} size="lg" variant="accent" glow />
-                  My Watchlist
-                </h2>
-                <Link href="/watchlist">
-                  <Button variant="ghost" size="default" className="text-xs">
-                    View All
-                    <ArrowRight className="size-3 ml-1" />
-                  </Button>
-                </Link>
-              </div>
+          <div className="rounded-xl border border-border overflow-hidden">
+            <div className="px-4 py-3 border-b border-border bg-surface-hover flex items-center justify-between">
+              <h2 className="text-base font-semibold flex items-center gap-2 text-text-heading">
+                <ScoutIcon icon={Heart} size="lg" variant="accent" glow />
+                My Watchlist
+              </h2>
+              <Link href="/watchlist">
+                <Button variant="ghost" size="sm" className="text-xs gap-1">
+                  View All
+                  <ArrowRight className="size-3" />
+                </Button>
+              </Link>
             </div>
             <div className="p-4">
               {favorites.length === 0 ? (
@@ -315,19 +430,17 @@ export default function DashboardPage() {
           </div>
 
           {/* Notifications */}
-          <div className="rounded-lg border border-border overflow-hidden">
-            <div className="px-4 py-3 border-b border-border bg-surface-hover">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold flex items-center gap-2 text-text-heading">
-                  <ScoutIcon icon={Bell} size="lg" variant="info" glow />
-                  Recent Activity
-                  {unreadCount > 0 && (
-                    <Badge className="bg-primary-accent text-text-heading text-xs h-5">
-                      {unreadCount} new
-                    </Badge>
-                  )}
-                </h2>
-              </div>
+          <div className="rounded-xl border border-border overflow-hidden">
+            <div className="px-4 py-3 border-b border-border bg-surface-hover flex items-center justify-between">
+              <h2 className="text-base font-semibold flex items-center gap-2 text-text-heading">
+                <ScoutIcon icon={Bell} size="lg" variant="info" glow />
+                Recent Activity
+                {unreadCount > 0 && (
+                  <Badge className="bg-primary-accent text-text-heading text-xs h-5">
+                    {unreadCount} new
+                  </Badge>
+                )}
+              </h2>
             </div>
             <div className="p-0">
               {notifications.length === 0 ? (
@@ -349,12 +462,8 @@ export default function DashboardPage() {
                     >
                       <div className="shrink-0 mt-0.5">{getNotifIcon(notif.type)}</div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-text-heading">
-                          {notif.title}
-                        </p>
-                        <p className="text-xs text-text-body">
-                          {notif.message}
-                        </p>
+                        <p className="text-sm font-medium text-text-heading">{notif.title}</p>
+                        <p className="text-xs text-text-body">{notif.message}</p>
                         <p className="text-xs text-text-muted mt-0.5">
                           {new Date(notif.createdAt).toLocaleDateString()}
                         </p>
@@ -370,20 +479,18 @@ export default function DashboardPage() {
           </div>
 
           {/* Top Prospects */}
-          <div className="rounded-lg border border-border overflow-hidden">
-            <div className="px-4 py-3 border-b border-border bg-surface-hover">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold flex items-center gap-2 text-text-heading">
-                  <ScoutIcon icon={Crown} size="lg" variant="gold" glow />
-                  Top Prospects
-                </h2>
-                <Link href="/prospects">
-                  <Button variant="ghost" size="default" className="text-xs">
-                    View All
-                    <ArrowRight className="size-3 ml-1" />
-                  </Button>
-                </Link>
-              </div>
+          <div className="rounded-xl border border-border overflow-hidden">
+            <div className="px-4 py-3 border-b border-border bg-surface-hover flex items-center justify-between">
+              <h2 className="text-base font-semibold flex items-center gap-2 text-text-heading">
+                <ScoutIcon icon={Crown} size="lg" variant="gold" glow />
+                Top Prospects
+              </h2>
+              <Link href="/prospects">
+                <Button variant="ghost" size="sm" className="text-xs gap-1">
+                  View All
+                  <ArrowRight className="size-3" />
+                </Button>
+              </Link>
             </div>
             <div className="p-4">
               {prospects.length === 0 ? (
@@ -448,7 +555,7 @@ export default function DashboardPage() {
           {potw && (
             <Card className="border-border bg-gradient-to-br from-amber-50 to-white from-amber-500/10 to-[#0F0F1A]">
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg flex items-center gap-2">
+                <CardTitle className="text-base flex items-center gap-2">
                   <ScoutIcon icon={Zap} size="lg" variant="gold" glow />
                   SoloQ POTW
                 </CardTitle>
@@ -475,7 +582,7 @@ export default function DashboardPage() {
                     </div>
                   </div>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-center">
+                <div className="grid grid-cols-3 gap-2 text-center">
                   <div className="bg-background/60 rounded-lg p-2">
                     <div className="text-lg font-bold text-emerald-400 tabular-nums">
                       +{potw.lpGain}
@@ -496,29 +603,25 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 {potw.reason && (
-                  <p className="text-xs text-text-body mt-3 italic">
-                    "{potw.reason}"
-                  </p>
+                  <p className="text-xs text-text-body mt-3 italic">&ldquo;{potw.reason}&rdquo;</p>
                 )}
               </CardContent>
             </Card>
           )}
 
           {/* Latest Reports */}
-          <div className="rounded-lg border border-border overflow-hidden">
-            <div className="px-4 py-3 border-b border-border bg-surface-hover">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold flex items-center gap-2 text-text-heading">
-                  <ScoutIcon icon={FileText} size="lg" variant="purple" glow />
-                  Latest Reports
-                </h2>
-                <Link href="/reports">
-                  <Button variant="ghost" size="default" className="text-xs">
-                    All
-                    <ArrowRight className="size-3 ml-1" />
-                  </Button>
-                </Link>
-              </div>
+          <div className="rounded-xl border border-border overflow-hidden">
+            <div className="px-4 py-3 border-b border-border bg-surface-hover flex items-center justify-between">
+              <h2 className="text-base font-semibold flex items-center gap-2 text-text-heading">
+                <ScoutIcon icon={FileText} size="lg" variant="purple" glow />
+                Latest Reports
+              </h2>
+              <Link href="/reports">
+                <Button variant="ghost" size="sm" className="text-xs gap-1">
+                  All
+                  <ArrowRight className="size-3" />
+                </Button>
+              </Link>
             </div>
             <div className="p-0">
               {reports.length === 0 ? (
@@ -541,9 +644,7 @@ export default function DashboardPage() {
                         {report.title}
                       </p>
                       <div className="flex items-center gap-2 mt-1">
-                        <span className="text-xs text-text-body">
-                          {report.player.pseudo}
-                        </span>
+                        <span className="text-xs text-text-body">{report.player.pseudo}</span>
                         <Badge
                           variant="secondary"
                           className={`text-xs h-4 px-1 ${
@@ -563,42 +664,8 @@ export default function DashboardPage() {
               )}
             </div>
           </div>
-
-          {/* Quick Links */}
-          <Card className="border-border">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <ScoutIcon icon={BarChart3} size="lg" variant="muted" />
-                Quick Links
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2 p-4">
-              {[
-                { href: "/players", icon: Users, label: "Browse Players" },
-                { href: "/prospects", icon: Crown, label: "Top Prospects" },
-                { href: "/leaderboards", icon: TrendingUp, label: "Leaderboards" },
-                { href: "/compare", icon: Zap, label: "Compare Players" },
-                { href: "/watchlist", icon: Heart, label: "My Watchlist" },
-                { href: "/pipeline", icon: ClipboardList, label: "Scouting Pipeline" },
-                { href: "/dashboard/scrims", icon: Swords, label: "Scrims" },
-              ].map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-surface-hover transition-colors group"
-                >
-                  <link.icon className="size-4 text-text-body group-hover:text-primary-accent transition-colors" />
-                  <span className="text-sm text-text-heading group-hover:text-primary-accent transition-colors">
-                    {link.label}
-                  </span>
-                  <ArrowRight className="size-3 ml-auto text-border group-hover:text-primary-accent transition-colors" />
-                </Link>
-              ))}
-            </CardContent>
-          </Card>
         </div>
       </div>
     </div>
   );
 }
-

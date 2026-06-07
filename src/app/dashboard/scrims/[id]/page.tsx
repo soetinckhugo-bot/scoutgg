@@ -15,16 +15,34 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Save, Trash2, Trophy, XCircle, Minus } from "lucide-react";
 import { toast } from "sonner";
+import { ROLE_COLORS, ROLES } from "@/lib/constants";
+
+const ROLE_LABELS: Record<string, string> = {
+  TOP: "TOP",
+  JUNGLE: "JGL",
+  MID: "MID",
+  ADC: "ADC",
+  SUPPORT: "SUP",
+};
 
 interface Scrim {
   id: string;
   date: string;
   opponent: string;
   result: "WIN" | "LOSS" | "DRAW";
-  compAlly: string | null;
-  compEnemy: string | null;
+  allyTop: string | null;
+  allyJungle: string | null;
+  allyMid: string | null;
+  allyAdc: string | null;
+  allySupport: string | null;
+  enemyTop: string | null;
+  enemyJungle: string | null;
+  enemyMid: string | null;
+  enemyAdc: string | null;
+  enemySupport: string | null;
   notes: string | null;
 }
 
@@ -57,6 +75,10 @@ export default function ScrimDetailPage() {
     } finally {
       setLoading(false);
     }
+  }
+
+  function setField(field: keyof Scrim, value: string) {
+    setForm((prev) => ({ ...prev, [field]: value }));
   }
 
   async function handleSave() {
@@ -102,7 +124,7 @@ export default function ScrimDetailPage() {
   if (!scrim) return null;
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
+    <div className="max-w-3xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <Button variant="ghost" size="sm" asChild>
           <Link href="/dashboard/scrims">
@@ -128,8 +150,8 @@ export default function ScrimDetailPage() {
             </div>
           </div>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="date">Date</Label>
               <Input
@@ -156,36 +178,60 @@ export default function ScrimDetailPage() {
                 </SelectContent>
               </Select>
             </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="opponent">Opponent</Label>
-            <Input
-              id="opponent"
-              value={form.opponent || ""}
-              onChange={(e) => setForm({ ...form, opponent: e.target.value })}
-              className="bg-card border-border"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="compAlly">Your Composition</Label>
+              <Label htmlFor="opponent">Opponent</Label>
               <Input
-                id="compAlly"
-                value={form.compAlly || ""}
-                onChange={(e) => setForm({ ...form, compAlly: e.target.value })}
+                id="opponent"
+                value={form.opponent || ""}
+                onChange={(e) => setForm({ ...form, opponent: e.target.value })}
                 className="bg-card border-border"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="compEnemy">Enemy Composition</Label>
-              <Input
-                id="compEnemy"
-                value={form.compEnemy || ""}
-                onChange={(e) => setForm({ ...form, compEnemy: e.target.value })}
-                className="bg-card border-border"
-              />
+          </div>
+
+          {/* Your Team */}
+          <div className="space-y-3">
+            <Label className="text-sm font-medium text-text-heading">Your Team Composition</Label>
+            <div className="grid grid-cols-5 gap-2">
+              {ROLES.map((role) => (
+                <div key={`ally-${role}`} className="space-y-1.5">
+                  <Badge
+                    variant="outline"
+                    className={`w-full justify-center text-[10px] font-bold tracking-wider ${ROLE_COLORS[role]}`}
+                  >
+                    {ROLE_LABELS[role]}
+                  </Badge>
+                  <Input
+                    placeholder="Champ"
+                    value={form[`ally${role}` as keyof Scrim] || ""}
+                    onChange={(e) => setField(`ally${role}` as keyof Scrim, e.target.value)}
+                    className="bg-card border-border text-xs text-center"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Enemy Team */}
+          <div className="space-y-3">
+            <Label className="text-sm font-medium text-text-heading">Enemy Team Composition</Label>
+            <div className="grid grid-cols-5 gap-2">
+              {ROLES.map((role) => (
+                <div key={`enemy-${role}`} className="space-y-1.5">
+                  <Badge
+                    variant="outline"
+                    className={`w-full justify-center text-[10px] font-bold tracking-wider ${ROLE_COLORS[role]}`}
+                  >
+                    {ROLE_LABELS[role]}
+                  </Badge>
+                  <Input
+                    placeholder="Champ"
+                    value={form[`enemy${role}` as keyof Scrim] || ""}
+                    onChange={(e) => setField(`enemy${role}` as keyof Scrim, e.target.value)}
+                    className="bg-card border-border text-xs text-center"
+                  />
+                </div>
+              ))}
             </div>
           </div>
 
@@ -195,7 +241,7 @@ export default function ScrimDetailPage() {
               id="notes"
               value={form.notes || ""}
               onChange={(e) => setForm({ ...form, notes: e.target.value })}
-              rows={5}
+              rows={4}
               className="bg-card border-border"
             />
           </div>
