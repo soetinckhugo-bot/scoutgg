@@ -686,3 +686,21 @@ model DevelopmentPlan {
   @@index([status])
   @@index([playerId, status])
 }
+
+model InterviewNote {
+  id          String   @id @default(cuid())
+  playerId    String
+  userId      String
+  date        DateTime
+  interviewer String?
+  notes       String?
+  impression  String?  // positive / neutral / negative
+  verdict     String?  // recommend / monitor / reject
+  rating      Int?     // 1-5 overall
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([playerId])
+  @@index([userId])
+  @@index([playerId, createdAt])
+}

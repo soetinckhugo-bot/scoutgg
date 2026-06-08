@@ -80,6 +80,8 @@ import ReportCard from "@/components/ReportCard";
 import StaffDiscussion from "./StaffDiscussion";
 import PlayerReviews from "./PlayerReviews";
 import PlayerDevelopmentPlans from "./PlayerDevelopmentPlans";
+import PlayerInterviewNotes from "./PlayerInterviewNotes";
+import PlayerEvolution from "./PlayerEvolution";
 // import { ShareableReport } from "@/components/ShareableReport";
 
 const RoleRadarChart = dynamic(() => import("@/components/charts/RoleRadarChart"));
@@ -326,6 +328,7 @@ export default async function PlayerPage(props: {
                   <TabsTrigger value="analysis" className="px-5 py-2 text-sm font-semibold data-[state=active]:bg-primary-accent data-[state=active]:text-white data-[state=active]:shadow-none">Analysis</TabsTrigger>
                   <TabsTrigger value="vods" className="px-5 py-2 text-sm font-semibold data-[state=active]:bg-primary-accent data-[state=active]:text-white data-[state=active]:shadow-none">VODs</TabsTrigger>
                   <TabsTrigger value="staff" className="px-5 py-2 text-sm font-semibold data-[state=active]:bg-primary-accent data-[state=active]:text-white data-[state=active]:shadow-none">Staff</TabsTrigger>
+                  <TabsTrigger value="evolution" className="px-5 py-2 text-sm font-semibold data-[state=active]:bg-primary-accent data-[state=active]:text-white data-[state=active]:shadow-none">Evolution</TabsTrigger>
                 </TabsList>
                 <SeasonSplitSelector seasons={seasons} splits={splits} />
               </div>
@@ -564,9 +567,13 @@ export default async function PlayerPage(props: {
                 </div>
               </TabsContent>
               <TabsContent value="staff" className="space-y-6 animate-fade-in">
+                <PlayerInterviewNotes playerId={player.id} />
                 <PlayerDevelopmentPlans playerId={player.id} />
                 <PlayerReviews playerId={player.id} />
                 <StaffDiscussion playerId={player.id} />
+              </TabsContent>
+              <TabsContent value="evolution" className="space-y-6 animate-fade-in">
+                <PlayerEvolution playerId={player.id} />
               </TabsContent>
             </Tabs>
           </div>

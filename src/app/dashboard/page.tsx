@@ -40,6 +40,7 @@ import RecentDiscussions from "./RecentDiscussions";
 import ScrimDigestWidget from "./ScrimDigestWidget";
 import RecentReviews from "./RecentReviews";
 import ActiveDevelopmentPlans from "./ActiveDevelopmentPlans";
+import RecentInterviews from "./RecentInterviews";
 
 interface Favorite {
   id: string;
@@ -225,6 +226,15 @@ const STAFF_ACTIONS = [
     border: "border-emerald-500/20",
     hover: "hover:border-emerald-500/40 hover:bg-emerald-500/15",
   },
+  {
+    href: "/dashboard/interviews",
+    icon: MessageSquare,
+    label: "Interviews",
+    color: "text-pink-400",
+    bg: "bg-pink-500/10",
+    border: "border-pink-500/20",
+    hover: "hover:border-pink-500/40 hover:bg-pink-500/15",
+  },
 ];
 
 function StaffActionCard({
@@ -367,7 +377,7 @@ export default function DashboardPage() {
         <h2 className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-3">
           Staff Tools
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-8 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-9 gap-3">
           {STAFF_ACTIONS.map((action) => (
             <StaffActionCard key={action.href} action={action} />
           ))}
@@ -711,6 +721,17 @@ export default function DashboardPage() {
             <div className="p-4">
               <ScrimDigestWidget />
             </div>
+          </div>
+
+          {/* Recent Interviews */}
+          <div className="rounded-xl border border-border overflow-hidden">
+            <div className="px-4 py-3 border-b border-border bg-surface-hover flex items-center justify-between">
+              <h2 className="text-base font-semibold flex items-center gap-2 text-text-heading">
+                <ScoutIcon icon={MessageSquare} size="lg" variant="muted" />
+                Recent Interviews
+              </h2>
+            </div>
+            <RecentInterviews />
           </div>
 
           {/* Recent Reviews */}
