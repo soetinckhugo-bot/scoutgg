@@ -6,11 +6,22 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 function createPrismaClient(): PrismaClient {
-  // Ensure DATABASE_URL points to the absolute path of the SQLite DB
-  // so it works during Vercel build-time prerendering regardless of CWD
-  const dbPath = path.resolve(process.cwd(), "prisma", "dev.db");
-  process.env.DATABASE_URL = `file:${dbPath}`;
+  let databaseUrl = process.env.DATABASE_URL;
 
+  if (!databaseUrl) {
+    // Default local SQLite path when no DATABASE_URL is provided
+    const dbPath = path.resolve(process.cwd(), "prisma", "dev.db");
+    databaseUrl = `file:${dbPath}`;
+  } else if (databaseUrl.startsWith("file:")) {
+    // Resolve relative SQLite paths to an absolute path so Prisma can open
+    // the DB regardless of the current working directory (build, tests, etc.)
+    const dbPath = databaseUrl.slice("file:".length);
+    if (!path.isAbsolute(dbPath)) {
+      databaseUrl = `file:${path.resolve(process.cwd(), dbPath)}`;
+    }
+  }
+
+  process.env.DATABASE_URL = databaseUrl;
   return new PrismaClient();
 }
 

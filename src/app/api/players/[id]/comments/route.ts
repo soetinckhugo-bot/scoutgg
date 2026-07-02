@@ -11,6 +11,11 @@ const CommentSchema = z.object({
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const { id: playerId } = await params;
 
     const comments = await db.playerComment.findMany({

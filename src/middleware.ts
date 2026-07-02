@@ -13,8 +13,7 @@ export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   if (
     pathname === "/password" ||
-    pathname.startsWith("/api/password") ||
-    pathname.startsWith("/api/auth") ||
+    pathname.startsWith("/api/") ||
     pathname.startsWith("/_next") ||
     pathname.startsWith("/static") ||
     pathname === "/favicon.ico"

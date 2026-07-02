@@ -30,15 +30,13 @@ describe("logger", () => {
 });
 
 describe("logger in dev mode", () => {
-  const originalEnv = process.env.NODE_ENV;
-
   beforeEach(() => {
     vi.resetModules();
-    process.env.NODE_ENV = "development";
+    vi.stubEnv("NODE_ENV", "development");
   });
 
   afterEach(() => {
-    process.env.NODE_ENV = originalEnv;
+    vi.unstubAllEnvs();
     vi.restoreAllMocks();
   });
 
@@ -78,15 +76,13 @@ describe("logger in dev mode", () => {
 });
 
 describe("logger in production", () => {
-  const originalEnv = process.env.NODE_ENV;
-
   beforeEach(() => {
     vi.resetModules();
-    process.env.NODE_ENV = "production";
+    vi.stubEnv("NODE_ENV", "production");
   });
 
   afterEach(() => {
-    process.env.NODE_ENV = originalEnv;
+    vi.unstubAllEnvs();
     vi.restoreAllMocks();
   });
 
