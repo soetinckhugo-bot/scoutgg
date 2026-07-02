@@ -17,7 +17,6 @@ import {
   Trophy,
   Star,
   Zap,
-  Film,
 } from "lucide-react";
 import { ArrowRight } from "lucide-react";
 import { getChampionIconUrl } from "@/lib/game-assets";
@@ -159,46 +158,6 @@ const getRecentReports = unstable_cache(
   { revalidate: 300, tags: ["recent-reports", "homepage", "reports"] }
 );
 
-const getClipWinner = unstable_cache(
-  async () => {
-    const now = new Date();
-    const monthPeriod = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-
-    let clip = await db.clip.findFirst({
-      where: { isWinner: true, monthPeriod, isActive: true },
-      include: { votes: { select: { score: true } } },
-    });
-
-    if (!clip) {
-      clip = await db.clip.findFirst({
-        where: { isWinner: true, isActive: true },
-        include: { votes: { select: { score: true } } },
-        orderBy: { monthPeriod: "desc" },
-      });
-    }
-
-    if (!clip) return null;
-
-    const totalVotes = clip.votes.length;
-    const avgScore = totalVotes > 0 ? clip.votes.reduce((sum, v) => sum + v.score, 0) / totalVotes : 0;
-    return {
-      id: clip.id,
-      playerName: clip.playerName,
-      playerRole: clip.playerRole,
-      champion: clip.champion,
-      title: clip.title,
-      platform: clip.platform,
-      videoId: clip.videoId,
-      monthPeriod: clip.monthPeriod,
-      isWinner: clip.isWinner,
-      totalVotes,
-      avgScore: Math.round(avgScore * 10) / 10,
-    };
-  },
-  ["clip-winner"],
-  { revalidate: 300, tags: ["clip-winner", "homepage", "clips"] }
-);
-
 const getFreeAgentCount = unstable_cache(
   async () => {
     return db.player.count({
@@ -216,11 +175,10 @@ const getTotalPlayers = unstable_cache(
 );
 
 export default async function HomePage() {
-  const [featuredPlayer, recentPlayers, recentReports, clipWinner, freeAgentCount, totalPlayers] = await Promise.all([
+  const [featuredPlayer, recentPlayers, recentReports, freeAgentCount, totalPlayers] = await Promise.all([
     getFeaturedPlayer(),
     getRecentPlayers(),
     getRecentReports(),
-    getClipWinner(),
     getFreeAgentCount(),
     getTotalPlayers(),
   ]);
@@ -336,68 +294,6 @@ export default async function HomePage() {
             </div>
           )}
 
-          {/* Clip of the Month */}
-          {clipWinner ? (
-            <div className="rounded-xl border border-border bg-card overflow-hidden flex flex-col h-full">
-              <div className="flex items-center gap-2 px-4 py-3 bg-surface-hover border-b border-border">
-                <ScoutIcon icon={Film} size="md" variant="accent" glow />
-                <span className="text-xs font-semibold uppercase tracking-wider text-text-heading">Clip of the Month</span>
-                <Badge className="text-xs h-5 px-2 bg-yellow-500/10 text-yellow-400 border-yellow-500/20">
-                  Winner
-                </Badge>
-              </div>
-              <div className="p-4 flex flex-col flex-1">
-                <div className="flex flex-col items-center mb-4">
-                  {clipWinner.champion ? (
-                    <Image
-                      src={getChampionIconUrl(clipWinner.champion)}
-                      alt={clipWinner.champion}
-                      width={80}
-                      height={80}
-                      className="object-contain rounded-xl bg-black border border-border mb-3"
-                    />
-                  ) : (
-                    <div className="w-20 h-20 rounded-xl bg-surface flex items-center justify-center mb-3">
-                      <Film className="h-8 w-8 text-text-muted" />
-                    </div>
-                  )}
-                  <h2 className="text-lg font-bold text-text-heading text-center">{clipWinner.title}</h2>
-                  <div className="flex items-center gap-2 mt-1">
-                    <Badge className={`text-xs h-5 px-2 ${ROLE_COLORS[clipWinner.playerRole] || ""}`}>{clipWinner.playerRole}</Badge>
-                    <span className="text-sm text-text-body font-medium">{clipWinner.playerName}</span>
-                  </div>
-                  {clipWinner.champion && (
-                    <p className="text-xs text-primary-accent font-medium mt-1">{clipWinner.champion}</p>
-                  )}
-                </div>
-                <div className="flex items-center justify-center gap-2 mb-4">
-                  <div className="flex gap-0.5">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star
-                        key={star}
-                        className={`h-4 w-4 ${star <= Math.round(clipWinner.avgScore) ? "text-tier-s fill-tier-s" : "text-border"}`}
-                      />
-                    ))}
-                  </div>
-                  <span className="text-sm font-bold text-text-heading">{clipWinner.avgScore}/5</span>
-                  <span className="text-xs text-text-muted">· {clipWinner.totalVotes} votes</span>
-                </div>
-                <div className="flex-1" />
-                <Link
-                  href={`/clips/${clipWinner.id}`}
-                  className="inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-text-heading bg-primary-accent rounded-md hover:bg-primary-accent/90 transition-colors"
-                >
-                  Watch this clip <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </div>
-            </div>
-          ) : (
-            <div className="rounded-xl border border-border bg-card overflow-hidden flex flex-col h-full items-center justify-center p-8 text-center">
-              <ScoutIcon icon={Film} size="xl" variant="accent" glow bg />
-              <h2 className="text-lg font-bold text-text-heading mb-1">Clip of the Month</h2>
-              <p className="text-sm text-text-muted">No clips yet for this month. Be the first to submit one!</p>
-            </div>
-          )}
         </div>
       </section>
 

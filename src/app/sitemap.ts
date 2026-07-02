@@ -21,8 +21,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/contact", priority: 0.5, freq: "monthly" as const },
     { path: "/similarity", priority: 0.7, freq: "weekly" as const },
     { path: "/draft-board", priority: 0.6, freq: "weekly" as const },
-    { path: "/clips", priority: 0.8, freq: "daily" as const },
-
   ].map(({ path, priority, freq }) => ({
     url: `${baseUrl}${path}`,
     lastModified: new Date(),
@@ -42,23 +40,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  // Dynamic clip pages (gracefully skip if table doesn't exist yet)
-  let clipPages: MetadataRoute.Sitemap = [];
-  try {
-    const clips = await db.clip.findMany({
-      where: { isActive: true },
-      select: { id: true, updatedAt: true },
-    });
-    clipPages = clips.map((clip) => ({
-      url: `${baseUrl}/clips/${clip.id}`,
-      lastModified: clip.updatedAt,
-      changeFrequency: "weekly" as const,
-      priority: 0.7,
-    }));
-  } catch {
-    // Table may not exist during build on fresh environments
-  }
-
-  return [...staticPages, ...playerPages, ...clipPages];
+  return [...staticPages, ...playerPages];
 }
 

@@ -28,7 +28,6 @@ const navLinks = [
   { href: "/players", label: "Players" },
   { href: "/leaderboards", label: "Leaderboards" },
   { href: "/prospects", label: "Prospects" },
-  { href: "/clips", label: "Clips" },
   { href: "/compare", label: "Comparison" },
   { href: "/similarity", label: "Similarity" },
   { href: "/soloq", label: "SoloQ" },
