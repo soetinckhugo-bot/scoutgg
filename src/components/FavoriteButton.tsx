@@ -7,6 +7,38 @@ import { toast } from "sonner";
 import { logger } from "@/lib/logger";
 import { useSession } from "next-auth/react";
 
+// Module-level cache so multiple FavoriteButtons on the same page share
+// a single /api/favorites request instead of each firing its own.
+let favoritesCache: string[] | null = null;
+let favoritesPromise: Promise<string[]> | null = null;
+
+async function fetchFavoriteIds(): Promise<string[]> {
+  if (favoritesCache) return favoritesCache;
+  if (favoritesPromise) return favoritesPromise;
+
+  favoritesPromise = fetch("/api/favorites")
+    .then(async (res) => {
+      if (!res.ok) throw new Error("Failed to fetch favorites");
+      const data = await res.json();
+      const ids = Array.isArray(data)
+        ? data.map((f: { playerId: string }) => f.playerId)
+        : (data.favorites || []).map((f: { playerId: string }) => f.playerId);
+      favoritesCache = ids;
+      return ids;
+    })
+    .catch((error) => {
+      favoritesPromise = null;
+      throw error;
+    });
+
+  return favoritesPromise;
+}
+
+export function invalidateFavoritesCache() {
+  favoritesCache = null;
+  favoritesPromise = null;
+}
+
 interface FavoriteButtonProps {
   playerId: string;
   variant?: "default" | "small";
@@ -24,14 +56,8 @@ export default function FavoriteButton({
   const checkFavoriteStatus = useCallback(async () => {
     if (!isAuthenticated) return;
     try {
-      const res = await fetch("/api/favorites");
-      if (res.ok) {
-        const favorites = await res.json();
-        const favorited = favorites.some(
-          (f: { playerId: string }) => f.playerId === playerId
-        );
-        setIsFavorited(favorited);
-      }
+      const favoriteIds = await fetchFavoriteIds();
+      setIsFavorited(favoriteIds.includes(playerId));
     } catch (error) {
       logger.error("Error checking favorite status", { error });
     }
@@ -59,6 +85,7 @@ export default function FavoriteButton({
 
         if (res.ok) {
           setIsFavorited(false);
+          invalidateFavoritesCache();
           toast.success("Removed from watchlist");
         } else {
           toast.error("Failed to update watchlist");
@@ -72,6 +99,7 @@ export default function FavoriteButton({
 
         if (res.ok || res.status === 409) {
           setIsFavorited(true);
+          invalidateFavoritesCache();
           toast.success("Added to watchlist");
         } else {
           toast.error("Failed to update watchlist");

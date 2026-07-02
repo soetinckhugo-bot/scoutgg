@@ -110,11 +110,19 @@ const getPlayer = cache(async (id: string) => {
       proStats: true,
       proMatches: {
         orderBy: { matchDate: "desc" },
+        take: 100,
       },
-      reports: true,
-      vods: true,
+      reports: {
+        orderBy: { publishedAt: "desc" },
+        take: 50,
+      },
+      vods: {
+        orderBy: { createdAt: "desc" },
+        take: 50,
+      },
       timelineEvents: {
         orderBy: { date: "desc" },
+        take: 50,
       },
     },
   });

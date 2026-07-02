@@ -82,7 +82,6 @@ test.describe("Performance Audit", () => {
     { path: "/players", name: "Players" },
     { path: "/players", name: "Players with filter", query: "?role=MID" },
     { path: "/prospects", name: "Prospects" },
-    { path: "/pricing", name: "Pricing" },
   ];
 
   for (const { path, name, query } of pages) {

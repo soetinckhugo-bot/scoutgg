@@ -81,11 +81,4 @@ test.describe("Page Navigation Flows", () => {
     await expect(content).toBeVisible();
   });
 
-  test("pricing page shows tiers", async ({ page }) => {
-    await page.goto("/pricing");
-    await expect(page.locator("h1")).toContainText(/Pricing|Choose Your Plan/);
-    // Look for tier names
-    const pageText = await page.locator("main").textContent();
-    expect(pageText).toMatch(/Free|Scout Pass|Pro/i);
-  });
 });

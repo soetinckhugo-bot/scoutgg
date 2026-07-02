@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/server/db";
 import { requireAdmin } from "@/lib/server/auth";
 import { parseCsv, normalizeRole, parseProStatsFromRow, validateCsvRow, findDuplicatePlayers, detectCsvMetrics } from "@/lib/csv-parser";
-import { calculateScores, type PlayerData } from "@/lib/scoring";
+import { recalculateAllScores } from "@/lib/server/recalculate-scores";
 import { LEAGUE_TIERS } from "@/lib/constants";
 import { revalidateTag } from "next/cache";
 import { logger } from "@/lib/logger";
@@ -49,6 +49,8 @@ export async function POST(request: Request) {
       warnings: [] as string[],
       players: [] as string[],
       detectedMetrics: detectedMetrics,
+      recalculated: 0,
+      totalPlayers: 0,
     };
 
     // Validation: check for duplicates
@@ -213,55 +215,11 @@ export async function POST(request: Request) {
       5
     );
 
-    // Phase 4: Calculate scores and batch update
-    const allPlayerData: PlayerData[] = playerDataList.map((p) => ({
-      id: p.playerId,
-      pseudo: p.pseudo,
-      role: p.role,
-      league,
-      ...p.stats,
-    }));
-
-    const scoringResults = playerDataList.map((playerData) => {
-      try {
-        return {
-          playerId: playerData.playerId,
-          result: calculateScores(
-            { role: playerData.role, league, ...playerData.stats },
-            allPlayerData
-          ),
-          error: null,
-        };
-      } catch (err: unknown) {
-        results.errors.push(
-          `${playerData.pseudo}: score calculation failed - ${err instanceof Error ? err.message : String(err)}`
-        );
-        return { playerId: playerData.playerId, result: null, error: err };
-      }
-    });
-
-    // Batch update players and ProStats with scores
-    await batchProcess(
-      scoringResults.filter((s) => s.result),
-      async (scoring) => {
-        await Promise.all([
-          db.player.update({
-            where: { id: scoring.playerId },
-            data: { tier: scoring.result!.tier },
-          }),
-          db.proStats.update({
-            where: { playerId: scoring.playerId },
-            data: {
-              rawScore: scoring.result!.rawScore,
-              globalScore: scoring.result!.globalScore,
-              tierScore: scoring.result!.tierScore,
-              tier: scoring.result!.tier,
-            },
-          }),
-        ]);
-      },
-      5
-    );
+    // Phase 4: Recalculate scores globally so percentiles are computed against
+    // the full player pool, not just the imported batch.
+    const { recalculated, totalPlayers } = await recalculateAllScores(10000);
+    results.recalculated = recalculated;
+    results.totalPlayers = totalPlayers;
 
     revalidateTag("players");
     revalidateTag("homepage");

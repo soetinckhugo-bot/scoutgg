@@ -21,6 +21,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/contact", priority: 0.5, freq: "monthly" as const },
     { path: "/similarity", priority: 0.7, freq: "weekly" as const },
     { path: "/draft-board", priority: 0.6, freq: "weekly" as const },
+    { path: "/soloq", priority: 0.6, freq: "daily" as const },
+    { path: "/scoring", priority: 0.5, freq: "monthly" as const },
   ].map(({ path, priority, freq }) => ({
     url: `${baseUrl}${path}`,
     lastModified: new Date(),
@@ -31,6 +33,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Dynamic player pages
   const players = await db.player.findMany({
     select: { id: true, updatedAt: true },
+    take: 5000,
   });
 
   const playerPages = players.map((player) => ({

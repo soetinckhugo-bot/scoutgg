@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
-import FavoriteButton from "../FavoriteButton";
+import FavoriteButton, { invalidateFavoritesCache } from "../FavoriteButton";
 
 // Mock sonner toast
 vi.mock("sonner", () => ({
@@ -14,6 +14,7 @@ import { toast } from "sonner";
 
 describe("FavoriteButton", () => {
   beforeEach(() => {
+    invalidateFavoritesCache();
     vi.stubGlobal(
       "fetch",
       vi.fn(() =>

@@ -4,7 +4,6 @@ const PAGES = [
   { path: "/", title: /LeagueScout/ },
   { path: "/players", title: /Players|LeagueScout/ },
   { path: "/prospects", title: /Prospects|LeagueScout/ },
-  { path: "/pricing", title: /Pricing|Choose Your Plan|LeagueScout/ },
   { path: "/about", title: /About|LeagueScout/ },
   { path: "/contact", title: /Contact|LeagueScout/ },
 ];

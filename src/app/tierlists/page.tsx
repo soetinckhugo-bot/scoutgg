@@ -30,6 +30,7 @@ async function getTierList() {
       proStats: true,
     },
     orderBy: { pseudo: "asc" },
+    take: 200,
   });
 
   // Simple tier logic for demo

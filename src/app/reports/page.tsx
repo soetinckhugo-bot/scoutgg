@@ -18,6 +18,7 @@ export const metadata: Metadata = {
 async function getReports() {
   return db.report.findMany({
     orderBy: { publishedAt: "desc" },
+    take: 50,
     include: {
       player: true,
     },

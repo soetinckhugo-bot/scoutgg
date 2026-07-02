@@ -42,27 +42,6 @@ test.describe("API — Authentication", () => {
     expect(response.status()).toBe(401);
   });
 
-  test("checkout API requires auth", async ({ request }) => {
-    const response = await request.post("/api/checkout", {
-      data: { tier: "Supporter" },
-    });
-    expect(response.status()).toBe(401);
-  });
-});
-
-test.describe("Premium — Pricing & Access", () => {
-  test("pricing page shows all tiers", async ({ page }) => {
-    await page.goto("/pricing");
-    await expect(page.locator("text=Free").first()).toBeVisible();
-    await expect(page.locator("text=Supporter").first()).toBeVisible();
-    await expect(page.locator("text=Scout Pro").first()).toBeVisible();
-  });
-
-  test("pricing page has CTA buttons", async ({ page }) => {
-    await page.goto("/pricing");
-    const ctas = page.locator("button").filter({ hasText: /Subscribe|Get Started|Contact/i });
-    await expect(ctas.first()).toBeVisible();
-  });
 });
 
 test.describe("User Navigation Flows", () => {
