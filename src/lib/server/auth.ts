@@ -22,20 +22,7 @@ export async function requirePremium() {
     );
   }
 
-  const now = new Date();
-  const premiumUntil = session.user.premiumUntil ? new Date(session.user.premiumUntil) : null;
-  const isPremium =
-    session.user.isPremium === true &&
-    session.user.subscriptionStatus === "active" &&
-    (!premiumUntil || premiumUntil > now);
-
-  if (!isPremium) {
-    return NextResponse.json(
-      { error: "Premium subscription required" },
-      { status: 403 }
-    );
-  }
-
+  // Premium is no longer required — all authenticated users have full access
   return null;
 }
 

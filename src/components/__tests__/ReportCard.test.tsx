@@ -46,33 +46,18 @@ describe("ReportCard", () => {
     expect(screen.getByText(/1\u202f15\u202f2026|15\/01\/2026|Jan 15, 2026/)).toBeInTheDocument();
   });
 
-  it("shows star icon for free reports", () => {
-    render(<ReportCard report={baseReport} />);
-    expect(screen.queryByLabelText("Premium")).not.toBeInTheDocument();
-  });
-
-  it("shows lock icon for premium reports", () => {
+  it("renders title and content for premium reports", () => {
     const premium = { ...baseReport, isPremium: true };
     render(<ReportCard report={premium} />);
-    // The lock icon is present (no aria-label on lucide by default, but it's in the DOM)
     expect(screen.getByText("Scouting Report: Zeka")).toBeInTheDocument();
+    expect(screen.getByText(/Excellent mechanical skill/)).toBeInTheDocument();
   });
 
-  it("renders preview variant with blur overlay", () => {
+  it("renders preview variant as full content", () => {
     render(<ReportCard report={baseReport} variant="preview" />);
-    expect(screen.getByText("Premium content")).toBeInTheDocument();
-    expect(screen.getByText("Unlock with Scout Pass")).toBeInTheDocument();
-  });
-
-  it("preview shows player name when available", () => {
-    render(<ReportCard report={baseReport} variant="preview" />);
-    expect(screen.getByText("Zeka")).toBeInTheDocument();
-  });
-
-  it("preview links to pricing page", () => {
-    render(<ReportCard report={baseReport} variant="preview" />);
-    const link = screen.getByRole("link");
-    expect(link).toHaveAttribute("href", "/pricing");
+    expect(screen.getByText("Scouting Report: Zeka")).toBeInTheDocument();
+    expect(screen.getByText(/Excellent mechanical skill/)).toBeInTheDocument();
+    expect(screen.getByText("+ Laning")).toBeInTheDocument();
   });
 
   it("handles report without player", () => {

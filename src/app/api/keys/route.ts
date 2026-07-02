@@ -7,7 +7,7 @@ import { z } from "zod";
 
 const createKeySchema = z.object({
   name: z.string().min(1, "Name is required").max(100),
-  tier: z.enum(["scout_pro", "enterprise"]).default("scout_pro"),
+  tier: z.enum(["standard"]).default("standard"),
   expiresInDays: z.coerce.number().int().min(1).max(365).optional(),
 });
 
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
   const rawKey = generateApiKey();
   const hashedKey = hashApiKey(rawKey);
 
-  const rateLimit = tier === "enterprise" ? 1000 : 100;
+  const rateLimit = 100;
   const expiresAt = expiresInDays
     ? new Date(Date.now() + expiresInDays * 24 * 60 * 60 * 1000)
     : null;

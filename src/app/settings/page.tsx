@@ -44,7 +44,7 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [newKeyName, setNewKeyName] = useState("");
-  const [newKeyTier, setNewKeyTier] = useState("scout_pro");
+  const [newKeyTier, setNewKeyTier] = useState("standard");
   const [newKeyRaw, setNewKeyRaw] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
@@ -165,13 +165,12 @@ export default function SettingsPage() {
                 onChange={(e) => setNewKeyName(e.target.value)}
                 className="flex-1"
               />
-              <Select value={newKeyTier} onValueChange={(v) => setNewKeyTier(v || "scout_pro")}>
+              <Select value={newKeyTier} onValueChange={(v) => setNewKeyTier(v || "standard")}>
                 <SelectTrigger className="w-40">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="scout_pro">Scout Pro (100/hr)</SelectItem>
-                  <SelectItem value="enterprise">Enterprise (1000/hr)</SelectItem>
+                  <SelectItem value="standard">Standard (100/hr)</SelectItem>
                 </SelectContent>
               </Select>
               <Button
@@ -236,13 +235,9 @@ export default function SettingsPage() {
                         </span>
                         <Badge
                           variant="secondary"
-                          className={`text-xs h-4 ${
-                            key.tier === "enterprise"
-                              ? "bg-purple-900/30 text-purple-300"
-                              : "bg-blue-900/30 text-blue-300"
-                          }`}
+                          className="text-xs h-4 bg-blue-900/30 text-blue-300"
                         >
-                          {key.tier}
+                          Standard
                         </Badge>
                         {!key.isActive && (
                           <Badge

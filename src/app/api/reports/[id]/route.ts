@@ -2,8 +2,6 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/server/db";
 import { ReportUpdateSchema } from "@/lib/schemas";
 import { requireAdmin } from "@/lib/server/auth";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/server/auth-options";
 import { logger } from "@/lib/logger";
 
 export async function GET(
@@ -23,31 +21,6 @@ export async function GET(
 
     if (!report) {
       return NextResponse.json({ error: "Report not found" }, { status: 404 });
-    }
-
-    // If report is free, return it directly
-    if (!report.isPremium) {
-      return NextResponse.json(report);
-    }
-
-    // Check if user has premium access
-    const session = await getServerSession(authOptions);
-    const isPremium = session?.user?.isPremium === true && session?.user?.subscriptionStatus === "active";
-
-    if (!isPremium) {
-      return NextResponse.json(
-        {
-          error: "Premium subscription required",
-          id: report.id,
-          title: report.title,
-          playerId: report.playerId,
-          player: report.player,
-          isPremium: true,
-          publishedAt: report.publishedAt,
-          _locked: true,
-        },
-        { status: 403 }
-      );
     }
 
     return NextResponse.json(report);

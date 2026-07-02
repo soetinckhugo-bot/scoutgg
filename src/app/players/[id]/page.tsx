@@ -133,11 +133,7 @@ export default async function PlayerPage(props: {
   }
 
   const session = await getServerSession(authOptions);
-  const isPremium = session?.user?.isPremium === true && session?.user?.subscriptionStatus === "active";
   const isAdmin = session?.user?.role === "admin";
-
-  const freeReports = player.reports.filter((r) => !r.isPremium);
-  const premiumReports = player.reports.filter((r) => r.isPremium);
 
   // Season/Split selector UI (filtering stats is handled client-side in ProStatsFull)
   // ProMatches don't have season/split fields yet — filtering matches would require schema change
@@ -436,32 +432,16 @@ export default async function PlayerPage(props: {
                 {/* Reports */}
                 {player.reports.length > 0 ? (
                   <div className="space-y-4">
-                    {freeReports.length > 0 && (
+                    {player.reports.length > 0 && (
                       <div className="rounded-xl border border-border bg-card overflow-hidden">
                         <div className="flex items-center gap-2 px-4 py-3 bg-primary-accent border-b border-primary-accent/50">
                           <FileText className="h-4 w-4 text-text-muted" />
-                          <SectionHeader className="text-white">Free Reports</SectionHeader>
+                          <SectionHeader className="text-white">Reports</SectionHeader>
                         </div>
                         <div className="divide-y divide-border">
-                          {freeReports.map((report) => (
+                          {player.reports.map((report) => (
                             <div key={report.id} className="hover:bg-surface-hover transition-colors p-4">
                               <ReportCard report={report} variant="free" />
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {premiumReports.length > 0 && (
-                      <div className="rounded-xl border border-border bg-card overflow-hidden">
-                        <div className="flex items-center gap-2 px-4 py-3 bg-primary-accent border-b border-primary-accent/50">
-                          <FileText className="h-4 w-4 text-text-muted" />
-                          <SectionHeader className="text-white">Premium Reports</SectionHeader>
-                        </div>
-                        <div className="divide-y divide-border">
-                          {premiumReports.map((report) => (
-                            <div key={report.id} className="hover:bg-surface-hover transition-colors p-4">
-                              <ReportCard report={report} variant={isPremium ? "premium" : "preview"} />
                             </div>
                           ))}
                         </div>

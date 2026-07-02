@@ -16,9 +16,9 @@ const ADC_METRICS = [
   { key: "kda", label: "KDA", format: (v: number) => v.toFixed(1) },
   { key: "cspm", label: "CS/m", format: (v: number) => v.toFixed(1) },
   { key: "dpm", label: "DMG/m", format: (v: number) => v.toFixed(0) },
-  { key: "damagePercent", label: "DMG%", format: (v: number) => `${v}%` },
-  { key: "goldPercent", label: "GOLD%", format: (v: number) => `${v}%` },
-  { key: "kpPercent", label: "KP", format: (v: number) => `${v}%` },
+  { key: "damagePercent", label: "DMG%", format: (v: number) => `${(v * 100).toFixed(0)}%` },
+  { key: "goldPercent", label: "GOLD%", format: (v: number) => `${(v * 100).toFixed(0)}%` },
+  { key: "kpPercent", label: "KP", format: (v: number) => `${(v * 100).toFixed(0)}%` },
   { key: "csdAt15", label: "CS@15", format: (v: number) => (v > 0 ? `+${v}` : `${v}`) },
   { key: "gdAt15", label: "GOLD@15", format: (v: number) => (v > 0 ? `+${v}` : `${v}`) },
 ] as const;

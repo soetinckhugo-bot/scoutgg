@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Lock, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import ScoutIcon from "./ScoutIcon";
 
 interface Player {
@@ -34,56 +33,18 @@ export default function ReportCard({
   report,
   variant = "free",
 }: ReportCardProps) {
-  const playerName = report.player?.pseudo;
+  // variant is kept for API compatibility but no longer locks content
+  void variant;
 
-  // Locked preview for non-premium users
-  if (variant === "preview") {
-    return (
-      <Card className="border-border relative overflow-hidden">
-        <CardContent className="p-4">
-          <div className="absolute inset-0 bg-card/80 bg-background/80 backdrop-blur-sm flex items-center justify-center z-10">
-            <div className="text-center">
-              <ScoutIcon icon={Lock} size="xl" variant="default" />
-              <p className="text-sm font-medium text-text-heading">
-                {report.title}
-              </p>
-              {playerName && (
-                <p className="text-xs text-text-body mb-1">{playerName}</p>
-              )}
-              <p className="text-xs text-text-body mb-3">Premium content</p>
-              <Link
-                href="/pricing"
-                className="inline-flex items-center px-3 py-1.5 bg-primary-accent text-text-heading text-sm rounded-md hover:bg-primary-accent/90"
-              >
-                Unlock with Scout Pass
-              </Link>
-            </div>
-          </div>
-          <div className="opacity-20">
-            <h3 className="font-semibold">{report.title}</h3>
-            <p className="text-sm text-text-body">
-              {report.content.slice(0, 200)}...
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  // Full content for free reports OR premium users viewing premium reports
   return (
     <Card className="border-border">
       <CardContent className="p-4">
         <div className="flex items-center gap-2 mb-3">
-          {report.isPremium ? (
-            <ScoutIcon icon={Lock} size="md" variant="accent" />
-          ) : (
-            <ScoutIcon icon={Star} size="md" variant="success" />
-          )}
+          <ScoutIcon icon={Star} size="md" variant="success" />
           <h4 className="font-semibold text-text-heading">{report.title}</h4>
           <Badge
             variant="outline"
-            className={report.isPremium ? "border-primary-accent text-primary-accent" : "border-success text-success"}
+            className="border-success text-success"
           >
             {report.verdict}
           </Badge>

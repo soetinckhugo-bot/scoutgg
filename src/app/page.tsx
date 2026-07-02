@@ -1,22 +1,12 @@
-export const dynamic = "force-dynamic";
-
 import { db } from "@/lib/server/db";
 import { calculateAge } from "@/lib/age";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-// Card kept only for report cards (clickable content)
 import { unstable_cache } from "next/cache";
-import { RANK_COLORS } from "@/lib/constants";
-
-function getRankColor(rankStr: string | null): string {
-  if (!rankStr) return "text-text-heading";
-  const tier = rankStr.split(" ")[0].toUpperCase();
-  return RANK_COLORS[tier] || "text-text-heading";
-}
+import { RANK_COLORS, ROLE_COLORS, STATUS_COLORS } from "@/lib/constants";
 import {
   Search,
   TrendingUp,
@@ -29,14 +19,23 @@ import {
   Zap,
   Film,
 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { getChampionIconUrl } from "@/lib/game-assets";
 import ScoutIcon from "@/components/ScoutIcon";
-import { ROLE_COLORS, STATUS_COLORS } from "@/lib/constants";
 import { formatStatus, getBaseUrl } from "@/lib/utils";
 import PlayerCard from "@/components/PlayerCard";
 import { WebsiteJsonLd, OrganizationJsonLd } from "@/components/JsonLd";
 import { HeroTitle, SectionHeader, DataLabel, DataValue } from "@/components/ui/typography";
+import Flag from "@/components/Flag";
 import type { Metadata } from "next";
+
+export const dynamic = "force-dynamic";
+
+function getRankColor(rankStr: string | null): string {
+  if (!rankStr) return "text-text-heading";
+  const tier = rankStr.split(" ")[0].toUpperCase();
+  return RANK_COLORS[tier] || "text-text-heading";
+}
 
 export const metadata: Metadata = {
   title: "LeagueScout - LoL Esports Scouting Platform",
@@ -47,7 +46,6 @@ export const metadata: Metadata = {
     type: "website",
   },
 };
-import Flag from "@/components/Flag";
 
 const getFeaturedPlayer = unstable_cache(
   async () => {
@@ -90,7 +88,6 @@ const getFeaturedPlayer = unstable_cache(
           },
         },
         reports: {
-          where: { isPremium: false },
           take: 1,
           select: {
             id: true,
@@ -140,7 +137,6 @@ const getRecentReports = unstable_cache(
     return db.report.findMany({
       take: 3,
       orderBy: { publishedAt: "desc" },
-      where: { isPremium: false },
       select: {
         id: true,
         title: true,
@@ -264,10 +260,10 @@ export default async function HomePage() {
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
               <Link
-                href="/pricing"
+                href="/reports"
                 className="inline-flex items-center justify-center px-6 py-3 text-base font-medium text-text-heading bg-primary-accent rounded-lg hover:bg-primary-accent/90 transition-colors"
               >
-                Get Scout Pass
+                View Reports
               </Link>
             </div>
           </div>
@@ -733,128 +729,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Our Plans */}
-      <section className="border-t border-border bg-background">
-        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-text-heading mb-3 font-heading">Our Plans</h2>
-            <p className="text-text-body">Choose the plan that matches your ambitions</p>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
-            {/* Free */}
-            <div className="rounded-xl border border-border bg-card p-6 flex flex-col">
-              <div className="min-h-[28px]" />
-              <h3 className="text-lg font-semibold text-text-heading mb-2">Free</h3>
-              <div className="min-h-[60px]">
-                <p className="text-3xl font-bold text-text-heading mb-1">€0</p>
-                <p className="text-sm text-text-muted">Forever free</p>
-              </div>
-              <ul className="space-y-3 mb-6 flex-1 mt-6">
-                <li className="flex items-center gap-2 text-sm text-text-body">
-                  <span className="text-emerald-400">✓</span> Browse all players
-                </li>
-                <li className="flex items-center gap-2 text-sm text-text-body">
-                  <span className="text-emerald-400">✓</span> Basic stats & radar
-                </li>
-                <li className="flex items-center gap-2 text-sm text-text-body">
-                  <span className="text-emerald-400">✓</span> Player comparison
-                </li>
-                <li className="flex items-center gap-2 text-sm text-text-muted">
-                  <span className="text-text-muted">✗</span> Scouting reports
-                </li>
-              </ul>
-              <a href="/players" className="block w-full text-center py-2.5 text-sm font-medium text-text-heading border border-border rounded-lg hover:bg-surface-hover transition-colors mt-auto">
-                Get Started
-              </a>
-            </div>
-
-            {/* Supporter */}
-            <div className="rounded-xl border border-border bg-card p-6 relative flex flex-col">
-              <div className="min-h-[28px]" />
-              <h3 className="text-lg font-semibold text-text-heading mb-2">Supporter</h3>
-              <div className="min-h-[60px]">
-                <p className="text-3xl font-bold text-text-heading mb-1">€1.99</p>
-                <p className="text-sm text-text-muted">/month</p>
-              </div>
-              <ul className="space-y-3 mb-6 flex-1 mt-6">
-                <li className="flex items-center gap-2 text-sm text-text-body">
-                  <span className="text-emerald-400">✓</span> Everything in Free
-                </li>
-                <li className="flex items-center gap-2 text-sm text-text-body">
-                  <span className="text-emerald-400">✓</span> Premium reports
-                </li>
-                <li className="flex items-center gap-2 text-sm text-text-body">
-                  <span className="text-emerald-400">✓</span> Watchlist
-                </li>
-                <li className="flex items-center gap-2 text-sm text-text-muted">
-                  <span className="text-text-muted">✗</span> Advanced filters
-                </li>
-              </ul>
-              <a href="/pricing" className="block w-full text-center py-2.5 text-sm font-medium text-text-heading bg-surface-elevated rounded-lg hover:bg-secondary transition-colors mt-auto">
-                Subscribe
-              </a>
-            </div>
-
-            {/* Scout Pro */}
-            <div className="rounded-xl border-2 border-primary-accent bg-card px-6 pb-6 pt-4 relative flex flex-col overflow-visible">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
-                <span className="inline-flex items-center rounded-full bg-primary-accent px-3 py-1 text-xs font-semibold text-text-heading whitespace-nowrap">Most Popular</span>
-              </div>
-              <h3 className="text-lg font-semibold text-text-heading mb-2 mt-2">Scout Pro</h3>
-              <div className="min-h-[60px]">
-                <p className="text-3xl font-bold text-text-heading mb-1">€9.99</p>
-                <p className="text-sm text-text-muted">/month</p>
-              </div>
-              <ul className="space-y-3 mb-6 flex-1 mt-6">
-                <li className="flex items-center gap-2 text-sm text-text-body">
-                  <span className="text-emerald-400">✓</span> Everything in Supporter
-                </li>
-                <li className="flex items-center gap-2 text-sm text-text-body">
-                  <span className="text-emerald-400">✓</span> Advanced filters
-                </li>
-                <li className="flex items-center gap-2 text-sm text-text-body">
-                  <span className="text-emerald-400">✓</span> Export data (CSV)
-                </li>
-              </ul>
-              <a href="/pricing" className="block w-full text-center py-2.5 text-sm font-medium text-text-heading bg-primary-accent rounded-lg hover:bg-primary-accent/90 transition-colors mt-auto">
-                Get Scout Pro →
-              </a>
-            </div>
-
-            {/* Consulting */}
-            <div className="rounded-xl border border-border bg-card p-6 flex flex-col">
-              <div className="min-h-[28px]" />
-              <h3 className="text-lg font-semibold text-text-heading mb-2">Consulting</h3>
-              <div className="min-h-[60px]">
-                <p className="text-3xl font-bold text-text-heading mb-1">Custom</p>
-                <p className="text-sm text-text-muted">For organizations</p>
-              </div>
-              <ul className="space-y-3 mb-6 flex-1 mt-6">
-                <li className="flex items-center gap-2 text-sm text-text-body">
-                  <span className="text-emerald-400">✓</span> Everything in Scout Pro
-                </li>
-                <li className="flex items-center gap-2 text-sm text-text-body">
-                  <span className="text-emerald-400">✓</span> API access
-                </li>
-                <li className="flex items-center gap-2 text-sm text-text-body">
-                  <span className="text-emerald-400">✓</span> Dedicated support
-                </li>
-                <li className="flex items-center gap-2 text-sm text-text-body">
-                  <span className="text-emerald-400">✓</span> Custom reports
-                </li>
-              </ul>
-              <a href="/contact" className="block w-full text-center py-2.5 text-sm font-medium text-text-heading border border-border rounded-lg hover:bg-surface-hover transition-colors mt-auto">
-                Contact Us
-              </a>
-            </div>
-          </div>
-          <div className="text-center mt-8">
-            <a href="/pricing" className="text-sm text-primary-accent hover:text-primary-accent/90 transition-colors">
-              View all details →
-            </a>
-          </div>
-        </div>
-      </section>
       </div>
     </>
   );

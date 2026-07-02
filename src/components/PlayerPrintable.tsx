@@ -24,7 +24,7 @@ function fmtPct(num: number | null | undefined): string {
 
 export default function PlayerPrintable({ player, id }: PlayerPrintableProps) {
   const age = calculateAge(player.dateOfBirth) ?? player.age ?? null;
-  const freeReports = player.reports.filter((r) => !r.isPremium).slice(0, 2);
+  const reports = player.reports.slice(0, 2);
 
   const soloq = player.soloqStats;
   const pro = player.proStats;
@@ -148,10 +148,10 @@ export default function PlayerPrintable({ player, id }: PlayerPrintableProps) {
       )}
 
       {/* Reports */}
-      {freeReports.length > 0 && (
+      {reports.length > 0 && (
         <Section title="Recent Reports">
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {freeReports.map((r) => (
+            {reports.map((r) => (
               <div key={r.id} style={{ borderLeft: "3px solid #E94560", paddingLeft: 12 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <h4 style={{ fontSize: 12, fontWeight: 700, margin: 0 }}>{r.title}</h4>

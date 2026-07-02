@@ -9,6 +9,13 @@ const importSchema = z.object({
   csv: z.string().min(1, "CSV content is required"),
 });
 
+function parsePercent(value: string | undefined): number | null {
+  if (!value || value.trim() === "" || value.trim() === "-") return null;
+  const clean = value.replace(/%/g, "").trim();
+  const n = parseFloat(clean);
+  return isNaN(n) ? null : n / 100;
+}
+
 async function batchProcess<T, R>(
   items: T[],
   processor: (item: T) => Promise<R>,
@@ -95,7 +102,7 @@ export async function POST(request: NextRequest) {
             csdAt15: parseFloat(row.csdat15 || row.csd_at_15) || null,
             gdAt15: parseFloat(row.gdat15 || row.gd_at_15) || null,
             dpm: parseFloat(row.dpm) || null,
-            kpPercent: parseFloat(row.kppercent || row.kp_percent) || null,
+            kpPercent: parsePercent(row.kppercent || row.kp_percent),
             visionScore: parseFloat(row.visionscore || row.vision_score) || null,
             gamesPlayed: parseInt(row.games) || null,
             championPool: row.championpool || row.champion_pool || null,
@@ -106,7 +113,7 @@ export async function POST(request: NextRequest) {
             csdAt15: parseFloat(row.csdat15 || row.csd_at_15) || undefined,
             gdAt15: parseFloat(row.gdat15 || row.gd_at_15) || undefined,
             dpm: parseFloat(row.dpm) || undefined,
-            kpPercent: parseFloat(row.kppercent || row.kp_percent) || undefined,
+            kpPercent: parsePercent(row.kppercent || row.kp_percent) || undefined,
             visionScore: parseFloat(row.visionscore || row.vision_score) || undefined,
             gamesPlayed: parseInt(row.games) || undefined,
             championPool: row.championpool || row.champion_pool || undefined,

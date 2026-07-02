@@ -1,11 +1,9 @@
 import { db } from "@/lib/server/db";
 import Link from "next/link";
-import { Lock, Star, FileText } from "lucide-react";
+import { FileText } from "lucide-react";
 import { EmptyState } from "@/components/ui/empty-state";
 import type { Metadata } from "next";
 import ReportCard from "@/components/ReportCard";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/server/auth-options";
 
 export const metadata: Metadata = {
   title: "Reports",
@@ -27,13 +25,7 @@ async function getReports() {
 }
 
 export default async function ReportsPage() {
-  const session = await getServerSession(authOptions);
-  const isPremium = session?.user?.isPremium === true && session?.user?.subscriptionStatus === "active";
-
   const reports = await getReports();
-
-  const freeReports = reports.filter((r) => !r.isPremium);
-  const premiumReports = reports.filter((r) => r.isPremium);
 
   return (
     <div className="min-h-screen bg-background">
@@ -45,39 +37,13 @@ export default async function ReportsPage() {
         </p>
       </div>
 
-      {/* Free Reports */}
-      {freeReports.length > 0 && (
-        <div className="mb-12">
-          <h2 className="text-xl font-semibold text-text-heading mb-4 flex items-center gap-2">
-            <Star className="h-5 w-5 text-success" />
-            Free Reports
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {freeReports.map((report) => (
-              <Link key={report.id} href={`/players/${report.playerId}`}>
-                <ReportCard report={report} variant="free" />
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Premium Reports */}
-      {premiumReports.length > 0 && (
-        <div>
-          <h2 className="text-xl font-semibold text-text-heading mb-4 flex items-center gap-2">
-            <Lock className="h-5 w-5 text-primary-accent" />
-            Premium Reports
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {premiumReports.map((report) => (
-              <ReportCard
-                key={report.id}
-                report={report}
-                variant={isPremium ? "premium" : "preview"}
-              />
-            ))}
-          </div>
+      {reports.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {reports.map((report) => (
+            <Link key={report.id} href={`/players/${report.playerId}`}>
+              <ReportCard report={report} variant="free" />
+            </Link>
+          ))}
         </div>
       )}
 

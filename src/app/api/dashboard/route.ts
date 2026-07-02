@@ -194,28 +194,11 @@ export async function GET() {
       }),
     ]);
 
-    // Sanitize reports for non-premium users
-    const isPremium = user.isPremium === true && user.subscriptionStatus === "active";
-    const sanitizedReports = reports.map((report) => {
-      if (report.isPremium && !isPremium) {
-        return {
-          ...report,
-          content: "",
-          strengths: "",
-          weaknesses: "",
-          verdict: "",
-          author: "",
-          _locked: true as const,
-        };
-      }
-      return { ...report, _locked: false as const };
-    });
-
     return NextResponse.json({
       favorites: favorites || [],
       notifications: notifications || [],
       prospects: prospects || [],
-      reports: sanitizedReports || [],
+      reports: reports.map((report) => ({ ...report, _locked: false as const })) || [],
       potw: potw
         ? {
             player: potw.player,

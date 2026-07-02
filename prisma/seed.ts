@@ -1,7 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 
 const db = new PrismaClient();
+
+function generateRandomPassword(length = 16): string {
+  return crypto.randomBytes(length).toString("base64url").slice(0, length);
+}
 
 async function main() {
   console.log("Seeding database...");
@@ -12,7 +17,8 @@ async function main() {
   });
 
   if (!existingAdmin) {
-    const adminPassword = await bcrypt.hash("admin123", 10);
+    const adminPasswordPlain = process.env.ADMIN_PASSWORD || generateRandomPassword();
+    const adminPassword = await bcrypt.hash(adminPasswordPlain, 10);
     await db.user.create({
       data: {
         email: "admin@leaguescout.gg",
@@ -23,7 +29,12 @@ async function main() {
         subscriptionStatus: "active",
       },
     });
-    console.log("Created admin user: admin@leaguescout.gg / admin123");
+    if (process.env.ADMIN_PASSWORD) {
+      console.log("Created admin user: admin@leaguescout.gg (password from ADMIN_PASSWORD env var)");
+    } else {
+      console.log("Created admin user: admin@leaguescout.gg /", adminPasswordPlain);
+      console.log("Set ADMIN_PASSWORD in your .env to use a custom password.");
+    }
   } else {
     console.log("Admin user already exists, skipping.");
   }

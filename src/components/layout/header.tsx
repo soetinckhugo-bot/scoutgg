@@ -25,16 +25,14 @@ interface Suggestion {
 }
 
 const navLinks = [
-  { href: "/dashboard", label: "Staff Hub" },
   { href: "/players", label: "Players" },
   { href: "/leaderboards", label: "Leaderboards" },
   { href: "/prospects", label: "Prospects" },
-  { href: "/mercato", label: "Mercato" },
   { href: "/clips", label: "Clips" },
   { href: "/compare", label: "Comparison" },
   { href: "/similarity", label: "Similarity" },
   { href: "/soloq", label: "SoloQ" },
-  { href: "/pricing", label: "Pricing" },
+  { href: "/reports", label: "Reports" },
 ];
 
 function useSearchSuggestions(query: string) {

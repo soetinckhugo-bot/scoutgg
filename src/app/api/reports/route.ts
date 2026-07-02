@@ -4,9 +4,7 @@ import { db } from "@/lib/server/db";
 import { ReportCreateSchema } from "@/lib/schemas";
 import { requireAdmin } from "@/lib/server/auth";
 import { rateLimit } from "@/lib/server/rate-limit";
-import { getServerSession } from "next-auth/next";
 import { revalidateTag } from "next/cache";
-import { authOptions } from "@/lib/server/auth-options";
 
 const DEFAULT_LIMIT = 50;
 
@@ -27,9 +25,6 @@ export async function GET(request: Request) {
     const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") || String(DEFAULT_LIMIT), 10)));
     const skip = (page - 1) * limit;
 
-    const session = await getServerSession(authOptions);
-    const isPremium = session?.user?.isPremium === true && session?.user?.subscriptionStatus === "active";
-
     const [reports, totalCount] = await Promise.all([
       db.report.findMany({
         orderBy: { publishedAt: "desc" },
@@ -44,24 +39,8 @@ export async function GET(request: Request) {
       db.report.count(),
     ]);
 
-    // If not premium, redact premium report content
-    const sanitizedReports = reports.map((report) => {
-      if (report.isPremium && !isPremium) {
-        return {
-          ...report,
-          content: "",
-          strengths: "",
-          weaknesses: "",
-          verdict: "",
-          author: "",
-          _locked: true as const,
-        };
-      }
-      return { ...report, _locked: false as const };
-    });
-
     return NextResponse.json({
-      reports: sanitizedReports,
+      reports: reports.map((report) => ({ ...report, _locked: false as const })),
       pagination: {
         page,
         limit,
@@ -69,7 +48,7 @@ export async function GET(request: Request) {
         totalPages: Math.ceil(totalCount / limit),
       },
       meta: {
-        isPremium,
+        isPremium: true,
       },
     });
   } catch (error) {

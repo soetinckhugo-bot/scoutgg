@@ -29,30 +29,10 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const user = await db.user.findUnique({
-      where: { email: userId },
-      select: {
-        isPremium: true,
-        subscriptionStatus: true,
-        stripeCustomerId: true,
-      },
-    });
-
-    if (!user?.isPremium || user.subscriptionStatus !== "active") {
-      return NextResponse.json(
-        { error: "API access requires Scout Pro subscription" },
-        { status: 403 }
-      );
-    }
-
-    // For now, return a placeholder since we don't have an ApiKey model
-    // In production, you'd store hashed keys in the database
+    // API access is now available to all authenticated users
     return NextResponse.json({
-      keys: user.stripeCustomerId
-        ? [{ name: "Default Key", prefix: "lsk_...", createdAt: user.stripeCustomerId }]
-        : [],
-      message:
-        "API keys are managed via Stripe Customer Portal. Contact support for access.",
+      keys: [],
+      message: "Generate a new API key below.",
     });
   } catch (error) {
     logger.error("API key error:", { error });
@@ -70,21 +50,7 @@ export async function POST() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const user = await db.user.findUnique({
-      where: { email: userId },
-      select: {
-        isPremium: true,
-        subscriptionStatus: true,
-      },
-    });
-
-    if (!user?.isPremium || user.subscriptionStatus !== "active") {
-      return NextResponse.json(
-        { error: "API access requires Scout Pro subscription" },
-        { status: 403 }
-      );
-    }
-
+    // API access is now available to all authenticated users
     const key = generateApiKey();
     const hashed = hashKey(key);
 
